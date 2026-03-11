@@ -78,8 +78,7 @@ flowchart TD
 > **Testnet only** — no real funds involved
 
 - **Bot**: [@izEscrowAIBot](https://t.me/izEscrowAIBot)
-<!-- TODO: Add Mini App link when deployed -->
-<!-- - **Mini App**: [Open](https://your-mini-app.vercel.app) -->
+- **Mini App**: [iz-escrow-ai.vercel.app](https://iz-escrow-ai.vercel.app)
 
 ## Project Structure
 

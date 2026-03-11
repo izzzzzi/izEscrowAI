@@ -28,5 +28,6 @@ Key features:
 ## Links
 - GitHub: https://github.com/izzzzzi/izEscrowAI
 - izTolkMcp: https://github.com/izzzzzi/izTolkMcp
-- Bot: @izEscrowAIBot
+- Bot: [@izEscrowAIBot](https://t.me/izEscrowAIBot)
+- Mini App: https://iz-escrow-ai.vercel.app
 - Demo video: <!-- TODO: add after recording -->
