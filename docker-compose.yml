@@ -1,0 +1,15 @@
+services:
+  bot:
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./bot/.env
+    volumes:
+      - bot-data:/app
+    restart: unless-stopped
+
+volumes:
+  bot-data:
