@@ -10,22 +10,22 @@ izEscrowAI is a Telegram bot that acts as an automated escrow guarantor for peer
 
 ## How it works
 
-```text
-1. DESCRIBE  →  "Selling logo design to @ivan for 50 TON"
-                 AI extracts: seller, buyer, amount, description
-
-2. CONFIRM   →  Counterparty confirms the deal terms
-                 Smart contract deployed on TON
-
-3. DEPOSIT   →  Buyer pays via TON Connect in Mini App
-                 Funds locked in smart contract (non-custodial)
-
-4. DELIVER   →  Seller completes work, marks as delivered
-                 Buyer has 7 days to confirm or dispute
-
-5. RELEASE   →  Buyer confirms → funds sent to seller
-             OR → Dispute → AI mediates → fair split
-             OR → 7-day timeout → auto-release to seller
+```mermaid
+flowchart TD
+    A["👤 User writes to bot\n&quot;Selling logo design to @ivan for 50 TON&quot;"] --> B["🤖 AI parses deal\nSeller, buyer, amount, description"]
+    B --> C["📩 Counterparty receives invite link\nt.me/izEscrowAIBot?start=deal_xxx"]
+    C --> D{"✅ Both confirm?"}
+    D -- Yes --> E["📜 Smart contract deployed on TON"]
+    D -- No --> X1["❌ Deal cancelled"]
+    E --> F["💎 Buyer deposits via TON Connect\nFunds locked in contract"]
+    F --> G["🔨 Seller delivers work"]
+    G --> H{"Buyer confirms?"}
+    H -- "✅ Confirm" --> I["💰 Funds released to seller"]
+    H -- "⚠️ Dispute" --> J["🤖 AI mediates\nProposes fair split"]
+    H -- "⏰ 7-day timeout" --> I
+    J --> K{"Both accept?"}
+    K -- Yes --> L["💰 Split executed on-chain"]
+    K -- No --> M["🔒 Arbiter resolves"]
 ```
 
 ## Key Features
@@ -38,29 +38,21 @@ izEscrowAI is a Telegram bot that acts as an automated escrow guarantor for peer
 
 ## Architecture
 
-```text
-┌─────────────────────┐
-│   Telegram Users     │
-└─────────┬───────────┘
-          │
-┌─────────▼───────────┐     ┌──────────────────┐
-│   izEscrowAI Bot     │────▶│  Mini App (React) │
-│   (grammY + Express) │     │  TON Connect UI   │
-│                      │     └──────────────────┘
-│  ├── AI Engine       │
-│  │   (OpenRouter)    │
-│  ├── Deal Manager    │
-│  │   (State Machine) │
-│  ├── Blockchain      │
-│  │   (TON Client)    │
-│  └── REST API        │
-└─────────┬───────────┘
-          │
-┌─────────▼───────────┐
-│   TON Blockchain     │
-│   Escrow Contract    │
-│   (Tolk language)    │
-└─────────────────────┘
+```mermaid
+flowchart TD
+    Users["👤 Telegram Users"] --> Bot
+
+    subgraph Bot["izEscrowAI Bot"]
+        AI["AI Engine\nOpenRouter + Claude"]
+        DM["Deal Manager\nState Machine"]
+        BC["Blockchain\nTON Client"]
+        API["REST API\nExpress"]
+        DB["Database\nSQLite"]
+    end
+
+    Bot --> MiniApp["Mini App\nReact + TON Connect"]
+    MiniApp --> TON
+    BC --> TON["TON Blockchain\nEscrow Contract (Tolk)"]
 ```
 
 ## Tech Stack
@@ -125,10 +117,20 @@ izEscrowAI/
 
 ## Deal States
 
-```text
-created → confirmed → funded → delivered → completed
-                   ↘            ↘ disputed → resolved
-                    cancelled              ↘ cancelled
+```mermaid
+stateDiagram-v2
+    [*] --> Created
+    Created --> Confirmed: Both parties agree
+    Confirmed --> Funded: Buyer deposits TON
+    Confirmed --> Cancelled: Either party cancels
+    Funded --> Delivered: Seller marks done
+    Funded --> Cancelled: Arbiter cancels
+    Delivered --> Completed: Buyer confirms / timeout
+    Delivered --> Disputed: Buyer opens dispute
+    Disputed --> Resolved: AI mediates split
+    Completed --> [*]
+    Resolved --> [*]
+    Cancelled --> [*]
 ```
 
 - **Deposit**: Buyer signs via TON Connect (their wallet, their signature)
