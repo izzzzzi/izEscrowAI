@@ -12,19 +12,19 @@ izEscrowAI is a Telegram bot that acts as an automated escrow guarantor for peer
 
 ```mermaid
 flowchart TD
-    A["👤 User writes to bot\n&quot;Selling logo design to @ivan for 50 TON&quot;"] --> B["🤖 AI parses deal\nSeller, buyer, amount, description"]
-    B --> C["📩 Counterparty receives invite link\nt.me/izEscrowAIBot?start=deal_xxx"]
+    A["👤 User writes to bot"] --> B["🤖 AI parses the deal"]
+    B --> C["📩 Invite link sent to counterparty"]
     C --> D{"✅ Both confirm?"}
-    D -- Yes --> E["📜 Smart contract deployed on TON"]
-    D -- No --> X1["❌ Deal cancelled"]
-    E --> F["💎 Buyer deposits via TON Connect\nFunds locked in contract"]
+    D -- Yes --> E["📜 Smart contract deployed"]
+    D -- No --> X1["❌ Cancelled"]
+    E --> F["💎 Buyer deposits via TON Connect"]
     F --> G["🔨 Seller delivers work"]
     G --> H{"Buyer confirms?"}
-    H -- "✅ Confirm" --> I["💰 Funds released to seller"]
-    H -- "⚠️ Dispute" --> J["🤖 AI mediates\nProposes fair split"]
+    H -- "✅ Confirm" --> I["💰 Funds → seller"]
+    H -- "⚠️ Dispute" --> J["🤖 AI mediates fair split"]
     H -- "⏰ 7-day timeout" --> I
     J --> K{"Both accept?"}
-    K -- Yes --> L["💰 Split executed on-chain"]
+    K -- Yes --> L["💰 Split on-chain"]
     K -- No --> M["🔒 Arbiter resolves"]
 ```
 
