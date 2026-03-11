@@ -43,16 +43,16 @@ flowchart TD
     Users["👤 Telegram Users"] --> Bot
 
     subgraph Bot["izEscrowAI Bot"]
-        AI["AI Engine\nOpenRouter + Claude"]
-        DM["Deal Manager\nState Machine"]
-        BC["Blockchain\nTON Client"]
-        API["REST API\nExpress"]
-        DB["Database\nSQLite"]
+        AI["AI Engine — OpenRouter"]
+        DM["Deal Manager — State Machine"]
+        BC["Blockchain — TON Client"]
+        API["REST API — Express"]
+        DB["Database — SQLite"]
     end
 
-    Bot --> MiniApp["Mini App\nReact + TON Connect"]
+    Bot --> MiniApp["Mini App — React + TON Connect"]
     MiniApp --> TON
-    BC --> TON["TON Blockchain\nEscrow Contract (Tolk)"]
+    BC --> TON["TON Blockchain — Escrow Contract"]
 ```
 
 ## Tech Stack
