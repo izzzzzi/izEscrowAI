@@ -41,7 +41,6 @@ export default function PaymentPage() {
     setStatus("sending");
 
     try {
-      // OP_DEPOSIT = 0x1, queryId = 0
       const payload = beginCell()
         .storeUint(1, 32)
         .storeUint(0, 64)
@@ -67,96 +66,85 @@ export default function PaymentPage() {
 
   if (status === "loading") {
     return (
-      <div style={{ padding: "20px", textAlign: "center" }}>
-        <p>Loading deal...</p>
+      <div className="min-h-screen bg-[#0f172a] text-white flex items-center justify-center" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <span className="text-sm text-slate-500">Loading deal...</span>
       </div>
     );
   }
 
   if (status === "error" || !deal) {
     return (
-      <div style={{ padding: "20px", textAlign: "center" }}>
-        <p style={{ color: "var(--tg-theme-destructive-text-color, #ff3b30)" }}>
-          Error loading deal. Please try again.
-        </p>
+      <div className="min-h-screen bg-[#0f172a] text-white flex items-center justify-center" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <p className="text-sm text-red-400">Error loading deal. Please try again.</p>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Payment</h2>
+    <div className="min-h-screen bg-[#0f172a]/95 text-white flex flex-col p-5" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <div className="flex-1 flex flex-col items-center justify-center text-center max-w-xs mx-auto space-y-8">
+        {/* Icon */}
+        <div className="w-20 h-20 rounded-full bg-blue-500/10 flex items-center justify-center text-[#0098EA] animate-pulse">
+          <iconify-icon icon="solar:card-transfer-linear" width="40" />
+        </div>
 
-      <div
-        style={{
-          background: "var(--tg-theme-secondary-bg-color, #1c1c1e)",
-          borderRadius: "12px",
-          padding: "16px",
-          marginBottom: "20px",
-        }}
-      >
-        <p style={{ color: "var(--tg-theme-hint-color, #999)", margin: "0 0 8px" }}>
-          Deal #{deal.id}
-        </p>
-        <p style={{ margin: "0 0 8px", color: "var(--tg-theme-text-color, #fff)" }}>
-          {deal.description}
-        </p>
-        <p
-          style={{
-            margin: 0,
-            fontSize: "24px",
-            fontWeight: "bold",
-            color: "var(--tg-theme-text-color, #fff)",
-          }}
-        >
-          {deal.amount} {deal.currency}
-        </p>
-      </div>
-
-      {!wallet ? (
-        <button
-          onClick={() => tonConnectUI.openModal()}
-          style={{
-            padding: "14px 24px",
-            background: "var(--tg-theme-button-color, #3390ec)",
-            color: "var(--tg-theme-button-text-color, #fff)",
-            border: "none",
-            borderRadius: "12px",
-            fontSize: "16px",
-            cursor: "pointer",
-            width: "100%",
-          }}
-        >
-          Connect Wallet to Pay
-        </button>
-      ) : status === "sent" ? (
-        <div style={{ textAlign: "center" }}>
-          <p style={{ fontSize: "48px", margin: "0 0 8px" }}>&#10003;</p>
-          <p style={{ color: "var(--tg-theme-text-color, #fff)" }}>
-            Transaction sent! Waiting for confirmation...
+        {/* Title */}
+        <div className="space-y-2">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            {status === "sent" ? "Payment Sent" : "Incoming Deal"}
+          </h2>
+          <p className="text-sm text-slate-400">
+            {status === "sent"
+              ? "Transaction sent! Waiting for confirmation..."
+              : `Fund escrow for "${deal.description}"`}
           </p>
         </div>
-      ) : (
-        <button
-          onClick={handlePay}
-          disabled={status === "sending"}
-          style={{
-            padding: "14px 24px",
-            background:
+
+        {/* Deal Details */}
+        <div className="glass-card w-full rounded-2xl p-5 space-y-4">
+          <div className="flex justify-between text-sm">
+            <span className="text-slate-400">Deal</span>
+            <span className="font-mono text-slate-300">#{deal.id}</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-slate-400">Amount</span>
+            <span className="font-semibold">{deal.amount} {deal.currency}</span>
+          </div>
+          <div className="pt-3 border-t border-white/5 flex justify-between items-center">
+            <span className="text-sm text-white font-medium">Total to Pay</span>
+            <span className="text-xl font-bold text-[#0098EA]">
+              {deal.amount} {deal.currency}
+            </span>
+          </div>
+        </div>
+
+        {/* Action */}
+        {status === "sent" ? (
+          <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center">
+            <iconify-icon icon="solar:check-circle-linear" width="48" class="text-green-400" />
+          </div>
+        ) : !wallet ? (
+          <button
+            onClick={() => tonConnectUI.openModal()}
+            className="w-full bg-[#0098EA] text-white py-4 rounded-xl font-semibold text-sm shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
+          >
+            <iconify-icon icon="solar:wallet-2-linear" width="20" />
+            Connect Wallet to Pay
+          </button>
+        ) : (
+          <button
+            onClick={handlePay}
+            disabled={status === "sending"}
+            className={`w-full py-4 rounded-xl font-semibold text-sm shadow-lg flex items-center justify-center gap-2 ${
               status === "sending"
-                ? "var(--tg-theme-hint-color, #999)"
-                : "var(--tg-theme-button-color, #3390ec)",
-            color: "var(--tg-theme-button-text-color, #fff)",
-            border: "none",
-            borderRadius: "12px",
-            fontSize: "16px",
-            cursor: status === "sending" ? "not-allowed" : "pointer",
-            width: "100%",
-          }}
-        >
-          {status === "sending" ? "Sending..." : `Pay ${deal.amount} ${deal.currency}`}
-        </button>
-      )}
+                ? "bg-slate-600 text-slate-300 cursor-not-allowed"
+                : "bg-[#0098EA] text-white shadow-blue-500/20"
+            }`}
+          >
+            {status === "sending" ? "Sending..." : `Pay ${deal.amount} ${deal.currency}`}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

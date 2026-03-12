@@ -8,7 +8,7 @@ import TabNav from "./components/TabNav";
 
 function App() {
   // @ts-expect-error - Telegram WebApp global
-  const isTelegram = !!window.Telegram?.WebApp;
+  const isTelegram = window.Telegram?.WebApp?.initData?.length > 0;
 
   if (!isTelegram) {
     return (
