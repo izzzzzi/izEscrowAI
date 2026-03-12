@@ -3,9 +3,25 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import WalletPage from "./pages/WalletPage";
 import PaymentPage from "./pages/PaymentPage";
 import DealsPage from "./pages/DealsPage";
+import LandingPage from "./pages/LandingPage";
 import TabNav from "./components/TabNav";
 
 function App() {
+  // @ts-expect-error - Telegram WebApp global
+  const isTelegram = !!window.Telegram?.WebApp?.initData;
+
+  if (!isTelegram) {
+    return (
+      <Routes>
+        <Route path="*" element={<LandingPage />} />
+      </Routes>
+    );
+  }
+
+  return <MiniApp />;
+}
+
+function MiniApp() {
   const navigate = useNavigate();
 
   useEffect(() => {
