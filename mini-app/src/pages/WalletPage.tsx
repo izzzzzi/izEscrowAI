@@ -23,6 +23,17 @@ export default function WalletPage() {
 
   return (
     <div style={{ padding: "20px" }}>
+      <div style={{
+        background: "#1a3a5c",
+        color: "#7eb8f7",
+        padding: "8px 12px",
+        borderRadius: "8px",
+        fontSize: "12px",
+        marginBottom: "16px",
+        textAlign: "center",
+      }}>
+        Testnet mode — no real funds
+      </div>
       <h2>TON Wallet</h2>
 
       {wallet ? (
