@@ -84,6 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(u);
           setAuthMethod("loginWidget");
           setAuthData(saved);
+          // Set auth data synchronously so it's available before child effects run
+          setTelegramAuthData(saved);
         }
       }
     } catch {
@@ -109,6 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAuthMethod("loginWidget");
     const data = JSON.stringify(u);
     setAuthData(data);
+    setTelegramAuthData(data);
     try { localStorage.setItem("tg_auth", data); } catch { /* ignore */ }
   }, []);
 

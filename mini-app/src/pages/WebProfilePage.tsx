@@ -29,12 +29,12 @@ export default function WebProfilePage() {
 
     loadProfile
       .then((p) => setProfile(p as ProfileWithGithub))
-      .catch(() => {})
+      .catch((e) => console.error("[Profile] fetch failed:", e))
       .finally(() => setLoading(false));
 
     if (isOwnProfile && isAuthenticated) {
-      fetchOffers().then(setOffers).catch(() => {});
-      fetchMyJobs().then(setMyJobs).catch(() => {});
+      fetchOffers().then(setOffers).catch((e) => console.error("[Profile] offers fetch failed:", e));
+      fetchMyJobs().then(setMyJobs).catch((e) => console.error("[Profile] myJobs fetch failed:", e));
     }
   }, [userId, isAuthenticated, isOwnProfile]);
 
