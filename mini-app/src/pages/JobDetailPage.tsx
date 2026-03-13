@@ -180,18 +180,11 @@ export default function JobDetailPage() {
           </div>
         </div>
 
-        {/* 2.6 — Match score (auth) or placeholder (guest) */}
-        {isAuthenticated ? (
-          matchColor && matchPercent != null ? (
-            <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-medium ${matchColor}`}>
-              <iconify-icon icon="solar:star-bold" width="14" />
-              {matchPercent}% skill match
-            </div>
-          ) : null
-        ) : (
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-slate-400">
-            <iconify-icon icon="solar:lock-keyhole-linear" width="14" />
-            Sign in to see your match
+        {/* 2.6 — Match score (auth only, hidden for guests) */}
+        {isAuthenticated && matchColor && matchPercent != null && (
+          <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-medium ${matchColor}`}>
+            <iconify-icon icon="solar:star-bold" width="14" />
+            {matchPercent}% skill match
           </div>
         )}
 
@@ -297,9 +290,6 @@ export default function JobDetailPage() {
               <div className="h-3 w-3/4 bg-white/5 rounded" />
               <div className="h-3 w-1/2 bg-white/5 rounded" />
             </div>
-            <p className="text-xs text-slate-400 text-center pt-2">
-              Sign in to see AI-powered price estimate for this task
-            </p>
           </div>
         ) : loading ? (
           <PriceInsightSkeleton />
@@ -382,12 +372,6 @@ export default function JobDetailPage() {
             )}
           </div>
 
-          {/* Masked values CTA */}
-          {authorMasked && (
-            <p className="text-[10px] text-slate-500 mt-2 leading-relaxed">
-              Contact details are hidden. Sign in and respond to the job to get access.
-            </p>
-          )}
         </div>
 
         {/* 2.4 — Craft Your Proposal button (auth users) */}
@@ -401,11 +385,12 @@ export default function JobDetailPage() {
           </button>
         )}
 
-        {/* 2.5 — Soft auth CTA card for guests */}
+        {/* 2.5 — Single auth CTA for guests */}
         {!isAuthenticated && (
-          <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-4">
-            <p className="text-sm text-slate-300 leading-relaxed">
-              Want to know what this is really worth? Sign in to craft the perfect proposal and contact the author.
+          <div className="bg-gradient-to-br from-[#0098EA]/10 to-transparent backdrop-blur-lg rounded-2xl border border-[#0098EA]/20 p-6 space-y-3">
+            <h3 className="text-sm font-semibold text-white">Interested in this job?</h3>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Sign in to see AI pricing, contact the author, and craft a personalized proposal.
             </p>
             <a
               href="https://t.me/izEscrowAIBot"
