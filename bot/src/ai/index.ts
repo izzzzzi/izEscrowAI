@@ -666,7 +666,25 @@ export async function classifyGroupMessage(text: string): Promise<{ type: "job" 
   const res = await provider.getClient().chat.completions.create({
     model: provider.getModel(),
     messages: [
-      { role: "system", content: "You classify Telegram group messages. Determine if a message is a freelance job posting (job), general chat/question (not_job), or spam/ads (spam). Job posts typically describe work needed, mention skills, budgets, or deadlines." },
+      { role: "system", content: `You classify Telegram channel/group messages for a freelance escrow platform. Classify as:
+
+"job" — a PROJECT-BASED FREELANCE ORDER where someone is looking to hire a freelancer for a specific task with a concrete deliverable. Positive signals:
+- Specific deliverable ("нужен лендинг", "сделать бота", "дизайн логотипа", "need a landing page")
+- Project-based budget ("бюджет 50к", "$500", "оплата за проект")
+- One-off or short-term scope with a defined result
+- Keywords: "заказ", "проект", "задача", "нужен", "ищу исполнителя", "ТЗ"
+
+"not_job" — anything that is NOT a freelance project order. This includes:
+- Full-time job vacancies ("в команду", "в штат", "join our team", "we're hiring", "position")
+- Salary-based compensation ("зарплата 200к/мес", "salary $5000/month")
+- Corporate hiring ("The team is looking for...", "мы ищём в команду")
+- News, opinions, articles, discussions, channel updates
+- Non-digital/non-IT work (interior design, construction, moving)
+- Resumes or "looking for work" posts (someone offering services, not ordering)
+
+"spam" — advertising, promotions, scams, irrelevant marketing
+
+IMPORTANT: Most messages from job channels are full-time VACANCIES, not freelance orders. Be strict — only classify as "job" if there is a clear project-based task that a freelancer could complete through an escrow service.` },
       { role: "user", content: text },
     ],
     tools: [classifyGroupMessageTool],
@@ -722,7 +740,31 @@ export async function extractJobParams(text: string): Promise<ExtractedJobParams
   const res = await provider.getClient().chat.completions.create({
     model: provider.getModel(),
     messages: [
-      { role: "system", content: "Extract structured job parameters from a freelance job posting. Extract skills as normalized technology names (e.g., 'React', 'Python', 'Node.js'). If budget is mentioned as a range like '50-100к', extract budget_min=50000 and budget_max=100000. If a single price, set both min and max to the same value. Look for @username mentions for contact." },
+      { role: "system", content: `Extract structured job parameters from a freelance project order.
+
+Skills: normalize to standard technology names (e.g., "реакт" → "React", "ноде" → "Node.js", "питон" → "Python", "тайпскрипт" → "TypeScript").
+
+Budget extraction rules:
+- Range: "50-100к" → budget_min=50000, budget_max=100000
+- Single price: "оплата 25 000 руб" → budget_min=25000, budget_max=25000
+- "от 50к" → budget_min=50000, budget_max=null
+- "до 100к" → budget_min=null, budget_max=100000
+- "$500-1000" → budget_min=500, budget_max=1000
+- "оплата по результату", "договорная", "обсуждается" → budget_min=null, budget_max=null
+- No budget mentioned at all → budget_min=null, budget_max=null
+- NEVER return 0 as a budget value. If you can't determine a budget, use null.
+
+Currency detection:
+- Russian text with ₽/руб/р → "RUB"
+- Dollar sign $ or "USD" → "USD"
+- "TON"/"тон"/"тонкоин" → "TON"
+- "USDT"/"тезер" → "USDT"
+- Euro €/EUR → "EUR"
+- English text without explicit currency → "USD"
+- Russian text without explicit currency → "RUB"
+- Crypto/Web3 context without explicit currency → "USDT"
+
+Contact: look for @username mentions and t.me/ links.` },
       { role: "user", content: text },
     ],
     tools: [extractJobParamsTool],
@@ -736,9 +778,9 @@ export async function extractJobParams(text: string): Promise<ExtractedJobParams
       return {
         title: params.title || "Untitled Job",
         description: params.description || text.slice(0, 500),
-        budget_min: params.budget_min ?? null,
-        budget_max: params.budget_max ?? null,
-        currency: params.currency || "RUB",
+        budget_min: params.budget_min || null,
+        budget_max: params.budget_max || null,
+        currency: params.currency || "USD",
         required_skills: params.required_skills || [],
         deadline: params.deadline ?? null,
         contact_username: params.contact_username ?? null,

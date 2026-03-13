@@ -10,12 +10,22 @@ const JOB_KEYWORDS_RU = [
 ];
 
 const JOB_KEYWORDS_EN = [
-  "looking for", "hiring", "need a", "seeking",
+  "looking for", "need a", "seeking",
   "developer", "designer", "freelancer", "programmer",
   "frontend", "backend", "fullstack", "full-stack",
-  "budget", "rate", "salary", "compensation",
-  "remote", "freelance", "contract",
+  "budget", "rate",
+  "freelance", "contract",
   "react", "node", "python", "typescript",
+];
+
+const NOT_JOB_KEYWORDS = [
+  "в команду", "в штат", "в офис",
+  "full-time", "full time", "fulltime",
+  "join our team", "join the team",
+  "we're hiring", "we are hiring",
+  "вакансия", "вакансии",
+  "зарплата", "salary", "з/п",
+  "оклад",
 ];
 
 const BUDGET_PATTERN = /\b\d{2,}[\s]?[₽$€кkК]|\$\s?\d{2,}|от\s+\d{2,}|бюджет|budget/i;
@@ -25,8 +35,14 @@ const keywordsPattern = new RegExp(
   "i",
 );
 
+const notJobPattern = new RegExp(
+  NOT_JOB_KEYWORDS.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"),
+  "i",
+);
+
 export function isJobCandidate(text: string): boolean {
   if (!text || text.length < 20) return false;
+  if (notJobPattern.test(text)) return false;
   if (keywordsPattern.test(text)) return true;
   if (BUDGET_PATTERN.test(text)) return true;
   return false;

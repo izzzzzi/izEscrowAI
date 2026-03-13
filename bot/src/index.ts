@@ -40,11 +40,29 @@ bot.start({
 
 // --- Seed initial channel_web sources ---
 const SEED_CHANNELS = [
+  // Tier 1: Original
   { username: "tonhunt", title: "TON Jobs" },
   { username: "designhunters", title: "Design Hunters" },
   { username: "job_for_designers", title: "Job for Designers" },
   { username: "freelance_design_job", title: "Freelance Design Job" },
   { username: "love_it_hate", title: "Айтишка (IT/AI)" },
+  // Tier 2: IT & Freelance orders
+  { username: "freelansim_ru", title: "Хабр Фриланс" },
+  { username: "rabovnet", title: "Rabovnet" },
+  { username: "freelancetaverna", title: "Фриланс Таверна" },
+  { username: "workzavr", title: "Workzavr" },
+  { username: "digitaltender", title: "Digital Tender" },
+  // Tier 3: Design & CG
+  { username: "zakaz_design", title: "Заказы на Дизайн" },
+  { username: "cgfreelance", title: "CG Freelance" },
+  { username: "designer_ru", title: "Ищу Дизайнера" },
+  // Tier 4: Niche & Remote
+  { username: "remote_it_jobs", title: "Remote IT Jobs" },
+  { username: "devjobs", title: "DevJobs (Gamedev/CG)" },
+  { username: "textodromo", title: "Текстодром" },
+  { username: "naudalenkebro", title: "На удалёнке" },
+  { username: "ru_pythonjobs", title: "Python Jobs RU" },
+  { username: "remotejobshg", title: "Remote Crypto Jobs" },
 ];
 
 try {
