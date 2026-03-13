@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchProfile, fetchUserProfile, fetchOffers, fetchMyJobs, fetchGithubUnlink, type ProfileWithGithub, type Offer, type MyJob, API_URL } from "../lib/api";
+import { useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
+import { fetchProfile, fetchUserProfile, fetchOffers, fetchMyJobs, fetchGithubUnlink, registerWallet, type ProfileWithGithub, type Offer, type MyJob, API_URL } from "../lib/api";
 import { useAuth } from "../contexts/AuthContext";
 import LoginGate from "../components/LoginGate";
 import GitHubCard from "../components/GitHubCard";
@@ -9,7 +10,9 @@ import MyJobCard from "../components/MyJobCard";
 export default function WebProfilePage() {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
-  const { isAuthenticated, user, hasWallet } = useAuth();
+  const { isAuthenticated, user, hasWallet, setWallet } = useAuth();
+  const [tonConnectUI] = useTonConnectUI();
+  const tonAddress = useTonAddress(false);
   const [profile, setProfile] = useState<ProfileWithGithub | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [myJobs, setMyJobs] = useState<MyJob[]>([]);
@@ -37,6 +40,16 @@ export default function WebProfilePage() {
       fetchMyJobs().then(setMyJobs).catch((e) => console.error("[Profile] myJobs fetch failed:", e));
     }
   }, [userId, isAuthenticated, isOwnProfile]);
+
+  // Sync TonConnect wallet state with AuthContext and backend
+  useEffect(() => {
+    if (tonAddress) {
+      setWallet(tonAddress);
+      registerWallet(tonAddress).catch((e) => console.error("[Profile] wallet register failed:", e));
+    } else {
+      setWallet(null);
+    }
+  }, [tonAddress, setWallet]);
 
   if (isOwnProfile && !isAuthenticated) {
     return (
@@ -120,16 +133,6 @@ export default function WebProfilePage() {
               </div>
             </div>
 
-            {isOwnProfile && (
-              <div className="text-sm text-slate-400">
-                <iconify-icon icon="solar:wallet-linear" width="14" style={{ verticalAlign: "middle" }} />{" "}
-                {hasWallet ? (
-                  <span className="text-green-400">Wallet connected</span>
-                ) : (
-                  <span>No wallet</span>
-                )}
-              </div>
-            )}
           </div>
 
           {/* Stats Grid */}
@@ -200,6 +203,38 @@ export default function WebProfilePage() {
             <div className="text-xs text-slate-400 mt-1">Verify your skills and boost your Trust Score</div>
           </a>
         ) : null}
+
+        {/* Wallet Card */}
+        {isOwnProfile && (hasWallet && tonAddress ? (
+          <div className="glass-card rounded-2xl p-6 mb-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center">
+                <iconify-icon icon="solar:wallet-2-bold" width="22" class="text-purple-400" />
+              </div>
+              <div>
+                <div className="text-sm font-medium">TON Wallet Connected</div>
+                <div className="text-xs text-slate-400 font-mono">
+                  {tonAddress.slice(0, 6)}...{tonAddress.slice(-4)}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => tonConnectUI.disconnect()}
+              className="text-xs text-red-400 bg-red-500/5 border border-red-500/10 rounded-lg px-4 py-2 cursor-pointer hover:bg-red-500/10 transition-colors"
+            >
+              Disconnect Wallet
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => tonConnectUI.openModal()}
+            className="block w-full glass-card rounded-2xl p-6 mb-6 text-center hover:bg-white/5 transition-colors cursor-pointer bg-transparent border-none text-white"
+          >
+            <iconify-icon icon="solar:wallet-2-bold" width="32" class="text-purple-400 mb-3" />
+            <div className="text-sm font-medium">Connect TON Wallet</div>
+            <div className="text-xs text-slate-400 mt-1">Secure your deals and boost your Trust Score</div>
+          </button>
+        ))}
 
         {/* My Jobs from Groups */}
         {isOwnProfile && myJobs.length > 0 && (

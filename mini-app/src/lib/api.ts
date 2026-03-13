@@ -274,6 +274,13 @@ export function fetchGithubUnlink(): Promise<{ ok: boolean }> {
   return apiFetch("/api/github/unlink", { method: "POST" });
 }
 
+export function registerWallet(address: string): Promise<{ ok: boolean }> {
+  return apiFetch("/api/wallet", {
+    method: "POST",
+    body: JSON.stringify({ wallet_address: address }),
+  });
+}
+
 // --- Groups ---
 
 export interface GroupStat {
