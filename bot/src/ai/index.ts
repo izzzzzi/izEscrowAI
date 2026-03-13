@@ -13,7 +13,7 @@ import {
   parseDealTool as defaultParseDealTool,
   parseOfferTool as defaultParseOfferTool,
   parseBidTool as defaultParseBidTool,
-} from "./prompts.js";
+} from "./prompts.default.js";
 import type { AIPromptsConfig } from "./types.js";
 
 // --- Loaded config (overridable via initAI) ---
