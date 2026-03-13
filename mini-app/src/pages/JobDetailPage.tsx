@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchJob, type ParsedJob } from "../lib/api";
 import { useAuth } from "../contexts/AuthContext";
@@ -135,6 +136,10 @@ export default function JobDetailPage() {
 
   return (
     <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
+      <Helmet>
+        <title>{job.title} — izEscrowAI</title>
+        <meta name="description" content={job.description?.slice(0, 160) || job.title} />
+      </Helmet>
       <div className="max-w-3xl mx-auto space-y-6">
         {/* 4.4 — Back button */}
         <button

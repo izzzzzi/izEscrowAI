@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { TonConnectUIProvider } from "@tonconnect/ui-react";
+import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
 import App from "./App.tsx";
@@ -14,13 +15,15 @@ const manifestUrl =
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
-      <BrowserRouter>
-        <AuthProvider>
-          <TonConnectUIProvider manifestUrl={manifestUrl}>
-            <App />
-          </TonConnectUIProvider>
-        </AuthProvider>
-      </BrowserRouter>
+      <HelmetProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <TonConnectUIProvider manifestUrl={manifestUrl}>
+              <App />
+            </TonConnectUIProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </HelmetProvider>
     </ErrorBoundary>
   </StrictMode>,
 );

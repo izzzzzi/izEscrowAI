@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { fetchStats, fetchPublicOffers, fetchTalent, fetchTopGroups, type PlatformStats, type PublicOffer, type TalentData, type GroupStat } from "../lib/api";
 import StatCounter from "../components/StatCounter";
@@ -54,6 +55,9 @@ export default function LandingPage() {
       className="overflow-x-hidden"
       style={{ background: "#0f0f1a", color: "#fff", fontFamily: "'Inter', sans-serif" }}
     >
+      <Helmet>
+        <title>izEscrowAI — AI-Powered P2P Escrow on TON</title>
+      </Helmet>
       <main ref={mainRef} className="relative">
         {/* Background Orbs */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none -z-10">

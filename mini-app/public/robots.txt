@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://iz-escrow-ai.vercel.app/sitemap.xml

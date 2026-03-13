@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { fetchPublicOffers, type PublicOffer } from "../lib/api";
 import OfferCard from "../components/OfferCard";
@@ -20,6 +21,10 @@ export default function OffersPage() {
 
   return (
     <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
+      <Helmet>
+        <title>Offers — izEscrowAI</title>
+        <meta name="description" content="Browse public offers on izEscrowAI. Find freelance work or post your own offer with AI-powered escrow protection." />
+      </Helmet>
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>

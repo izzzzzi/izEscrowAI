@@ -1,0 +1,51 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0f1a"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="ton" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0098EA"/>
+      <stop offset="100%" style="stop-color:#00D1FF"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" style="stop-color:#0098EA;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#0098EA;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Glow effect -->
+  <ellipse cx="600" cy="250" rx="400" ry="200" fill="url(#glow)"/>
+
+  <!-- Shield icon -->
+  <g transform="translate(540, 140)">
+    <rect width="120" height="120" rx="28" fill="url(#ton)"/>
+    <path d="M60 35 L85 50 L85 75 C85 90 72 100 60 105 C48 100 35 90 35 75 L35 50 Z"
+          fill="none" stroke="white" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M48 70 L56 78 L74 58" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="320" text-anchor="middle" fill="white" font-family="Inter, -apple-system, sans-serif" font-size="52" font-weight="600" letter-spacing="-1">
+    izEscrowAI
+  </text>
+
+  <!-- Subtitle -->
+  <text x="600" y="380" text-anchor="middle" fill="#94a3b8" font-family="Inter, -apple-system, sans-serif" font-size="24" font-weight="400">
+    AI-Powered P2P Escrow on TON
+  </text>
+
+  <!-- Bottom accent line -->
+  <rect x="450" y="430" width="300" height="3" rx="1.5" fill="url(#ton)" opacity="0.5"/>
+
+  <!-- Tags -->
+  <text x="600" y="480" text-anchor="middle" fill="#64748b" font-family="Inter, -apple-system, sans-serif" font-size="16" font-weight="500" letter-spacing="3">
+    SMART CONTRACTS  ·  AI MATCHING  ·  ESCROW
+  </text>
+
+  <!-- Border -->
+  <rect x="0" y="0" width="1200" height="630" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+</svg>

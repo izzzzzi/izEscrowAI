@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Helmet } from "react-helmet-async";
 import { fetchJobs, type ParsedJob, type JobFilters } from "../lib/api";
 import JobCard from "../components/JobCard";
 import JobFiltersPanel from "../components/JobFilters";
@@ -45,6 +46,10 @@ export default function MarketPage() {
 
   return (
     <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
+      <Helmet>
+        <title>Job Marketplace — izEscrowAI</title>
+        <meta name="description" content="Browse freelance jobs parsed from Telegram groups. AI pricing, skill matching, and escrow protection." />
+      </Helmet>
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
