@@ -390,7 +390,7 @@ export async function fetchJobProposal(id: string): Promise<{ proposal_text: str
 // --- Admin API ---
 
 export async function checkAdminStatus(): Promise<{ is_admin: boolean }> {
-  return apiFetch("/admin/me");
+  return apiFetch("/api/admin/me");
 }
 
 export async function fetchAdminDashboard(): Promise<{
@@ -398,7 +398,7 @@ export async function fetchAdminDashboard(): Promise<{
   active_deals: number; total_volume: number; active_disputes: number;
   total_sources: number; active_sources: number; github_verified_count: number;
 }> {
-  return apiFetch("/admin/dashboard");
+  return apiFetch("/api/admin/dashboard");
 }
 
 export interface AdminSource {
@@ -407,25 +407,25 @@ export interface AdminSource {
 }
 
 export async function fetchAdminSources(): Promise<AdminSource[]> {
-  return apiFetch("/admin/sources");
+  return apiFetch("/api/admin/sources");
 }
 
 export async function createAdminSource(data: { telegram_id: number; title: string; username?: string }): Promise<AdminSource> {
-  return apiFetch("/admin/sources", {
+  return apiFetch("/api/admin/sources", {
     method: "POST",
     body: JSON.stringify(data),
   });
 }
 
 export async function updateAdminSource(id: string, data: { title?: string; status?: string; username?: string }): Promise<void> {
-  return apiFetch(`/admin/sources/${id}`, {
+  return apiFetch(`/api/admin/sources/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
   });
 }
 
 export async function deleteAdminSource(id: string): Promise<void> {
-  return apiFetch(`/admin/sources/${id}`, { method: "DELETE" });
+  return apiFetch(`/api/admin/sources/${id}`, { method: "DELETE" });
 }
 
 export interface AdminJob {
@@ -441,11 +441,11 @@ export async function fetchAdminJobs(params?: { status?: string; source_id?: str
   if (params?.page) qs.set("page", String(params.page));
   if (params?.limit) qs.set("limit", String(params.limit));
   const query = qs.toString();
-  return apiFetch(`/admin/jobs${query ? `?${query}` : ""}`);
+  return apiFetch(`/api/admin/jobs${query ? `?${query}` : ""}`);
 }
 
 export async function updateAdminJobStatus(id: string, status: string): Promise<void> {
-  return apiFetch(`/admin/jobs/${id}/status`, {
+  return apiFetch(`/api/admin/jobs/${id}/status`, {
     method: "PUT",
     body: JSON.stringify({ status }),
   });
@@ -462,15 +462,15 @@ export async function fetchAdminUsers(params?: { search?: string; page?: number;
   if (params?.page) qs.set("page", String(params.page));
   if (params?.limit) qs.set("limit", String(params.limit));
   const query = qs.toString();
-  return apiFetch(`/admin/users${query ? `?${query}` : ""}`);
+  return apiFetch(`/api/admin/users${query ? `?${query}` : ""}`);
 }
 
 export async function fetchAdminUserDetail(id: number): Promise<any> {
-  return apiFetch(`/admin/users/${id}`);
+  return apiFetch(`/api/admin/users/${id}`);
 }
 
 export async function toggleUserBan(id: number, ban: boolean): Promise<void> {
-  return apiFetch(`/admin/users/${id}/ban`, {
+  return apiFetch(`/api/admin/users/${id}/ban`, {
     method: "PUT",
     body: JSON.stringify({ ban }),
   });
@@ -482,22 +482,22 @@ export interface AdminDispute {
 }
 
 export async function fetchAdminDisputes(): Promise<AdminDispute[]> {
-  return apiFetch("/admin/disputes");
+  return apiFetch("/api/admin/disputes");
 }
 
 export async function resolveDispute(dealId: string, data: { resolution_type: string; resolution_note: string }): Promise<void> {
-  return apiFetch(`/admin/disputes/${dealId}/resolve`, {
+  return apiFetch(`/api/admin/disputes/${dealId}/resolve`, {
     method: "POST",
     body: JSON.stringify(data),
   });
 }
 
 export async function fetchAdminSettings(): Promise<Record<string, unknown>> {
-  return apiFetch("/admin/settings");
+  return apiFetch("/api/admin/settings");
 }
 
 export async function updateAdminSettings(settings: Record<string, unknown>): Promise<void> {
-  return apiFetch("/admin/settings", {
+  return apiFetch("/api/admin/settings", {
     method: "PUT",
     body: JSON.stringify(settings),
   });
