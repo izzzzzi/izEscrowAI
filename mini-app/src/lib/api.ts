@@ -225,7 +225,7 @@ export interface ActivityItem {
 }
 
 export function fetchActivity(): Promise<ActivityItem[]> {
-  return fetch(`${API_URL}/api/activity`).then((r) => r.json());
+  return fetch(`${API_URL}/api/activity`).then((r) => r.json()).then((data) => Array.isArray(data) ? data : data?.activity ?? []);
 }
 
 // --- GitHub ---
