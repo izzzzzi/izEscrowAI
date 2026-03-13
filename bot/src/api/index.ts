@@ -20,10 +20,17 @@ import {
   getJobsByPoster, createJobResponse, getJobResponses, hasUserResponded, countResponsesByJob,
   createDeal,
   createSpec, getSpecById,
+  updateJobPriceEstimate,
 } from "../db/index.js";
-import { calcTrustScore, calcTrustScoreBreakdown, assessDealRisk, extractSkills, calcSkillMatch, generateProposal, generateSpec as generateSpecAI } from "../ai/index.js";
+import { calcTrustScore, calcTrustScoreBreakdown, assessDealRisk, extractSkills, calcSkillMatch, generateProposal, generateSpec as generateSpecAI, estimatePrice } from "../ai/index.js";
 import { exchangeCode, fetchGithubProfile } from "../github/index.js";
 import { calcGithubScore, detectFlags } from "../github/score.js";
+
+function maskField(value: string | null): string | null {
+  if (value === null) return null;
+  if (value.length < 4) return "\u2588\u2588\u2588\u2588";
+  return value.slice(0, 4) + "\u2588\u2588\u2588\u2588";
+}
 
 export function createApiServer(port: number, bot?: Bot<Context>) {
   const app = express();
@@ -215,20 +222,23 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
         : undefined;
       const min_budget = req.query.min_budget ? Number(req.query.min_budget) : undefined;
       const max_budget = req.query.max_budget ? Number(req.query.max_budget) : undefined;
+      const currency = (req.query.currency as string) || undefined;
+      const sort = (req.query.sort as "newest" | "price_asc" | "price_desc") || "newest";
+      const has_budget = req.query.has_budget === "true";
       const statusParam = (req.query.status as string) || "new,verified";
       const status = statusParam.split(",").map(s => s.trim()).filter(Boolean);
       const page = Math.max(1, parseInt(req.query.page as string) || 1);
       const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string) || 20));
 
       // Build cache key from query params
-      const cacheKey = `jobs:${JSON.stringify({ skills, min_budget, max_budget, status, page, limit })}`;
+      const cacheKey = `jobs:${JSON.stringify({ skills, min_budget, max_budget, currency, sort, has_budget, status, page, limit })}`;
       const cachedEntry = jobsCache.get(cacheKey);
       if (cachedEntry && Date.now() - cachedEntry.ts < 60_000) {
         res.json(cachedEntry.data);
         return;
       }
 
-      const result = await getParsedJobs({ skills, min_budget, max_budget, status, page, limit });
+      const result = await getParsedJobs({ skills, min_budget, max_budget, currency, sort, has_budget, status, page, limit });
       const responseData = { data: result.data, total: result.total, page, limit };
       jobsCache.set(cacheKey, { data: responseData, ts: Date.now() });
       res.json(responseData);
@@ -300,6 +310,39 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
         const ghProfile = await getGithubProfile(userId);
         if (ghProfile?.languages) {
           responseData.skill_match = calcSkillMatch(ghProfile.languages, job.required_skills);
+        }
+      }
+
+      // Look up source info
+      const source = await getSourceById(job.source_id);
+      if (source) {
+        responseData.source_title = userId ? source.title : maskField(source.title);
+        responseData.source_username = userId ? source.username : maskField(source.username);
+      }
+
+      // Auth-aware field masking for contact/poster fields
+      if (!userId) {
+        responseData.contact_username = maskField(job.contact_username);
+        responseData.poster_username = maskField(job.poster_username);
+        responseData.contact_url = maskField(job.contact_url);
+      }
+
+      // AI price estimate (Task 1.4)
+      if (job.ai_price_estimate) {
+        responseData.price_estimate = job.ai_price_estimate;
+      } else {
+        try {
+          const estimate = await estimatePrice({
+            title: job.title,
+            category: (job.required_skills && job.required_skills.length > 0) ? job.required_skills[0] : "General",
+            requirements: [job.description],
+            budget_currency: job.currency,
+          });
+          await updateJobPriceEstimate(job.id, estimate);
+          responseData.price_estimate = estimate;
+        } catch (err: any) {
+          console.error("estimatePrice error for job", job.id, err.message);
+          // Don't break the response — just omit price_estimate
         }
       }
 

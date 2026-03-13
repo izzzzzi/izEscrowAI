@@ -1,6 +1,6 @@
 import pg from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
-import { eq, or, notInArray, inArray, sql, and, desc, count, gte, lte } from "drizzle-orm";
+import { eq, or, notInArray, inArray, sql, and, desc, asc, count, gte, lte, isNotNull } from "drizzle-orm";
 import { users, deals, reputation, specs, userProfiles, offers, applications, riskAssessments, groupStats, dealGroups, githubProfiles, sources, parsedJobs, platformSettings, jobResponses } from "./schema.js";
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -1012,6 +1012,16 @@ export async function getSourceByTelegramId(telegramId: number): Promise<Source 
 
 // --- Parsed Jobs ---
 
+export interface PriceEstimate {
+  min: number;
+  median: number;
+  max: number;
+  recommended: number;
+  currency: string;
+  reasoning: string;
+  factors: string[];
+}
+
 export interface ParsedJob {
   id: string;
   source_id: string;
@@ -1030,6 +1040,7 @@ export interface ParsedJob {
   poster_username: string | null;
   status: string;
   matched_count: number;
+  ai_price_estimate: PriceEstimate | null;
   created_at: string;
   expires_at: string | null;
 }
@@ -1038,6 +1049,7 @@ function toParsedJob(row: any): ParsedJob {
   return {
     ...row,
     required_skills: row.required_skills ?? null,
+    ai_price_estimate: row.ai_price_estimate ?? null,
     created_at: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
     expires_at: row.expires_at instanceof Date ? row.expires_at.toISOString() : row.expires_at,
     deadline: row.deadline instanceof Date ? row.deadline.toISOString() : row.deadline,
@@ -1097,6 +1109,9 @@ export async function getParsedJobs(opts: {
   status?: string[];
   page?: number;
   limit?: number;
+  currency?: string;
+  sort?: "newest" | "price_asc" | "price_desc";
+  has_budget?: boolean;
 } = {}): Promise<{ data: ParsedJob[]; total: number }> {
   const db = getDb();
   const page = opts.page ?? 1;
@@ -1117,15 +1132,28 @@ export async function getParsedJobs(opts: {
   if (opts.skills && opts.skills.length > 0) {
     conditions.push(sql`${parsedJobs.required_skills} ?| array[${sql.join(opts.skills.map(s => sql`${s}`), sql`, `)}]`);
   }
+  if (opts.currency) {
+    conditions.push(eq(parsedJobs.currency, opts.currency));
+  }
+  if (opts.has_budget) {
+    conditions.push(or(isNotNull(parsedJobs.budget_min), isNotNull(parsedJobs.budget_max))!);
+  }
 
   const where = and(...conditions);
 
   const [countResult] = await db.select({ total: sql<number>`count(*)` })
     .from(parsedJobs).where(where);
 
+  // Determine sort order
+  const orderBy = opts.sort === "price_asc"
+    ? asc(parsedJobs.budget_min)
+    : opts.sort === "price_desc"
+      ? desc(parsedJobs.budget_max)
+      : desc(parsedJobs.created_at);
+
   const rows = await db.select().from(parsedJobs)
     .where(where)
-    .orderBy(desc(parsedJobs.created_at))
+    .orderBy(orderBy)
     .limit(limit)
     .offset(offset);
 
@@ -1150,6 +1178,11 @@ export async function markJobsExpired() {
 export async function updateJobMatchedCount(id: string, count: number) {
   const db = getDb();
   await db.update(parsedJobs).set({ matched_count: count }).where(eq(parsedJobs.id, id));
+}
+
+export async function updateJobPriceEstimate(id: string, estimate: PriceEstimate) {
+  const db = getDb();
+  await db.update(parsedJobs).set({ ai_price_estimate: estimate }).where(eq(parsedJobs.id, id));
 }
 
 // --- Platform Settings ---

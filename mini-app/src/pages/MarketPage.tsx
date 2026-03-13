@@ -1,19 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchJobs, type ParsedJob, type JobFilters } from "../lib/api";
-import { useAuth } from "../contexts/AuthContext";
 import JobCard from "../components/JobCard";
 import JobFiltersPanel from "../components/JobFilters";
-import ProposalModal from "../components/ProposalModal";
 
 export default function MarketPage() {
-  const { isAuthenticated } = useAuth();
   const [jobs, setJobs] = useState<ParsedJob[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState<JobFilters>({});
-  const [selectedJob, setSelectedJob] = useState<ParsedJob | null>(null);
-  const [proposalOpen, setProposalOpen] = useState(false);
 
   const loadJobs = useCallback(async () => {
     setLoading(true);
@@ -63,7 +58,12 @@ export default function MarketPage() {
         <div className="flex flex-col md:flex-row gap-6">
           {/* Filters */}
           <div className="md:w-64 flex-shrink-0">
-            <JobFiltersPanel filters={filters} onChange={handleFilterChange} />
+            <JobFiltersPanel
+              filters={filters}
+              onChange={handleFilterChange}
+              totalJobs={total}
+              shownJobs={jobs.length}
+            />
           </div>
 
           {/* Job list */}
@@ -83,16 +83,7 @@ export default function MarketPage() {
             ) : (
               <>
                 {jobs.map((job) => (
-                  <JobCard
-                    key={job.id}
-                    job={job}
-                    onClick={() => {
-                      setSelectedJob(job);
-                      if (isAuthenticated) {
-                        setProposalOpen(true);
-                      }
-                    }}
-                  />
+                  <JobCard key={job.id} job={job} />
                 ))}
                 {jobs.length < total && (
                   <button
@@ -108,19 +99,6 @@ export default function MarketPage() {
           </div>
         </div>
       </div>
-
-      {/* Proposal Modal */}
-      {selectedJob && (
-        <ProposalModal
-          isOpen={proposalOpen}
-          onClose={() => {
-            setProposalOpen(false);
-            setSelectedJob(null);
-          }}
-          jobId={selectedJob.id}
-          jobTitle={selectedJob.title}
-        />
-      )}
     </div>
   );
 }

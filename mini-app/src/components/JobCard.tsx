@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { type ParsedJob } from "../lib/api";
 
 function timeAgo(date: string): string {
@@ -11,6 +12,7 @@ function timeAgo(date: string): string {
 }
 
 export default function JobCard({ job, onClick }: { job: ParsedJob; onClick?: () => void }) {
+  const navigate = useNavigate();
   const matchPercent = job.skill_match?.match_percent;
   const matchColor = matchPercent != null
     ? matchPercent >= 70 ? "bg-green-500/10 text-green-400 border-green-500/20"
@@ -20,7 +22,10 @@ export default function JobCard({ job, onClick }: { job: ParsedJob; onClick?: ()
 
   return (
     <div
-      onClick={onClick}
+      onClick={() => {
+        navigate(`/market/${job.id}`);
+        onClick?.();
+      }}
       className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-blue-500/30 transition-colors cursor-pointer"
     >
       <div className="flex items-start justify-between gap-2 mb-2">

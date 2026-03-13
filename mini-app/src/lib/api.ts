@@ -329,6 +329,16 @@ export function fetchPublicOffer(id: string): Promise<PublicOfferDetail> {
 
 // --- Jobs ---
 
+export interface PriceEstimate {
+  min: number;
+  median: number;
+  max: number;
+  recommended: number;
+  currency: string;
+  reasoning: string;
+  factors: string[];
+}
+
 export interface ParsedJob {
   id: string;
   source_id: string;
@@ -340,8 +350,11 @@ export interface ParsedJob {
   required_skills: string[] | null;
   deadline: string | null;
   contact_username: string | null;
+  contact_url: string | null;
+  poster_username: string | null;
   status: string;
   matched_count: number;
+  ai_price_estimate: PriceEstimate | null;
   created_at: string;
   expires_at: string | null;
   skill_match?: { match_percent: number; matched: string[]; missing: string[] };
@@ -351,6 +364,9 @@ export interface JobFilters {
   skills?: string[];
   min_budget?: number;
   max_budget?: number;
+  currency?: string;
+  sort?: string;
+  has_budget?: boolean;
   status?: string;
   page?: number;
   limit?: number;
@@ -361,6 +377,9 @@ export async function fetchJobs(filters: JobFilters = {}): Promise<{ data: Parse
   if (filters.skills?.length) params.set("skills", filters.skills.join(","));
   if (filters.min_budget) params.set("min_budget", String(filters.min_budget));
   if (filters.max_budget) params.set("max_budget", String(filters.max_budget));
+  if (filters.currency) params.set("currency", filters.currency);
+  if (filters.sort) params.set("sort", filters.sort);
+  if (filters.has_budget) params.set("has_budget", "true");
   if (filters.status) params.set("status", filters.status);
   if (filters.page) params.set("page", String(filters.page));
   if (filters.limit) params.set("limit", String(filters.limit));
@@ -371,7 +390,8 @@ export async function fetchJobs(filters: JobFilters = {}): Promise<{ data: Parse
 
 export async function fetchJob(id: string): Promise<ParsedJob> {
   const res = await fetch(`${API_URL}/api/jobs/${id}`, { headers: getAuthHeaders() });
-  if (!res.ok) throw new Error("Job not found");
+  if (res.status === 404) throw new Error("NOT_FOUND");
+  if (!res.ok) throw new Error("Failed to fetch job");
   return res.json();
 }
 

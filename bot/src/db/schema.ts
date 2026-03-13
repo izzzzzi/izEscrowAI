@@ -180,6 +180,15 @@ export const parsedJobs = pgTable("parsed_jobs", {
   poster_username: text("poster_username"),
   status: text("status").notNull().default("new"),
   matched_count: integer("matched_count").notNull().default(0),
+  ai_price_estimate: jsonb("ai_price_estimate").$type<{
+    min: number;
+    median: number;
+    max: number;
+    recommended: number;
+    currency: string;
+    reasoning: string;
+    factors: string[];
+  }>(),
   created_at: timestamp("created_at").notNull().defaultNow(),
   expires_at: timestamp("expires_at"),
 }, (table) => [
