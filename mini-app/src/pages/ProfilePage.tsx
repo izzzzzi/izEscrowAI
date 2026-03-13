@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchProfile, fetchUserProfile, fetchMyJobs, fetchGithubUnlink, type ProfileWithGithub, type MyJob, API_URL } from "../lib/api";
+import { useTonConnectUI, useTonWallet, useTonAddress } from "@tonconnect/ui-react";
+import { fetchProfile, fetchUserProfile, fetchMyJobs, fetchGithubUnlink, type ProfileWithGithub, type MyJob, API_URL, getInitData } from "../lib/api";
 import AppHeader from "../components/AppHeader";
 import GitHubCard from "../components/GitHubCard";
 import MyJobCard from "../components/MyJobCard";
@@ -14,6 +15,20 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
 
   const isOwnProfile = !userId;
+  const [tonConnectUI] = useTonConnectUI();
+  const wallet = useTonWallet();
+  const walletAddress = useTonAddress();
+
+  // Sync wallet address to backend
+  useEffect(() => {
+    if (walletAddress && isOwnProfile) {
+      fetch(`${API_URL}/api/wallet`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Init-Data": getInitData() },
+        body: JSON.stringify({ wallet_address: walletAddress }),
+      }).catch(() => {});
+    }
+  }, [walletAddress, isOwnProfile]);
 
   useEffect(() => {
     const load = userId ? fetchUserProfile(parseInt(userId)) : fetchProfile();
@@ -110,6 +125,45 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {/* Wallet Section */}
+            {isOwnProfile && (
+              <div className="glass-card rounded-2xl p-5 space-y-3">
+                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">TON Wallet</h3>
+                {wallet ? (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <iconify-icon icon="solar:wallet-2-linear" width="18" class="text-green-400" />
+                      <code className="text-xs font-mono text-slate-300">
+                        {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                      </code>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => navigator.clipboard.writeText(walletAddress)}
+                        className="text-xs text-slate-400 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
+                      >
+                        Copy
+                      </button>
+                      <button
+                        onClick={() => tonConnectUI.disconnect()}
+                        className="text-xs text-red-400 hover:text-red-300 transition-colors bg-transparent border-none cursor-pointer"
+                      >
+                        Disconnect
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => tonConnectUI.openModal()}
+                    className="w-full py-3 rounded-xl text-sm font-medium bg-[#0098EA]/10 text-[#0098EA] border border-[#0098EA]/20 cursor-pointer hover:bg-[#0098EA]/20 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <iconify-icon icon="solar:wallet-2-linear" width="18" />
+                    Connect Wallet
+                  </button>
+                )}
               </div>
             )}
 
