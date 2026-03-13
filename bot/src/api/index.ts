@@ -416,6 +416,38 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
       // Add TON-converted budget
       await enrichJobWithTon(responseData);
 
+      // Related jobs — find by overlapping skills
+      try {
+        if (job.required_skills && job.required_skills.length > 0) {
+          const { getDb } = await import("../db/index.js");
+          const { sql: sqlTag } = await import("drizzle-orm");
+          const db = getDb();
+          const skillsArr = job.required_skills;
+          const related = await db.execute(sqlTag`
+            SELECT id, title, budget_min, budget_max, currency, required_skills, created_at
+            FROM parsed_jobs
+            WHERE id != ${job.id}
+              AND status IN ('new', 'verified')
+              AND required_skills ?| array[${sqlTag.join(skillsArr.map((s: string) => sqlTag`${s}`), sqlTag`, `)}]
+            ORDER BY (
+              SELECT count(*) FROM jsonb_array_elements_text(required_skills) s
+              WHERE s.value = ANY(array[${sqlTag.join(skillsArr.map((s: string) => sqlTag`${s}`), sqlTag`, `)}])
+            ) DESC, created_at DESC
+            LIMIT 3
+          `);
+          const relatedJobs = related.rows.map((r: any) => ({
+            ...r,
+            created_at: r.created_at instanceof Date ? r.created_at.toISOString() : r.created_at,
+          }));
+          // Enrich with TON prices
+          await Promise.all(relatedJobs.map((j: any) => enrichJobWithTon(j)));
+          responseData.related = relatedJobs;
+        }
+      } catch (e: any) {
+        // Non-critical — just skip related
+        console.error("Related jobs error:", e.message);
+      }
+
       res.json(responseData);
     } catch (e: any) {
       console.error("GET /api/jobs/:id error:", e.message);

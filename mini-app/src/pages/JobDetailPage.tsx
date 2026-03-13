@@ -418,6 +418,45 @@ export default function JobDetailPage() {
             </a>
           </div>
         )}
+        {/* Similar Jobs */}
+        {(job as any).related && (job as any).related.length > 0 && (
+          <div className="space-y-3">
+            <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Similar Jobs</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {(job as any).related.map((r: any) => (
+                <button
+                  key={r.id}
+                  onClick={() => navigate(`/market/${r.id}`)}
+                  className="bg-white/5 border border-white/10 rounded-xl p-4 text-left cursor-pointer hover:border-blue-500/30 transition-colors"
+                >
+                  <h3 className="text-sm font-medium text-white truncate mb-1">{r.title}</h3>
+                  {r.required_skills && (
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      {r.required_skills.slice(0, 3).map((s: string) => (
+                        <span key={s} className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 text-[10px]">{s}</span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="text-xs text-slate-400">
+                    {r.budget_min_ton || r.budget_max_ton ? (
+                      <span>
+                        {r.budget_min_ton ? `from ${r.budget_min_ton}` : ""}
+                        {r.budget_max_ton ? ` to ${r.budget_max_ton}` : ""} TON
+                      </span>
+                    ) : r.budget_min || r.budget_max ? (
+                      <span>
+                        {r.budget_min ? `from ${r.budget_min.toLocaleString()}` : ""}
+                        {r.budget_max ? ` to ${r.budget_max.toLocaleString()}` : ""} {r.currency}
+                      </span>
+                    ) : (
+                      <span className="text-slate-600">No budget</span>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Proposal Modal */}
