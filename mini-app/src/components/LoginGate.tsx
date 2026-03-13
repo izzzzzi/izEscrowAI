@@ -2,8 +2,8 @@ import { type ReactNode } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import TelegramLogin from "./TelegramLogin";
 
-interface LoginGateProps {
-  children: ReactNode;
+export interface LoginGateProps {
+  children?: ReactNode;
   fallbackText?: string;
 }
 

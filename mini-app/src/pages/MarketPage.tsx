@@ -63,7 +63,7 @@ export default function MarketPage() {
         <div className="flex flex-col md:flex-row gap-6">
           {/* Filters */}
           <div className="md:w-64 flex-shrink-0">
-            <JobFiltersPanel onChange={handleFilterChange} />
+            <JobFiltersPanel filters={filters} onChange={handleFilterChange} />
           </div>
 
           {/* Job list */}

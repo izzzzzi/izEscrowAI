@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchProfile, fetchUserProfile, fetchMyJobs, fetchGithubUnlink, type Profile, type ProfileWithGithub, type MyJob, API_URL } from "../lib/api";
+import { fetchProfile, fetchUserProfile, fetchMyJobs, fetchGithubUnlink, type ProfileWithGithub, type MyJob, API_URL } from "../lib/api";
 import AppHeader from "../components/AppHeader";
 import GitHubCard from "../components/GitHubCard";
 import MyJobCard from "../components/MyJobCard";

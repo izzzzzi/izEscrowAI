@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchProfile, fetchUserProfile, fetchOffers, fetchMyJobs, fetchGithubUnlink, type Profile, type ProfileWithGithub, type Offer, type MyJob, API_URL } from "../lib/api";
+import { fetchProfile, fetchUserProfile, fetchOffers, fetchMyJobs, fetchGithubUnlink, type ProfileWithGithub, type Offer, type MyJob, API_URL } from "../lib/api";
 import { useAuth } from "../contexts/AuthContext";
 import LoginGate from "../components/LoginGate";
 import GitHubCard from "../components/GitHubCard";
@@ -9,7 +9,7 @@ import MyJobCard from "../components/MyJobCard";
 export default function WebProfilePage() {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
-  const { isAuthenticated, user, hasWallet, wallet } = useAuth();
+  const { isAuthenticated, user, hasWallet } = useAuth();
   const [profile, setProfile] = useState<ProfileWithGithub | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [myJobs, setMyJobs] = useState<MyJob[]>([]);

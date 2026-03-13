@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { fetchPublicOffers, type PublicOffer } from "../lib/api";
 import OfferCard from "../components/OfferCard";
 import LoginGate from "../components/LoginGate";
-import { useAuth } from "../contexts/AuthContext";
+
 
 export default function OffersPage() {
   const [offers, setOffers] = useState<PublicOffer[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+
 
   useEffect(() => {
     fetchPublicOffers()
