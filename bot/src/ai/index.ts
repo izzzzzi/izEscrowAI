@@ -1283,7 +1283,7 @@ export async function generateProposal(jobDescription: string, jobSkills: string
   const res = await provider.getClient().chat.completions.create({
     model: provider.getModel(),
     messages: [
-      { role: "system", content: "Generate a concise, professional freelance proposal (2-3 paragraphs, in Russian) for a job posting. Highlight the developer's relevant experience based on their GitHub profile. Be specific about matching skills. Keep it friendly and professional. Do not include greetings like 'Здравствуйте' at the start." },
+      { role: "system", content: "Write a short freelance proposal (3-5 sentences max) for a job posting. Respond in the same language as the job description. Focus only on: why you're a good fit (matching skills), estimated timeline, willingness to discuss details. Don't list repo names. Don't be wordy — busy clients skim proposals. No greetings." },
       { role: "user", content: `Job: ${jobDescription}\nRequired skills: ${jobSkills.join(", ")}\nDeveloper profile: ${profileSummary}` },
     ],
   });
