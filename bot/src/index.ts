@@ -4,7 +4,7 @@
 import "dotenv/config";
 import { createBot } from "./bot/index.js";
 import { createApiServer } from "./api/index.js";
-import { getDb, closeDb } from "./db/index.js";
+import { getDb, closeDb, runMigrations } from "./db/index.js";
 import { initAI } from "./ai/index.js";
 import { checkTimeouts, checkFundingStatus, getActiveDeals, requoteExpiredRates } from "./deals/index.js";
 import { markJobsExpired, getActiveChannelWebSources, getAllSources, createSource } from "./db/index.js";
@@ -23,6 +23,7 @@ if (!BOT_TOKEN) {
 // --- Initialize DB ---
 console.log("Initializing database...");
 getDb();
+await runMigrations();
 
 // --- Initialize AI config ---
 await initAI();

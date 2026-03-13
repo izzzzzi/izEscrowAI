@@ -27,6 +27,42 @@ export async function closeDb() {
   }
 }
 
+export async function runMigrations() {
+  const db = getDb();
+  // Add columns that may not exist in production yet
+  await db.execute(sql`ALTER TABLE parsed_jobs ADD COLUMN IF NOT EXISTS ai_price_estimate jsonb`);
+  await db.execute(sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS trust_score integer DEFAULT 10`);
+  await db.execute(sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS first_deal_at timestamptz`);
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS spec_id text`);
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS group_chat_id bigint`);
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS expires_at timestamptz`);
+  // Create tables if not exist
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS specs (
+      id text PRIMARY KEY,
+      deal_id text,
+      creator_id integer NOT NULL,
+      title text NOT NULL,
+      category text,
+      requirements jsonb,
+      budget_min real,
+      budget_max real,
+      budget_currency text DEFAULT 'USD',
+      status text NOT NULL DEFAULT 'draft',
+      created_at timestamptz NOT NULL DEFAULT now()
+    )
+  `);
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS user_profiles (
+      user_id integer PRIMARY KEY,
+      categories jsonb,
+      bio text,
+      portfolio_url text
+    )
+  `);
+  console.log("[db] Migrations complete");
+}
+
 export async function runSearchSetup() {
   const db = getDb();
   await db.execute(sql`
