@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import WalletPage from "./pages/WalletPage";
 import PaymentPage from "./pages/PaymentPage";
 import DealsPage from "./pages/DealsPage";
@@ -37,6 +37,8 @@ function App() {
 
 function WebApp() {
   const { authData, isAdmin } = useAuth();
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   // Sync auth data to API client
   useEffect(() => {
@@ -45,7 +47,7 @@ function WebApp() {
 
   return (
     <div className="overflow-x-hidden" style={{ background: "#0f0f1a", color: "#fff", fontFamily: "'Inter', sans-serif" }}>
-      <WebNavbar />
+      {!isAdminRoute && <WebNavbar />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/offers" element={<OffersPage />} />
