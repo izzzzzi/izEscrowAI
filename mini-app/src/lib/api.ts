@@ -357,6 +357,8 @@ export interface ParsedJob {
   status: string;
   matched_count: number;
   ai_price_estimate: PriceEstimate | null;
+  source_title?: string | null;
+  source_username?: string | null;
   created_at: string;
   expires_at: string | null;
   skill_match?: { match_percent: number; matched: string[]; missing: string[] };

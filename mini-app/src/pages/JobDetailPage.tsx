@@ -333,25 +333,25 @@ export default function JobDetailPage() {
             )}
 
             {/* Source channel */}
-            {(job as any).source_title && (
+            {job.source_title && (
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-slate-500 text-xs w-16">Channel</span>
-                {isMasked((job as any).source_title) ? (
+                {isMasked(job.source_title) ? (
                   <span className="flex items-center gap-1.5 text-slate-400">
                     <iconify-icon icon="solar:lock-keyhole-linear" width="14" class="text-slate-500" />
-                    {(job as any).source_title}
+                    {job.source_title}
                   </span>
-                ) : (job as any).source_username ? (
+                ) : job.source_username ? (
                   <a
-                    href={`https://t.me/${(job as any).source_username}`}
+                    href={`https://t.me/${job.source_username}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-400 hover:text-blue-300 transition-colors"
                   >
-                    {(job as any).source_title}
+                    {job.source_title}
                   </a>
                 ) : (
-                  <span className="text-slate-400">{(job as any).source_title}</span>
+                  <span className="text-slate-400">{job.source_title}</span>
                 )}
               </div>
             )}
