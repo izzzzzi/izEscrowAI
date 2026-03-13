@@ -1,6 +1,7 @@
 import express from "express";
 import crypto from "crypto";
 import type { Bot, Context } from "grammy";
+import { z } from "zod";
 import { verifyTelegramLoginWidget, type TelegramLoginData } from "./auth.js";
 import {
   getDealById, getDealsByUser, getActiveDeals, setUserWallet, getUserWallet, getOfferById, getOffersByUser,
@@ -32,14 +33,39 @@ function maskField(value: string | null): string | null {
   return value.slice(0, 4) + "\u2588\u2588\u2588\u2588";
 }
 
+function createRateLimit(maxReqs: number, windowMs: number) {
+  const hits = new Map<string, number[]>();
+  return (key: string): boolean => {
+    const now = Date.now();
+    const timestamps = hits.get(key)?.filter(t => now - t < windowMs) ?? [];
+    if (timestamps.length >= maxReqs) return false;
+    timestamps.push(now);
+    hits.set(key, timestamps);
+    return true;
+  };
+}
+
+const specGenLimit = createRateLimit(5, 60_000);
+const priceEstLimit = createRateLimit(30, 60_000);
+
+function validateBody<T>(schema: z.ZodSchema<T>, body: unknown, res: express.Response): T | null {
+  const result = schema.safeParse(body);
+  if (!result.success) {
+    res.status(400).json({ error: "Validation error", details: result.error.issues.map(i => i.message) });
+    return null;
+  }
+  return result.data;
+}
+
 export function createApiServer(port: number, bot?: Bot<Context>) {
   const app = express();
 
   // CORS
-  const miniAppUrl = process.env.MINI_APP_URL || "http://localhost:5173";
-  if (!process.env.MINI_APP_URL && process.env.NODE_ENV === "production") {
-    console.warn("WARNING: MINI_APP_URL is not set. CORS will default to localhost.");
+  if (process.env.NODE_ENV === "production" && !process.env.MINI_APP_URL) {
+    console.error("FATAL: MINI_APP_URL is required in production");
+    process.exit(1);
   }
+  const miniAppUrl = process.env.MINI_APP_URL || (process.env.NODE_ENV === "production" ? "" : "http://localhost:5173");
   app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", miniAppUrl);
     res.header("Access-Control-Allow-Headers", "Content-Type, X-Init-Data, X-Telegram-Auth");
@@ -59,7 +85,8 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
     const telegramAuth = req.headers["x-telegram-auth"] as string | undefined;
 
     // Skip validation only when explicitly opted in
-    if (!initData && !telegramAuth && process.env.DEV_SKIP_AUTH === "true") {
+    if (!initData && !telegramAuth && process.env.DEV_SKIP_AUTH === "true" && process.env.NODE_ENV !== "production") {
+      console.warn("[security] DEV_SKIP_AUTH active — auth bypassed for dev");
       (req as any).telegramUserId = 12345;
       next();
       return;
@@ -301,7 +328,7 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
             }
           }
         } catch { /* ignore auth errors on optional auth */ }
-      } else if (process.env.DEV_SKIP_AUTH === "true") {
+      } else if (process.env.DEV_SKIP_AUTH === "true" && process.env.NODE_ENV !== "production") {
         userId = 12345;
       }
 
@@ -331,18 +358,24 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
       if (job.ai_price_estimate) {
         responseData.price_estimate = job.ai_price_estimate;
       } else {
-        try {
-          const estimate = await estimatePrice({
-            title: job.title,
-            category: (job.required_skills && job.required_skills.length > 0) ? job.required_skills[0] : "General",
-            requirements: [job.description],
-            budget_currency: job.currency,
-          });
-          await updateJobPriceEstimate(job.id, estimate);
-          responseData.price_estimate = estimate;
-        } catch (err: any) {
-          console.error("estimatePrice error for job", job.id, err.message);
-          // Don't break the response — just omit price_estimate
+        const ip = req.ip || req.socket.remoteAddress || "unknown";
+        if (!priceEstLimit(ip)) {
+          // Skip AI estimation, return job without price estimate
+          responseData.price_estimate = null;
+        } else {
+          try {
+            const estimate = await estimatePrice({
+              title: job.title,
+              category: (job.required_skills && job.required_skills.length > 0) ? job.required_skills[0] : "General",
+              requirements: [job.description],
+              budget_currency: job.currency,
+            });
+            await updateJobPriceEstimate(job.id, estimate);
+            responseData.price_estimate = estimate;
+          } catch (err: any) {
+            console.error("estimatePrice error for job", job.id, err.message);
+            // Don't break the response — just omit price_estimate
+          }
         }
       }
 
@@ -670,20 +703,26 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
   });
 
   // POST /api/offers/:id/apply — submit application
+  const applySchema = z.object({
+    price: z.number().positive(),
+    message: z.string().max(1000).optional(),
+  });
+
   app.post("/api/offers/:id/apply", async (req, res) => {
     const userId = (req as any).telegramUserId as number;
     if (!userId) { res.status(401).json({ error: "User not identified" }); return; }
+
+    const body = validateBody(applySchema, req.body, res);
+    if (!body) return;
+
     const offer = await getOfferById(req.params.id);
     if (!offer) { res.status(404).json({ error: "Offer not found" }); return; }
     if (offer.status !== "open") { res.status(400).json({ error: "Offer is closed" }); return; }
     if (offer.creator_id === userId) { res.status(400).json({ error: "Cannot apply to own offer" }); return; }
 
-    const { price, message } = req.body;
-    if (!price || typeof price !== "number") { res.status(400).json({ error: "Price required" }); return; }
-
     const appId = `app_${Date.now()}_${userId}`;
     const application = await addApplication({
-      id: appId, offer_id: offer.id, user_id: userId, price, message: message ?? undefined,
+      id: appId, offer_id: offer.id, user_id: userId, price: body.price, message: body.message ?? undefined,
     });
     res.json(application);
   });
@@ -1026,27 +1065,36 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
   });
 
   // POST /api/specs — create a new spec
+  const createSpecSchema = z.object({
+    title: z.string().min(1).max(200),
+    category: z.string().max(50).optional(),
+    requirements: z.array(z.object({
+      description: z.string().min(1),
+      acceptance_criteria: z.array(z.string()).default([]),
+    })).optional(),
+    budget_min: z.number().min(0).optional(),
+    budget_max: z.number().min(0).optional(),
+    budget_currency: z.string().max(10).optional(),
+  });
+
   app.post("/api/specs", async (req, res) => {
     try {
       const userId = (req as any).telegramUserId as number;
       if (!userId) { res.status(401).json({ error: "User not identified" }); return; }
 
-      const { title, category, requirements, budget_min, budget_max, budget_currency } = req.body;
-      if (!title || typeof title !== "string") {
-        res.status(400).json({ error: "title is required" });
-        return;
-      }
+      const body = validateBody(createSpecSchema, req.body, res);
+      if (!body) return;
 
       const specId = `spec_${Date.now()}_${userId}`;
       const spec = await createSpec({
         id: specId,
         creator_id: userId,
-        title,
-        category: category || undefined,
-        requirements: requirements || undefined,
-        budget_min: budget_min !== undefined ? Number(budget_min) : undefined,
-        budget_max: budget_max !== undefined ? Number(budget_max) : undefined,
-        budget_currency: budget_currency || "USD",
+        title: body.title,
+        category: body.category || undefined,
+        requirements: body.requirements || undefined,
+        budget_min: body.budget_min !== undefined ? Number(body.budget_min) : undefined,
+        budget_max: body.budget_max !== undefined ? Number(body.budget_max) : undefined,
+        budget_currency: body.budget_currency || "USD",
       });
 
       res.json(spec);
@@ -1061,6 +1109,11 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
     try {
       const userId = (req as any).telegramUserId as number;
       if (!userId) { res.status(401).json({ error: "User not identified" }); return; }
+
+      if (!specGenLimit(String(userId))) {
+        res.status(429).json({ error: "Rate limit: max 5 spec generations per minute" });
+        return;
+      }
 
       const { description } = req.body;
       if (!description || typeof description !== "string") {
@@ -1256,17 +1309,21 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
     }
   });
 
+  const resolveDisputeSchema = z.object({
+    resolution_type: z.enum(["refund_buyer", "pay_seller", "split"]),
+    resolution_note: z.string().min(1).max(2000),
+    seller_percent: z.number().min(0).max(100).optional(),
+  });
+
   app.post("/api/admin/disputes/:dealId/resolve", adminOnly, async (req, res) => {
     try {
-      const { resolution_type, resolution_note } = req.body;
-      if (!resolution_type || !["refund_buyer", "pay_seller"].includes(resolution_type)) {
-        res.status(400).json({ error: "resolution_type must be refund_buyer or pay_seller" });
-        return;
-      }
+      const body = validateBody(resolveDisputeSchema, req.body, res);
+      if (!body) return;
+
       const adminId = (req as any).telegramUserId as number;
       await resolveDeal(req.params.dealId as string, {
-        resolution_type,
-        resolution_note: resolution_note || "",
+        resolution_type: body.resolution_type,
+        resolution_note: body.resolution_note,
         resolved_by: adminId,
       });
       res.json({ ok: true });
