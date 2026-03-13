@@ -45,11 +45,11 @@ export default function JobCard({ job, onClick }: { job: ParsedJob; onClick?: ()
         <div className="text-xs text-slate-400">
           {job.budget_min || job.budget_max ? (
             <span>
-              {job.budget_min ? `от ${job.budget_min.toLocaleString()}` : ""}
-              {job.budget_max ? ` до ${job.budget_max.toLocaleString()}` : ""} {job.currency}
+              {job.budget_min ? `from ${job.budget_min.toLocaleString()}` : ""}
+              {job.budget_max ? ` to ${job.budget_max.toLocaleString()}` : ""} {job.currency}
             </span>
           ) : (
-            <span>Бюджет не указан</span>
+            <span>No budget specified</span>
           )}
         </div>
         {matchColor && matchPercent != null && (

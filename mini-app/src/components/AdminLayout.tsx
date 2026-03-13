@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const navItems = [
-  { path: "/admin", label: "Дашборд", icon: "solar:chart-square-linear", exact: true },
-  { path: "/admin/sources", label: "Источники", icon: "solar:database-linear" },
-  { path: "/admin/jobs", label: "Вакансии", icon: "solar:suitcase-linear" },
-  { path: "/admin/users", label: "Пользователи", icon: "solar:users-group-rounded-linear" },
-  { path: "/admin/disputes", label: "Споры", icon: "solar:shield-warning-linear" },
-  { path: "/admin/settings", label: "Настройки", icon: "solar:settings-linear" },
+  { path: "/admin", label: "Dashboard", icon: "solar:chart-square-linear", exact: true },
+  { path: "/admin/sources", label: "Sources", icon: "solar:database-linear" },
+  { path: "/admin/jobs", label: "Jobs", icon: "solar:suitcase-linear" },
+  { path: "/admin/users", label: "Users", icon: "solar:users-group-rounded-linear" },
+  { path: "/admin/disputes", label: "Disputes", icon: "solar:shield-warning-linear" },
+  { path: "/admin/settings", label: "Settings", icon: "solar:settings-linear" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -79,7 +79,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className="flex items-center gap-2 text-xs text-slate-500 hover:text-slate-300 transition-colors no-underline"
           >
             <iconify-icon icon="solar:arrow-left-linear" width="14" />
-            <span>Вернуться на сайт</span>
+            <span>Back to site</span>
           </Link>
         </div>
       </aside>
@@ -94,7 +94,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           >
             <iconify-icon icon="solar:hamburger-menu-linear" width="22" height="22" />
           </button>
-          <span className="text-sm font-semibold">Админ-панель</span>
+          <span className="text-sm font-semibold">Admin Panel</span>
         </header>
 
         {/* Page content */}

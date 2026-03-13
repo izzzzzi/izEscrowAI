@@ -124,7 +124,7 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
           <div className="space-y-2 pt-2 border-t border-white/5">
             {hasResponded && (
               <div className="text-center text-xs text-green-400 font-medium py-1">
-                Вы уже откликнулись
+                Already responded
               </div>
             )}
             <div className="flex items-center justify-end gap-2">
@@ -140,7 +140,7 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
                 onClick={handleCopy}
                 className="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 border border-white/10 hover:bg-white/5 transition-colors"
               >
-                {copied ? "Copied!" : "Копировать"}
+                {copied ? "Copied!" : "Copy"}
               </button>
               <button
                 type="button"
@@ -158,7 +158,7 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
                 }}
                 className="px-4 py-2 rounded-lg text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {responding ? "..." : "Откликнуться"}
+                {responding ? "..." : "Respond"}
               </button>
             </div>
           </div>

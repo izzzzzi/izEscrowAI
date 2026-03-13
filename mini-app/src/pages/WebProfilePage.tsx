@@ -204,7 +204,7 @@ export default function WebProfilePage() {
         {/* My Jobs from Groups */}
         {isOwnProfile && myJobs.length > 0 && (
           <div className="glass-card rounded-2xl p-6 mb-6">
-            <h3 className="text-lg font-medium mb-4">Мои заказы из групп</h3>
+            <h3 className="text-lg font-medium mb-4">My Jobs from Groups</h3>
             <div className="space-y-3">
               {myJobs.map((job) => (
                 <MyJobCard

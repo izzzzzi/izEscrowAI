@@ -14,7 +14,7 @@ export default function ConfirmDialog({
   onConfirm,
   title,
   message,
-  confirmText = "Подтвердить",
+  confirmText = "Confirm",
   variant = "normal",
 }: ConfirmDialogProps) {
   if (!isOpen) return null;
@@ -58,7 +58,7 @@ export default function ConfirmDialog({
             onClick={onClose}
             className="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
           >
-            Отмена
+            Cancel
           </button>
           <button
             type="button"

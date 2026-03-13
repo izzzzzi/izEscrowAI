@@ -17,27 +17,27 @@ interface SettingsField {
 
 const GROUPS: SettingsGroup[] = [
   {
-    title: "Финансы",
+    title: "Finance",
     icon: "solar:wallet-money-linear",
     fields: [
-      { key: "commission_rate", label: "Комиссия (%)", type: "number", description: "Процент комиссии с каждой сделки" },
-      { key: "max_deal_amount", label: "Макс. сумма сделки", type: "number", description: "Максимальная сумма одной сделки" },
-      { key: "min_deal_amount", label: "Мин. сумма сделки", type: "number", description: "Минимальная сумма одной сделки" },
+      { key: "commission_rate", label: "Commission (%)", type: "number", description: "Commission rate per deal" },
+      { key: "max_deal_amount", label: "Max Deal Amount", type: "number", description: "Maximum amount for a single deal" },
+      { key: "min_deal_amount", label: "Min Deal Amount", type: "number", description: "Minimum amount for a single deal" },
     ],
   },
   {
-    title: "Лимиты",
+    title: "Limits",
     icon: "solar:tuning-square-2-linear",
     fields: [
-      { key: "notification_limits", label: "Лимиты уведомлений", type: "json", description: "JSON конфигурация лимитов уведомлений" },
+      { key: "notification_limits", label: "Notification Limits", type: "json", description: "JSON notification limits config" },
     ],
   },
   {
-    title: "Функции",
+    title: "Features",
     icon: "solar:settings-linear",
     fields: [
-      { key: "feature_flags", label: "Флаги функций", type: "json", description: "JSON объект с флагами функций" },
-      { key: "maintenance_mode", label: "Режим обслуживания", type: "boolean", description: "Временно отключить доступ к платформе" },
+      { key: "feature_flags", label: "Feature Flags", type: "json", description: "JSON feature flags object" },
+      { key: "maintenance_mode", label: "Maintenance Mode", type: "boolean", description: "Temporarily disable platform access" },
     ],
   },
 ];
@@ -141,13 +141,13 @@ export default function AdminSettings() {
     <AdminLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold tracking-tight">Настройки</h1>
+          <h1 className="text-xl font-semibold tracking-tight">Settings</h1>
           <button
             onClick={handleSave}
             disabled={saving || loading}
             className="flex items-center gap-2 px-5 py-2 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30 text-sm font-medium hover:bg-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
-            {saving ? "Сохранение..." : "Сохранить"}
+            {saving ? "Saving..." : "Save"}
           </button>
         </div>
 
@@ -159,13 +159,13 @@ export default function AdminSettings() {
 
         {success && (
           <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4 text-sm text-green-400">
-            Настройки сохранены успешно
+            Settings saved successfully
           </div>
         )}
 
         {loading ? (
           <div className="flex items-center justify-center py-20 text-slate-500 text-sm">
-            Загрузка...
+            Loading...
           </div>
         ) : (
           <div className="space-y-8">

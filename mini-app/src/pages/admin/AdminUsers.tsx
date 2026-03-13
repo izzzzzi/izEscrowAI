@@ -79,7 +79,7 @@ export default function AdminUsers() {
     },
     {
       key: "banned_at",
-      label: "Статус",
+      label: "Status",
       render: (row) =>
         row.banned_at ? (
           <StatusBadge status="banned" />
@@ -89,9 +89,9 @@ export default function AdminUsers() {
     },
     {
       key: "created_at",
-      label: "Регистрация",
+      label: "Registered",
       sortable: true,
-      render: (row) => new Date(row.created_at).toLocaleDateString("ru-RU"),
+      render: (row) => new Date(row.created_at).toLocaleDateString("en-US"),
     },
   ];
 
@@ -99,7 +99,7 @@ export default function AdminUsers() {
     <AdminLayout>
       <div className="space-y-6">
         <h1 className="text-xl font-semibold tracking-tight">
-          Пользователи
+          Users
         </h1>
 
         {error && (
@@ -110,7 +110,7 @@ export default function AdminUsers() {
 
         {loading && users.length === 0 ? (
           <div className="flex items-center justify-center py-20 text-slate-500 text-sm">
-            Загрузка...
+            Loading...
           </div>
         ) : (
           <DataTable<AdminUser>
@@ -122,7 +122,7 @@ export default function AdminUsers() {
             onPageChange={setPage}
             searchValue={search}
             onSearchChange={setSearch}
-            searchPlaceholder="Поиск по username или Telegram ID..."
+            searchPlaceholder="Search by username or Telegram ID..."
             actions={(row) => (
               <button
                 onClick={() => setBanTarget(row)}
@@ -132,7 +132,7 @@ export default function AdminUsers() {
                     : "bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20"
                 }`}
               >
-                {row.banned_at ? "Разбанить" : "Забанить"}
+                {row.banned_at ? "Unban" : "Ban"}
               </button>
             )}
           />
@@ -143,13 +143,13 @@ export default function AdminUsers() {
         isOpen={!!banTarget}
         onClose={() => setBanTarget(null)}
         onConfirm={handleBanToggle}
-        title={banTarget?.banned_at ? "Разбанить пользователя" : "Забанить пользователя"}
+        title={banTarget?.banned_at ? "Unban User" : "Ban User"}
         message={
           banTarget?.banned_at
-            ? `Вы уверены, что хотите разбанить пользователя ${banTarget?.username ? `@${banTarget.username}` : banTarget?.telegram_id}?`
-            : `Вы уверены, что хотите забанить пользователя ${banTarget?.username ? `@${banTarget.username}` : banTarget?.telegram_id}? Пользователь не сможет пользоваться сервисом.`
+            ? `Are you sure you want to unban ${banTarget?.username ? `@${banTarget.username}` : banTarget?.telegram_id}?`
+            : `Are you sure you want to ban ${banTarget?.username ? `@${banTarget.username}` : banTarget?.telegram_id}? They will lose access to the platform.`
         }
-        confirmText={banTarget?.banned_at ? "Разбанить" : "Забанить"}
+        confirmText={banTarget?.banned_at ? "Unban" : "Ban"}
         variant={banTarget?.banned_at ? "normal" : "danger"}
       />
     </AdminLayout>

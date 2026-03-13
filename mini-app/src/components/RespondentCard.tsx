@@ -81,7 +81,7 @@ export default function RespondentCard({ response, onCreateDeal }: RespondentCar
         onClick={onCreateDeal}
         className="w-full py-2 rounded-lg text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 transition-colors cursor-pointer"
       >
-        Создать сделку
+        Create Deal
       </button>
     </div>
   );

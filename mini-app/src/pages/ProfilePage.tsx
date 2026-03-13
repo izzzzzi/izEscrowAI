@@ -161,7 +161,7 @@ export default function ProfilePage() {
             {/* My Jobs from Groups */}
             {isOwnProfile && myJobs.length > 0 && (
               <div className="glass-card rounded-2xl p-5 space-y-3">
-                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">Мои заказы из групп</h3>
+                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">My Jobs from Groups</h3>
                 <div className="space-y-3">
                   {myJobs.map((job) => (
                     <MyJobCard

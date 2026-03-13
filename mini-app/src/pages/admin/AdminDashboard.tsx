@@ -20,19 +20,19 @@ const metricCards: {
   icon: string;
   format?: "currency";
 }[] = [
-  { key: "total_users", label: "Всего пользователей", icon: "solar:users-group-rounded-linear" },
-  { key: "active_users_7d", label: "Активные (7 дней)", icon: "solar:user-check-linear" },
-  { key: "total_deals", label: "Всего сделок", icon: "solar:document-text-linear" },
-  { key: "active_deals", label: "Активные сделки", icon: "solar:clipboard-check-linear" },
-  { key: "total_volume", label: "Общий объём", icon: "solar:wallet-money-linear", format: "currency" },
-  { key: "active_disputes", label: "Активные споры", icon: "solar:shield-warning-linear" },
-  { key: "total_sources", label: "Всего источников", icon: "solar:database-linear" },
-  { key: "active_sources", label: "Активные источники", icon: "solar:server-linear" },
-  { key: "github_verified_count", label: "GitHub верифицированных", icon: "mdi:github" },
+  { key: "total_users", label: "Total Users", icon: "solar:users-group-rounded-linear" },
+  { key: "active_users_7d", label: "Active (7 days)", icon: "solar:user-check-linear" },
+  { key: "total_deals", label: "Total Deals", icon: "solar:document-text-linear" },
+  { key: "active_deals", label: "Active Deals", icon: "solar:clipboard-check-linear" },
+  { key: "total_volume", label: "Total Volume", icon: "solar:wallet-money-linear", format: "currency" },
+  { key: "active_disputes", label: "Active Disputes", icon: "solar:shield-warning-linear" },
+  { key: "total_sources", label: "Total Sources", icon: "solar:database-linear" },
+  { key: "active_sources", label: "Active Sources", icon: "solar:server-linear" },
+  { key: "github_verified_count", label: "GitHub Verified", icon: "mdi:github" },
 ];
 
 function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("ru-RU", {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 0,
@@ -41,7 +41,7 @@ function formatCurrency(value: number): string {
 }
 
 function formatNumber(value: number): string {
-  return new Intl.NumberFormat("ru-RU").format(value);
+  return new Intl.NumberFormat("en-US").format(value);
 }
 
 export default function AdminDashboard() {
@@ -60,7 +60,7 @@ export default function AdminDashboard() {
     <AdminLayout>
       <div className="space-y-6">
         <h1 className="text-xl font-semibold tracking-tight">
-          Панель управления
+          Dashboard
         </h1>
 
         {loading && (

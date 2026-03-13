@@ -53,9 +53,9 @@ export default function MarketPage() {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold">Маркетплейс заказов</h1>
+            <h1 className="text-2xl font-bold">Job Marketplace</h1>
             <p className="text-sm text-slate-400 mt-1">
-              {total > 0 ? `${total} активных заказов` : "Заказы из Telegram-групп"}
+              {total > 0 ? `${total} active jobs` : "Jobs from Telegram groups"}
             </p>
           </div>
         </div>
@@ -77,8 +77,8 @@ export default function MarketPage() {
             ) : jobs.length === 0 ? (
               <div className="text-center py-20">
                 <iconify-icon icon="solar:document-linear" width="48" class="text-slate-600 mb-4" />
-                <p className="text-slate-400">Заказов пока нет</p>
-                <p className="text-xs text-slate-500 mt-1">Они появятся когда бот начнёт парсить группы</p>
+                <p className="text-slate-400">No jobs yet</p>
+                <p className="text-xs text-slate-500 mt-1">They will appear once the bot starts parsing groups</p>
               </div>
             ) : (
               <>
@@ -100,7 +100,7 @@ export default function MarketPage() {
                     disabled={loading}
                     className="w-full py-3 text-sm text-slate-400 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
                   >
-                    {loading ? "Загрузка..." : "Показать ещё"}
+                    {loading ? "Loading..." : "Show more"}
                   </button>
                 )}
               </>

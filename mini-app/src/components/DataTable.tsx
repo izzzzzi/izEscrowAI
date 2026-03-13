@@ -29,7 +29,7 @@ export default function DataTable<T extends Record<string, any>>({
   onPageChange,
   searchValue,
   onSearchChange,
-  searchPlaceholder = "Поиск...",
+  searchPlaceholder = "Search...",
   actions,
 }: DataTableProps<T>) {
   const [sortKey, setSortKey] = useState<string | null>(null);
@@ -114,7 +114,7 @@ export default function DataTable<T extends Record<string, any>>({
               ))}
               {actions && (
                 <th className="px-4 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Действия
+                  Actions
                 </th>
               )}
             </tr>
@@ -126,7 +126,7 @@ export default function DataTable<T extends Record<string, any>>({
                   colSpan={columns.length + (actions ? 1 : 0)}
                   className="px-4 py-12 text-center text-slate-500 text-sm"
                 >
-                  Нет данных
+                  No data
                 </td>
               </tr>
             ) : (
@@ -156,8 +156,8 @@ export default function DataTable<T extends Record<string, any>>({
       <div className="flex items-center justify-between text-xs text-slate-500">
         <span>
           {total > 0
-            ? `${from}–${to} из ${total}`
-            : "Нет записей"}
+            ? `${from}–${to} of ${total}`
+            : "No records"}
         </span>
         <div className="flex items-center gap-1">
           <button

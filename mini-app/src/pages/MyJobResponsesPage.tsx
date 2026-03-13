@@ -41,7 +41,7 @@ export default function MyJobResponsesPage() {
     try {
       await createDealFromJob(id, selectedRespondent.executor.user_id, amount, currency);
       setDealModalOpen(false);
-      setSuccessMsg("Сделка успешно создана!");
+      setSuccessMsg("Deal created successfully!");
       setTimeout(() => setSuccessMsg(null), 3000);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to create deal");
@@ -88,7 +88,7 @@ export default function MyJobResponsesPage() {
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
-          Назад
+          Back
         </button>
 
         {/* Job details */}
@@ -99,8 +99,8 @@ export default function MyJobResponsesPage() {
           <div className="flex flex-wrap items-center gap-3">
             {(job.budget_min || job.budget_max) && (
               <span className="text-xs text-slate-400">
-                {job.budget_min ? `от ${job.budget_min.toLocaleString()}` : ""}
-                {job.budget_max ? ` до ${job.budget_max.toLocaleString()}` : ""} {job.currency}
+                {job.budget_min ? `from ${job.budget_min.toLocaleString()}` : ""}
+                {job.budget_max ? ` to ${job.budget_max.toLocaleString()}` : ""} {job.currency}
               </span>
             )}
           </div>
@@ -126,12 +126,12 @@ export default function MyJobResponsesPage() {
         {/* Responses */}
         <div>
           <h2 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-3">
-            Отклики ({responses.length})
+            Responses ({responses.length})
           </h2>
 
           {responses.length === 0 ? (
             <div className="glass-card rounded-2xl p-8 text-center">
-              <p className="text-sm text-slate-500">Пока нет откликов</p>
+              <p className="text-sm text-slate-500">No responses yet</p>
             </div>
           ) : (
             <div className="space-y-3">

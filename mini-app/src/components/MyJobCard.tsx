@@ -38,15 +38,15 @@ export default function MyJobCard({ job, onClick }: { job: MyJob; onClick: () =>
         <div className="text-xs text-slate-400">
           {job.budget_min || job.budget_max ? (
             <span>
-              {job.budget_min ? `от ${job.budget_min.toLocaleString()}` : ""}
-              {job.budget_max ? ` до ${job.budget_max.toLocaleString()}` : ""} {job.currency}
+              {job.budget_min ? `from ${job.budget_min.toLocaleString()}` : ""}
+              {job.budget_max ? ` to ${job.budget_max.toLocaleString()}` : ""} {job.currency}
             </span>
           ) : (
-            <span>Бюджет не указан</span>
+            <span>No budget specified</span>
           )}
         </div>
         <span className="text-[10px] font-medium px-2 py-0.5 rounded-full border bg-purple-500/10 text-purple-400 border-purple-500/20">
-          {job.response_count} {job.response_count === 1 ? "отклик" : "откликов"}
+          {job.response_count} {job.response_count === 1 ? "response" : "responses"}
         </span>
       </div>
     </div>

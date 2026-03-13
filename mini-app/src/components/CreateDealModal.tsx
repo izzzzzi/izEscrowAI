@@ -36,7 +36,7 @@ export default function CreateDealModal({
       <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#0f0f1a] shadow-2xl p-5 flex flex-col gap-4">
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
-          <h2 className="text-sm font-semibold text-white">Создать эскроу-сделку</h2>
+          <h2 className="text-sm font-semibold text-white">Create Escrow Deal</h2>
           <button
             type="button"
             onClick={onClose}
@@ -50,7 +50,7 @@ export default function CreateDealModal({
 
         {/* Amount input */}
         <div>
-          <label className="block text-xs text-slate-400 mb-1.5">Сумма</label>
+          <label className="block text-xs text-slate-400 mb-1.5">Amount</label>
           <input
             type="number"
             value={amount}
@@ -62,7 +62,7 @@ export default function CreateDealModal({
 
         {/* Currency selector */}
         <div>
-          <label className="block text-xs text-slate-400 mb-1.5">Валюта</label>
+          <label className="block text-xs text-slate-400 mb-1.5">Currency</label>
           <div className="flex gap-2">
             {["TON", "USDT"].map((c) => (
               <button
@@ -88,7 +88,7 @@ export default function CreateDealModal({
             onClick={onClose}
             className="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition-colors"
           >
-            Отмена
+            Cancel
           </button>
           <button
             type="button"
@@ -100,7 +100,7 @@ export default function CreateDealModal({
             disabled={!amount || parseFloat(amount) <= 0}
             className="px-4 py-2 rounded-lg text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Подтвердить
+            Confirm
           </button>
         </div>
       </div>
