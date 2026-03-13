@@ -974,15 +974,30 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
 
   app.post("/api/admin/sources", adminOnly, async (req, res) => {
     try {
-      const { telegram_id, title, username } = req.body;
-      if (!telegram_id || !title) {
-        res.status(400).json({ error: "telegram_id and title required" });
+      const { telegram_id, title, username, type } = req.body;
+      const sourceType = type === "channel_web" ? "channel_web" : "group";
+
+      if (!title) {
+        res.status(400).json({ error: "title is required" });
         return;
       }
+      if (sourceType === "channel_web") {
+        if (!username) {
+          res.status(400).json({ error: "username is required for channel_web sources" });
+          return;
+        }
+      } else {
+        if (!telegram_id) {
+          res.status(400).json({ error: "telegram_id is required for group sources" });
+          return;
+        }
+      }
+
       const id = `src_${Date.now()}`;
       const source = await createSource({
         id,
-        telegram_id: Number(telegram_id),
+        type: sourceType,
+        telegram_id: telegram_id ? Number(telegram_id) : undefined,
         title,
         username: username || undefined,
         added_by: (req as any).telegramUserId,

@@ -127,7 +127,7 @@ export const githubProfiles = pgTable("github_profiles", {
 export const sources = pgTable("sources", {
   id: text("id").primaryKey(),
   type: text("type").notNull().default("group"),
-  telegram_id: bigint("telegram_id", { mode: "number" }).notNull().unique(),
+  telegram_id: bigint("telegram_id", { mode: "number" }).unique(),
   title: text("title").notNull(),
   username: text("username"),
   status: text("status").notNull().default("active"),

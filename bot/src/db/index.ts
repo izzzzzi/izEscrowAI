@@ -942,7 +942,7 @@ function toSource(row: any): Source {
 export async function createSource(data: {
   id: string;
   type?: string;
-  telegram_id: number;
+  telegram_id?: number;
   title: string;
   username?: string;
   added_by?: number;
@@ -952,7 +952,7 @@ export async function createSource(data: {
   await db.insert(sources).values({
     id: data.id,
     type: data.type ?? "group",
-    telegram_id: data.telegram_id,
+    telegram_id: data.telegram_id ?? null,
     title: data.title,
     username: data.username ?? null,
     added_by: data.added_by ?? null,
@@ -983,7 +983,15 @@ export async function getActiveSourceIds(): Promise<Set<number>> {
   const rows = await db.select({ telegram_id: sources.telegram_id })
     .from(sources)
     .where(eq(sources.status, "active"));
-  return new Set(rows.map(r => r.telegram_id));
+  return new Set(rows.map(r => r.telegram_id).filter((id): id is number => id !== null));
+}
+
+export async function getActiveChannelWebSources(): Promise<Array<{ id: string; username: string }>> {
+  const db = getDb();
+  const rows = await db.select({ id: sources.id, username: sources.username })
+    .from(sources)
+    .where(and(eq(sources.type, "channel_web"), eq(sources.status, "active")));
+  return rows.filter((r): r is { id: string; username: string } => !!r.username);
 }
 
 export async function getSourceByTelegramId(telegramId: number): Promise<Source | null> {

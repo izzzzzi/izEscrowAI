@@ -7,7 +7,9 @@ import { createApiServer } from "./api/index.js";
 import { getDb, closeDb } from "./db/index.js";
 import { initAI } from "./ai/index.js";
 import { checkTimeouts, checkFundingStatus, getActiveDeals, requoteExpiredRates } from "./deals/index.js";
-import { markJobsExpired } from "./db/index.js";
+import { markJobsExpired, getActiveChannelWebSources, getAllSources, createSource } from "./db/index.js";
+import { runScrapeCycle } from "./parser/scraper.js";
+import { processMessageText } from "./parser/index.js";
 import { getTonClient, getArbiterAddress } from "./blockchain/index.js";
 import { fromNano } from "@ton/ton";
 
@@ -35,6 +37,33 @@ createApiServer(PORT, bot);
 bot.start({
   onStart: () => console.log("Bot started!"),
 });
+
+// --- Seed initial channel_web sources ---
+const SEED_CHANNELS = [
+  { username: "tonhunt", title: "TON Jobs" },
+  { username: "designhunters", title: "Design Hunters" },
+  { username: "job_for_designers", title: "Job for Designers" },
+  { username: "freelance_design_job", title: "Freelance Design Job" },
+  { username: "love_it_hate", title: "Айтишка (IT/AI)" },
+];
+
+try {
+  const existing = await getAllSources();
+  const existingUsernames = new Set(existing.map(s => s.username?.toLowerCase()));
+  for (const ch of SEED_CHANNELS) {
+    if (!existingUsernames.has(ch.username.toLowerCase())) {
+      await createSource({
+        id: `src_seed_${ch.username}`,
+        type: "channel_web",
+        title: ch.title,
+        username: ch.username,
+      });
+      console.log(`[seed] Added channel_web source: @${ch.username}`);
+    }
+  }
+} catch (e) {
+  console.error("Seed sources error:", e);
+}
 
 // --- Periodic jobs ---
 
@@ -116,6 +145,20 @@ setInterval(async () => {
     }
   } catch (e) {
     console.error("Rate re-quote error:", e);
+  }
+}, 5 * 60 * 1000);
+
+// Scrape public Telegram channels every 5 minutes (+ run immediately on start)
+setTimeout(() => {
+  runScrapeCycle(getActiveChannelWebSources, processMessageText).catch(e =>
+    console.error("Channel scrape error:", e),
+  );
+}, 10_000); // 10s delay to let DB settle
+setInterval(async () => {
+  try {
+    await runScrapeCycle(getActiveChannelWebSources, processMessageText);
+  } catch (e) {
+    console.error("Channel scrape error:", e);
   }
 }, 5 * 60 * 1000);
 

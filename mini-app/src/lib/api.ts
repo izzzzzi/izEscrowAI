@@ -402,7 +402,7 @@ export async function fetchAdminDashboard(): Promise<{
 }
 
 export interface AdminSource {
-  id: string; type: string; telegram_id: number; title: string;
+  id: string; type: string; telegram_id: number | null; title: string;
   username: string | null; status: string; created_at: string;
 }
 
@@ -410,7 +410,7 @@ export async function fetchAdminSources(): Promise<AdminSource[]> {
   return apiFetch("/api/admin/sources");
 }
 
-export async function createAdminSource(data: { telegram_id: number; title: string; username?: string }): Promise<AdminSource> {
+export async function createAdminSource(data: { telegram_id?: number; title: string; username?: string; type?: string }): Promise<AdminSource> {
   return apiFetch("/api/admin/sources", {
     method: "POST",
     body: JSON.stringify(data),

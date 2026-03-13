@@ -18,7 +18,7 @@ export default function AdminSources() {
 
   // Add source modal
   const [showAdd, setShowAdd] = useState(false);
-  const [newSource, setNewSource] = useState({ telegram_id: "", title: "", username: "" });
+  const [newSource, setNewSource] = useState({ telegram_id: "", title: "", username: "", type: "group" as "group" | "channel_web" });
   const [creating, setCreating] = useState(false);
 
   // Delete confirm
@@ -59,18 +59,25 @@ export default function AdminSources() {
     setDeleteTarget(null);
   };
 
+  const isChannelWeb = newSource.type === "channel_web";
+
+  const canCreate = newSource.title.trim() && (
+    isChannelWeb ? newSource.username.trim() : newSource.telegram_id.trim()
+  );
+
   const handleCreate = async () => {
-    if (!newSource.title.trim() || !newSource.telegram_id.trim()) return;
+    if (!canCreate) return;
     setCreating(true);
     try {
       const created = await createAdminSource({
-        telegram_id: Number(newSource.telegram_id),
+        telegram_id: isChannelWeb ? undefined : Number(newSource.telegram_id),
         title: newSource.title,
         username: newSource.username || undefined,
+        type: newSource.type,
       });
       setSources((prev) => [created, ...prev]);
       setShowAdd(false);
-      setNewSource({ telegram_id: "", title: "", username: "" });
+      setNewSource({ telegram_id: "", title: "", username: "", type: "group" });
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -177,6 +184,23 @@ export default function AdminSources() {
             </div>
 
             <div className="flex flex-col gap-3">
+              {/* Type toggle */}
+              <div className="flex rounded-lg overflow-hidden border border-white/10">
+                {(["group", "channel_web"] as const).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setNewSource((p) => ({ ...p, type: t }))}
+                    className={`flex-1 py-2 text-xs font-medium transition-colors cursor-pointer border-none ${
+                      newSource.type === t
+                        ? "bg-blue-500/20 text-blue-400"
+                        : "bg-white/5 text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    {t === "group" ? "Group (Bot)" : "Channel (Web)"}
+                  </button>
+                ))}
+              </div>
               <input
                 type="text"
                 placeholder="Name"
@@ -184,25 +208,42 @@ export default function AdminSources() {
                 onChange={(e) => setNewSource((p) => ({ ...p, title: e.target.value }))}
                 className="w-full px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/40 transition-colors"
               />
-              <input
-                type="number"
-                placeholder="Telegram ID"
-                value={newSource.telegram_id}
-                onChange={(e) => setNewSource((p) => ({ ...p, telegram_id: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/40 transition-colors"
-              />
-              <input
-                type="text"
-                placeholder="Username (optional)"
-                value={newSource.username}
-                onChange={(e) => setNewSource((p) => ({ ...p, username: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/40 transition-colors"
-              />
+              {isChannelWeb ? (
+                <input
+                  type="text"
+                  placeholder="Channel username (e.g. freelance_jobs)"
+                  value={newSource.username}
+                  onChange={(e) => setNewSource((p) => ({ ...p, username: e.target.value.replace(/^@/, "") }))}
+                  className="w-full px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/40 transition-colors"
+                />
+              ) : (
+                <>
+                  <input
+                    type="number"
+                    placeholder="Telegram ID"
+                    value={newSource.telegram_id}
+                    onChange={(e) => setNewSource((p) => ({ ...p, telegram_id: e.target.value }))}
+                    className="w-full px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/40 transition-colors"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Username (optional)"
+                    value={newSource.username}
+                    onChange={(e) => setNewSource((p) => ({ ...p, username: e.target.value }))}
+                    className="w-full px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/40 transition-colors"
+                  />
+                </>
+              )}
+              {isChannelWeb && (
+                <p className="text-xs text-slate-500">
+                  Scrapes public channel via t.me/s/ every 5 min. No bot membership needed.
+                </p>
+              )}
             </div>
 
             <button
               onClick={handleCreate}
-              disabled={creating || !newSource.title.trim() || !newSource.telegram_id.trim()}
+              disabled={creating || !canCreate}
               className="w-full py-2.5 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30 text-sm font-medium hover:bg-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
               {creating ? "Creating..." : "Create"}
