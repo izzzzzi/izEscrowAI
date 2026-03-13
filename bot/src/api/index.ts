@@ -380,7 +380,7 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
       return;
     }
     const state = (req.query.userId || req.query.user_id) as string || "";
-    const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(callbackUrl)}&scope=read:user&state=${state}`;
+    const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(callbackUrl)}&scope=read:user,read:org&state=${state}`;
     res.redirect(url);
   });
 

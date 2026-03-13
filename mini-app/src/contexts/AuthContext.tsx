@@ -50,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [authData, setAuthData] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Auto-detect Mini App initData on mount
+  // Auto-detect Mini App initData on mount, then try localStorage
   useEffect(() => {
     try {
       // @ts-expect-error - Telegram WebApp global
@@ -69,10 +69,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           });
           setAuthMethod("initData");
           setAuthData(tg.initData);
+          return;
         }
       }
     } catch {
       // Not in Telegram
+    }
+    // Restore Login Widget session from localStorage
+    try {
+      const saved = localStorage.getItem("tg_auth");
+      if (saved) {
+        const u: TelegramUser = JSON.parse(saved);
+        if (u.id) {
+          setUser(u);
+          setAuthMethod("loginWidget");
+          setAuthData(saved);
+        }
+      }
+    } catch {
+      // ignore
     }
   }, []);
 
@@ -92,7 +107,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const setLoginUser = useCallback((u: TelegramUser) => {
     setUser(u);
     setAuthMethod("loginWidget");
-    setAuthData(JSON.stringify(u));
+    const data = JSON.stringify(u);
+    setAuthData(data);
+    try { localStorage.setItem("tg_auth", data); } catch { /* ignore */ }
   }, []);
 
   const setWallet = useCallback((address: string | null) => {
@@ -103,6 +120,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setAuthMethod(null);
     setAuthData(null);
+    try { localStorage.removeItem("tg_auth"); } catch { /* ignore */ }
   }, []);
 
   return (
