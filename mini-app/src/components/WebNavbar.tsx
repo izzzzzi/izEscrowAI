@@ -31,8 +31,10 @@ export default function WebNavbar() {
   const navLinks = [
     { path: "/#how-it-works", label: "How it works" },
     { path: "/market", label: "Market" },
-    { path: "/groups", label: "Groups" },
-    ...(isAuthenticated ? [{ path: "/offers", label: "Offers" }] : []),
+    ...(isAuthenticated ? [
+      { path: "/groups", label: "Groups" },
+      { path: "/offers", label: "Offers" },
+    ] : []),
     ...(isAdmin ? [{ path: "/admin", label: "Admin" }] : []),
   ];
 
