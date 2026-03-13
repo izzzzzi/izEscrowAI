@@ -104,6 +104,15 @@ button:active {
   border-radius: 4px;
 }
 
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Landing page styles */
 .glass-panel {
   background: rgba(30, 41, 59, 0.4);
