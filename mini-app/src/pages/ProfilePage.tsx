@@ -79,7 +79,7 @@ export default function ProfilePage() {
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-3">
               <StatCard label="Deals" value={profile.reputation.completed_deals} icon="solar:clipboard-check-linear" />
-              <StatCard label="Avg Days" value={profile.reputation.avg_completion_days.toFixed(1)} icon="solar:clock-circle-linear" />
+              <StatCard label="Avg Days" value={profile.reputation.avg_completion_days?.toFixed(1) ?? "—"} icon="solar:clock-circle-linear" />
               <StatCard label="Cancelled" value={profile.reputation.cancelled_deals} icon="solar:close-circle-linear" />
               <StatCard label="Disputes" value={profile.reputation.disputes_opened} icon="solar:danger-triangle-linear" />
               <StatCard label="Repeat Clients" value={profile.reputation.repeat_clients} icon="solar:users-group-rounded-linear" />

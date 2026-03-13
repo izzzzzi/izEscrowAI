@@ -516,6 +516,47 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
     res.json(data);
   });
 
+  // --- Groups API (public, before auth middleware) ---
+
+  // GET /api/groups/top — top groups for leaderboard (must be before /:id)
+  app.get("/api/groups/top", async (req, res) => {
+    try {
+      const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string) || 10));
+      const groups = await getLeaderboard("completed_deals", limit);
+      res.json(groups);
+    } catch (e: any) {
+      console.error("GET /api/groups/top error:", e.message);
+      res.status(500).json({ error: "Failed to fetch top groups" });
+    }
+  });
+
+  // GET /api/groups — leaderboard
+  app.get("/api/groups", async (req, res) => {
+    try {
+      const sortBy = (req.query.sort as string) || "completed_deals";
+      const limit = parseInt(req.query.limit as string) || 10;
+      const validSorts = ["completed_deals", "total_volume", "avg_check"] as const;
+      const sort = validSorts.includes(sortBy as any) ? sortBy as typeof validSorts[number] : "completed_deals";
+      const groups = await getLeaderboard(sort, Math.min(limit, 50));
+      res.json(groups);
+    } catch {
+      res.json([]);
+    }
+  });
+
+  // GET /api/groups/:id — group dashboard data
+  app.get("/api/groups/:id", async (req, res) => {
+    try {
+      const groupId = parseInt(req.params.id);
+      if (isNaN(groupId)) { res.status(400).json({ error: "Invalid group ID" }); return; }
+      const stats = await getGroupStatsById(groupId);
+      if (!stats) { res.status(404).json({ error: "Group not found" }); return; }
+      res.json(stats);
+    } catch {
+      res.status(500).json({ error: "Failed to fetch group" });
+    }
+  });
+
   // --- Auth middleware for protected routes ---
   app.use("/api", validateInitData);
   app.use("/api", checkBan);
@@ -760,26 +801,7 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
     }
   });
 
-  // --- Groups API (public) ---
-
-  // GET /api/groups — leaderboard
-  app.get("/api/groups", async (req, res) => {
-    const sortBy = (req.query.sort as string) || "completed_deals";
-    const limit = parseInt(req.query.limit as string) || 10;
-    const validSorts = ["completed_deals", "total_volume", "avg_check"] as const;
-    const sort = validSorts.includes(sortBy as any) ? sortBy as typeof validSorts[number] : "completed_deals";
-    const groups = await getLeaderboard(sort, Math.min(limit, 50));
-    res.json(groups);
-  });
-
-  // GET /api/groups/:id — group dashboard data
-  app.get("/api/groups/:id", async (req, res) => {
-    const groupId = parseInt(req.params.id);
-    if (isNaN(groupId)) { res.status(400).json({ error: "Invalid group ID" }); return; }
-    const stats = await getGroupStatsById(groupId);
-    if (!stats) { res.status(404).json({ error: "Group not found" }); return; }
-    res.json(stats);
-  });
+  // Groups API moved above auth middleware (public)
 
   // ========== Job Responses API ==========
 
@@ -1054,17 +1076,7 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
     }
   });
 
-  // GET /api/groups/top — top groups for leaderboard
-  app.get("/api/groups/top", async (req, res) => {
-    try {
-      const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string) || 10));
-      const groups = await getLeaderboard("completed_deals", limit);
-      res.json(groups);
-    } catch (e: any) {
-      console.error("GET /api/groups/top error:", e.message);
-      res.status(500).json({ error: "Failed to fetch top groups" });
-    }
-  });
+  // groups/top moved above auth middleware
 
   // ========== Admin API ==========
 

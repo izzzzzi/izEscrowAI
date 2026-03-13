@@ -300,7 +300,9 @@ export interface GroupStat {
 }
 
 export function fetchLeaderboard(sort = "completed_deals", limit = 10): Promise<GroupStat[]> {
-  return fetch(`${API_URL}/api/groups?sort=${sort}&limit=${limit}`).then((r) => r.json());
+  return fetch(`${API_URL}/api/groups?sort=${sort}&limit=${limit}`)
+    .then((r) => r.json())
+    .then((data) => Array.isArray(data) ? data : []);
 }
 
 export function fetchGroup(groupId: number): Promise<GroupStat> {
@@ -629,5 +631,7 @@ export function generateSpecAI(
 // --- Groups Top ---
 
 export function fetchTopGroups(limit = 10): Promise<GroupStat[]> {
-  return fetch(`${API_URL}/api/groups/top?limit=${limit}`).then((r) => r.json());
+  return fetch(`${API_URL}/api/groups/top?limit=${limit}`)
+    .then((r) => r.json())
+    .then((data) => Array.isArray(data) ? data : []);
 }
