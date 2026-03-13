@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchStats, fetchPublicOffers, fetchTalent, type PlatformStats, type PublicOffer, type TalentData } from "../lib/api";
+import { fetchStats, fetchPublicOffers, fetchTalent, fetchTopGroups, type PlatformStats, type PublicOffer, type TalentData, type GroupStat } from "../lib/api";
 import StatCounter from "../components/StatCounter";
 import TalentGrid from "../components/TalentGrid";
 import ActivityFeed from "../components/ActivityFeed";
@@ -12,11 +12,13 @@ export default function LandingPage() {
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [recentOffers, setRecentOffers] = useState<PublicOffer[]>([]);
   const [talent, setTalent] = useState<TalentData | null>(null);
+  const [topGroups, setTopGroups] = useState<GroupStat[]>([]);
 
   useEffect(() => {
     fetchStats().then(setStats).catch(() => {});
     fetchPublicOffers().then((offers) => setRecentOffers(offers.slice(0, 6))).catch(() => {});
     fetchTalent().then(setTalent).catch(() => {});
+    fetchTopGroups(5).then(setTopGroups).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -235,12 +237,14 @@ export default function LandingPage() {
             <p className="text-slate-400 font-light">From zero to protected in under 60 seconds.</p>
           </div>
 
-          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {[
-              { icon: "solar:chat-line-linear", title: "1. Describe", desc: "Type your deal terms naturally in Telegram to the izEscrowAI Bot." },
-              { icon: "solar:magic-stick-linear", title: "2. AI Parsing", desc: "AI parses your deal. GitHub-verified skills are matched automatically." },
-              { icon: "solar:wallet-2-linear", title: "3. Deposit", desc: "Connect your TON wallet via the Mini App to lock funds in the contract." },
-              { icon: "solar:hand-stars-linear", title: "4. Deliver", desc: "Funds are released upon delivery or via AI-mediated fair dispute split." },
+              { icon: "solar:chat-line-linear", title: "1. Describe", desc: "Describe your task in natural language — AI understands context." },
+              { icon: "solar:document-add-linear", title: "2. AI Spec", desc: "AI generates a structured spec with acceptance criteria." },
+              { icon: "solar:dollar-minimalistic-linear", title: "3. AI Price", desc: "AI estimates fair price range based on spec complexity." },
+              { icon: "solar:users-group-rounded-linear", title: "4. AI Match", desc: "AI finds the best executors and ranks them by fit." },
+              { icon: "solar:wallet-2-linear", title: "5. Escrow", desc: "Lock funds in a TON smart contract. Non-custodial." },
+              { icon: "solar:shield-check-linear", title: "6. AI Verify", desc: "AI checks delivery against spec criteria point by point." },
             ].map((step) => (
               <div key={step.title} className="glass-panel p-8 rounded-3xl group hover:-translate-y-2 transition-all">
                 <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:bg-blue-500/20 transition-colors">
@@ -256,60 +260,58 @@ export default function LandingPage() {
         {/* Features Bento Grid */}
         <section id="features" className="py-24 px-6">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* AI Dispute Mediation — wide */}
+            {/* AI Spec Generator — wide */}
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] relative overflow-hidden group">
               <div className="relative z-10">
-                <iconify-icon icon="solar:scale-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">AI Dispute Mediation</h3>
+                <iconify-icon icon="solar:document-add-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
+                <h3 className="text-2xl font-medium tracking-tight mb-4">AI Spec Generator</h3>
                 <p className="text-slate-400 font-light max-w-md">
-                  If things go wrong, our AI mediator reviews the proof of work and chat history to
-                  propose a fair split, ensuring no one is left behind.
+                  Describe your task in natural language. AI generates a structured specification with
+                  acceptance criteria, asks clarifying questions, and creates a verifiable contract.
                 </p>
               </div>
               <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-blue-500/5 rounded-full blur-[60px] group-hover:bg-blue-500/10 transition-colors" />
             </div>
 
-            {/* Non-Custodial */}
+            {/* AI Pricing */}
             <div className="glass-panel p-10 rounded-[2.5rem] flex flex-col justify-between">
               <div>
-                <iconify-icon icon="solar:verified-check-linear" width="40" height="40" class="text-emerald-400 mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">Non-Custodial</h3>
+                <iconify-icon icon="solar:tag-price-linear" width="40" height="40" class="text-emerald-400 mb-6" />
+                <h3 className="text-xl font-medium tracking-tight mb-4">AI Pricing</h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
-                Funds stay in a Tolk smart contract on TON. We never touch your private keys or hold
-                your money.
+                AI estimates fair price range based on spec complexity. Min, median, max with a
+                recommended price and reasoning.
               </p>
             </div>
 
-            {/* Auto-Release */}
+            {/* AI Matching */}
             <div className="glass-panel p-10 rounded-[2.5rem] flex flex-col justify-between">
               <div>
-                <iconify-icon icon="solar:history-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">Auto-Release</h3>
+                <iconify-icon icon="solar:users-group-rounded-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
+                <h3 className="text-xl font-medium tracking-tight mb-4">AI Matching</h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
-                Built-in 7-day timeout for inactive deals. Security and efficiency integrated into the
-                core contract.
+                AI finds the best executors from the platform. Ranked by reputation, skills, trust,
+                and price fit.
               </p>
             </div>
 
-            {/* Multi-Currency + Platform Fee — wide */}
+            {/* Non-Custodial + AI Arbitration — wide */}
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-10">
               <div className="flex-1">
-                <iconify-icon icon="solar:dollar-minimalistic-linear" width="40" height="40" class="text-purple-400 mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">Multi-Currency Deals</h3>
+                <iconify-icon icon="solar:scale-linear" width="40" height="40" class="text-purple-400 mb-6" />
+                <h3 className="text-2xl font-medium tracking-tight mb-4">AI Arbitration</h3>
                 <p className="text-slate-400 font-light">
-                  Create deals in $, €, or ₽ — automatic conversion to TON via live rates from tonapi.io.
-                  Fair 1% platform fee is deducted on-chain only when the deal completes.
+                  Disputes are resolved objectively: AI checks delivery against each spec criterion,
+                  scores compliance, and proposes a fair split. Transparent and auditable.
                 </p>
               </div>
               <div className="w-full md:w-1/3 flex flex-col items-center gap-3">
-                <div className="flex gap-4 text-3xl font-semibold">
-                  <span className="text-green-400">$</span>
-                  <span className="text-blue-400">€</span>
-                  <span className="text-amber-400">₽</span>
+                <div className="w-20 h-20 rounded-full border-4 border-emerald-500/30 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-emerald-400">92%</span>
                 </div>
-                <div className="text-sm text-slate-500 font-light">→ TON</div>
+                <span className="text-xs text-emerald-400 font-semibold">Compliance</span>
               </div>
             </div>
 
@@ -460,6 +462,58 @@ export default function LandingPage() {
                         <span>Price negotiable</span>
                       )}
                       <span>{offer.application_count ?? 0} bids</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Group Leaderboard (11.4) */}
+        {topGroups.length > 0 && (
+          <section className="py-24 px-6">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex items-center justify-between mb-12">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-2">Top Groups</h2>
+                  <p className="text-slate-400 font-light">Most active Telegram communities.</p>
+                </div>
+                <button
+                  onClick={() => navigate("/groups")}
+                  className="text-[#0098EA] text-sm font-medium bg-transparent border-none cursor-pointer hover:underline"
+                >
+                  Full Leaderboard →
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {topGroups.map((group, i) => (
+                  <div
+                    key={group.group_id}
+                    onClick={() => navigate(`/groups/${group.group_id}`)}
+                    className="glass-panel p-6 rounded-2xl cursor-pointer hover:-translate-y-1 transition-all"
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="text-2xl font-bold text-slate-600">
+                        {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`}
+                      </span>
+                      <h3 className="text-sm font-medium truncate">
+                        {group.username ? `@${group.username}` : group.title || `Group`}
+                      </h3>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-xs text-slate-400">
+                      <div>
+                        <div className="text-white font-medium">{group.completed_deals}</div>
+                        <div>Deals</div>
+                      </div>
+                      <div>
+                        <div className="text-white font-medium">{group.total_volume?.toFixed(0) ?? 0}</div>
+                        <div>Volume</div>
+                      </div>
+                      <div>
+                        <div className="text-white font-medium">{group.avg_check?.toFixed(0) ?? "—"}</div>
+                        <div>Avg Check</div>
+                      </div>
                     </div>
                   </div>
                 ))}

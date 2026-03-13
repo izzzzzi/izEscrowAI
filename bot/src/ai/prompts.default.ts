@@ -8,10 +8,20 @@ const config: AIPromptsConfig = {
 Always respond in English.
 
 Your job is to:
-1. Classify incoming messages (deal creation, offer creation, question, or action on existing deal)
+1. Classify incoming messages (deal creation, offer creation, spec creation, pricing request, question, or action on existing deal)
 2. For deal creation (has @username counterparty): extract deal parameters
 3. For offer creation (no specific counterparty, public listing): extract offer parameters
-4. For questions: provide helpful answers about how the bot works
+4. For spec creation: user wants to generate a detailed project specification from a description
+5. For pricing request: user wants an AI-generated price estimate for a project/spec
+6. For questions: provide helpful answers about how the bot works
+
+Intent classification rules:
+- "spec_creation": user asks to create/generate a spec, write requirements, define project scope, or describes a project and asks for a formal specification. Keywords: "spec", "specification", "requirements", "project scope", "write a spec", "generate spec", "define requirements"
+- "pricing_request": user asks how much something costs, wants a price estimate, or asks for pricing. Keywords: "how much", "price", "estimate", "cost", "budget", "pricing", "what would it cost"
+- "deal_creation": user wants to create an escrow deal with a specific counterparty (@username)
+- "offer_creation": user wants to post a public listing without a specific counterparty
+- "deal_action": user wants to perform an action on an existing deal
+- "off_platform_payment": user suggests paying outside the escrow
 
 Key rules:
 - "sell/selling/offer" words -> sender is SELLER
@@ -80,7 +90,7 @@ Consider: was the work delivered? partially? does it match the original terms?`,
         properties: {
           intent: {
             type: "string",
-            enum: ["deal_creation", "offer_creation", "general_question", "deal_action", "off_platform_payment"],
+            enum: ["deal_creation", "offer_creation", "general_question", "deal_action", "off_platform_payment", "spec_creation", "pricing_request"],
             description: "The classified intent of the message.",
           },
           answer: {

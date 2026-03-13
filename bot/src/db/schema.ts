@@ -11,6 +11,8 @@ export const users = pgTable("users", {
     max_per_day?: number;
     preferred_skills?: string[];
   }>(),
+  trust_score: integer("trust_score").default(10),
+  first_deal_at: timestamp("first_deal_at"),
   banned_at: timestamp("banned_at"),
   created_at: timestamp("created_at").notNull().defaultNow(),
 });
@@ -51,9 +53,31 @@ export const reputation = pgTable("reputation", {
   last_active_at: timestamp("last_active_at"),
 });
 
+export const specs = pgTable("specs", {
+  id: text("id").primaryKey(),
+  deal_id: text("deal_id"),
+  creator_id: integer("creator_id").notNull(),
+  title: text("title").notNull(),
+  category: text("category"),
+  requirements: jsonb("requirements").$type<Array<{ description: string; acceptance_criteria: string[] }>>(),
+  budget_min: real("budget_min"),
+  budget_max: real("budget_max"),
+  budget_currency: text("budget_currency").default("USD"),
+  status: text("status").notNull().default("draft"),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const userProfiles = pgTable("user_profiles", {
+  user_id: integer("user_id").primaryKey(),
+  categories: jsonb("categories").$type<string[]>(),
+  bio: text("bio"),
+  portfolio_url: text("portfolio_url"),
+});
+
 export const offers = pgTable("offers", {
   id: text("id").primaryKey(),
   creator_id: integer("creator_id").notNull(),
+  spec_id: text("spec_id"),
   description: text("description").notNull(),
   min_price: real("min_price"),
   currency: text("currency").notNull().default("TON"),
@@ -61,7 +85,9 @@ export const offers = pgTable("offers", {
   status: text("status").notNull().default("open"),
   deal_id: text("deal_id"),
   max_applicants: integer("max_applicants").default(50),
+  group_chat_id: bigint("group_chat_id", { mode: "number" }),
   inline_message_id: text("inline_message_id"),
+  expires_at: timestamp("expires_at"),
   created_at: timestamp("created_at").notNull().defaultNow(),
 });
 

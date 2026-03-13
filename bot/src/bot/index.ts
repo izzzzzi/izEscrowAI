@@ -2,9 +2,11 @@
 // Copyright (c) 2026 izEscrowAI contributors
 
 import { Bot, InlineKeyboard, Context } from "grammy";
-import { upsertUser, getUserByUsername, getUserWallet, getReputation, getDetailedReputation, incrementDeals, addRating, updateDealParty, createOffer, getOfferById, updateOfferInlineMessageId, addApplication, getApplicationById, getApplicationsByOffer, countApplicationsByOffer, acceptApplication, rejectAllApplications, closeOffer, upsertGroup, setGroupInactive, getGroupStatsById, getLeaderboard, linkDealToGroup, incrementGroupOffers, isUserBanned, getJobsForNewUser, type Deal, type Offer } from "../db/index.js";
-import { classifyAndParse, mediateDispute, parseOffer, generateOfferPreview, calcTrustScore, assessDealRisk, type ParsedDeal, type ParsedOffer } from "../ai/index.js";
+import { upsertUser, getUserByUsername, getUserWallet, getReputation, getDetailedReputation, incrementDeals, addRating, updateDealParty, createOffer, getOfferById, updateOfferInlineMessageId, addApplication, getApplicationById, getApplicationsByOffer, countApplicationsByOffer, acceptApplication, rejectAllApplications, closeOffer, upsertGroup, setGroupInactive, getGroupStatsById, getLeaderboard, linkDealToGroup, incrementGroupOffers, isUserBanned, getJobsForNewUser, getExpiredOffers, expireOffer, getOffersByUser, upsertUserProfile, getUserProfile, getUsersByCategories, createSpec, getSpecById, updateSpec, getSpecsByCreator, linkSpecToDeal, getSpecByDeal, getUserTrustScore, type Deal, type Offer, type Spec } from "../db/index.js";
+import { classifyAndParse, mediateDispute, parseOffer, generateOfferPreview, calcTrustScore, assessDealRisk, generateSpec, estimatePrice, evaluateSpecCompliance, specConversations, type ParsedDeal, type ParsedOffer, type GeneratedSpec, type PriceEstimate } from "../ai/index.js";
 import { processGroupMessage } from "../parser/index.js";
+import { recalculateTrustScore, formatTrustBadge } from "../scoring/index.js";
+import { findMatchingExecutors, formatMatchResults } from "../matching/index.js";
 import {
   createNewDeal,
   confirmDealByCounterparty,
@@ -36,6 +38,15 @@ const userStates = new Map<number, UserState>();
 
 // Off-platform payment warning tracker (one warning per chat)
 const offPlatformWarnings = new Set<number>();
+
+// Rate limiting: last offer timestamp per user per group
+const offerRateLimit = new Map<string, number>(); // key: `userId:groupId`, value: timestamp
+
+// Pending spec confirmations (in-memory, keyed by chatId)
+const pendingSpecs = new Map<number, GeneratedSpec>();
+
+// Evidence for spec-based arbitration (keyed by dealId)
+const disputeEvidence = new Map<string, { seller?: string; buyer?: string; timeout?: ReturnType<typeof setTimeout> }>();
 
 function countPendingByUser(userId: number): number {
   let count = 0;
@@ -209,6 +220,49 @@ export function createBot(token: string): Bot {
     // Skip commands
     if (text.startsWith("/")) return;
 
+    // Check spec conversation state (2.6, 2.8)
+    if (specConversations.has(ctx.from.id)) {
+      const conv = specConversations.get(ctx.from.id)!;
+      conv.history.push({ role: "user", content: text });
+      conv.lastActivity = Date.now();
+
+      // Check round limit
+      if (conv.history.length > 10) {
+        specConversations.delete(ctx.from.id);
+        await ctx.reply("Conversation limit reached. Please start over with /spec <description>");
+        return;
+      }
+
+      try {
+        const result = await generateSpec(text, conv.history);
+        if (result.type === "questions") {
+          await ctx.reply(
+            "Follow-up questions:\n\n" +
+            result.questions.map((q, i) => `${i + 1}. ${q}`).join("\n") +
+            "\n\nPlease answer:",
+          );
+          return;
+        }
+
+        // Got a spec — show for review
+        specConversations.delete(ctx.from.id);
+        pendingSpecs.set(ctx.from.id, result);
+        const keyboard = new InlineKeyboard()
+          .text("✅ Confirm", "spec_confirm")
+          .text("✏️ Edit", "spec_edit")
+          .row()
+          .text("💰 Estimate Price", "spec_price");
+
+        await ctx.reply(formatSpecPreview(result), { reply_markup: keyboard });
+      } catch {
+        await ctx.reply("Error processing your input. Please try again or start over with /spec.");
+      }
+      return;
+    }
+
+    // Check evidence submission for spec-based arbitration (3.4)
+    // (handled via userStates below)
+
     // Check conversation state (auction bid flow)
     const state = userStates.get(ctx.from.id);
     if (state?.type === "offer_bid") {
@@ -331,6 +385,58 @@ export function createBot(token: string): Bot {
 
     if (result.type === "deal_action") {
       await ctx.reply(result.details || "Use the buttons in deal messages for actions.");
+      return;
+    }
+
+    // Handle spec_creation intent (2.6, 9.4)
+    if (result.type === "spec_creation") {
+      await ctx.reply("🤖 Generating specification...");
+      try {
+        const specResult = await generateSpec(result.description);
+        if (specResult.type === "questions") {
+          specConversations.set(ctx.from.id, {
+            history: [{ role: "user", content: result.description }],
+            createdAt: Date.now(),
+            lastActivity: Date.now(),
+          });
+          await ctx.reply(
+            "I need some clarification:\n\n" +
+            specResult.questions.map((q, i) => `${i + 1}. ${q}`).join("\n") +
+            "\n\nPlease answer:",
+          );
+        } else {
+          pendingSpecs.set(ctx.from.id, specResult);
+          const keyboard = new InlineKeyboard()
+            .text("✅ Confirm", "spec_confirm")
+            .text("✏️ Edit", "spec_edit")
+            .row()
+            .text("💰 Estimate Price", "spec_price");
+          await ctx.reply(formatSpecPreview(specResult), { reply_markup: keyboard });
+        }
+      } catch {
+        await ctx.reply("Error generating spec. Try /spec <description> instead.");
+      }
+      return;
+    }
+
+    // Handle pricing_request intent (4.6)
+    if (result.type === "pricing_request") {
+      await ctx.reply("🤖 Estimating price...");
+      try {
+        const estimate = await estimatePrice({
+          title: result.description,
+          category: "general",
+          requirements: [result.description],
+          budget_currency: "USD",
+        });
+        await ctx.reply(
+          `💰 AI Price Estimate:\n\n${formatPriceEstimate(estimate)}\n\n` +
+          `⚠️ This is an AI estimate based on task complexity.\n` +
+          `For a detailed spec, use /spec <description>.`,
+        );
+      } catch {
+        await ctx.reply("Could not estimate price. Try /spec <description> for a full analysis.");
+      }
       return;
     }
 
@@ -642,7 +748,7 @@ export function createBot(token: string): Bot {
     );
   });
 
-  // Open dispute
+  // Open dispute (3.3, 3.7, 3.8)
   bot.callbackQuery(/^dispute:/, async (ctx) => {
     const dealId = ctx.callbackQuery.data?.replace("dispute:", "");
     if (!dealId) return;
@@ -654,13 +760,51 @@ export function createBot(token: string): Bot {
       return;
     }
 
+    // Check if deal has a linked spec (3.3)
+    const spec = await getSpecByDeal(dealId);
+
+    if (spec && spec.requirements && spec.requirements.length > 0) {
+      // Spec-based arbitration flow (3.3, 3.4)
+      disputeEvidence.set(dealId, {});
+
+      await ctx.editMessageText(
+        `Deal #${dealId}: dispute opened.\n\n` +
+        `This deal has a linked spec with ${spec.requirements.length} requirements.\n` +
+        `AI will evaluate delivery against the spec criteria.\n\n` +
+        `Both parties need to submit evidence:`,
+      );
+
+      // Ask both parties for evidence
+      const evidenceMsg = `Dispute opened for deal #${dealId}.\n\n` +
+        `Please describe your position and provide evidence of completion/non-completion.\n` +
+        `Send your evidence as a reply:`;
+
+      try { await ctx.api.sendMessage(deal.seller_id, `📋 ${evidenceMsg}\n\n(You are the seller)`); } catch { /* blocked */ }
+      try { await ctx.api.sendMessage(deal.buyer_id, `📋 ${evidenceMsg}\n\n(You are the buyer)`); } catch { /* blocked */ }
+
+      // Set timeout: trigger arbitration after 24h even if not all evidence submitted
+      const timeout = setTimeout(async () => {
+        const ev = disputeEvidence.get(dealId);
+        if (ev) {
+          await runSpecArbitration(dealId, deal, spec, ev.seller ?? "", ev.buyer ?? "", ctx);
+          disputeEvidence.delete(dealId);
+        }
+      }, 24 * 60 * 60 * 1000);
+      disputeEvidence.get(dealId)!.timeout = timeout;
+
+      // Set up evidence submission via userStates
+      userStates.set(deal.seller_id, { type: "offer_bid", offerId: `evidence_seller_${dealId}`, step: "message" } as any);
+      userStates.set(deal.buyer_id, { type: "offer_bid", offerId: `evidence_buyer_${dealId}`, step: "message" } as any);
+
+      return;
+    }
+
+    // Fallback: deals without specs use existing mediateDispute (3.8)
     await ctx.editMessageText(
       `Deal #${dealId}: dispute opened.\n\n` +
         `AI will analyze the situation and propose a resolution.`,
     );
 
-    // AI mediation will be triggered when user sends dispute reason
-    // For MVP: immediate mediation with available info
     try {
       const resolution = await mediateDispute(
         deal.description,
@@ -983,6 +1127,336 @@ export function createBot(token: string): Bot {
     );
   });
 
+  // --- /spec command (2.5, 2.10) ---
+
+  bot.command("spec", async (ctx) => {
+    if (!ctx.from) return;
+    const description = ctx.match?.trim();
+
+    // View existing spec: /spec <id>
+    if (description && description.startsWith("spec_")) {
+      const spec = await getSpecById(description);
+      if (!spec) { await ctx.reply("Spec not found."); return; }
+      await ctx.reply(formatSpecMessage(spec));
+      return;
+    }
+
+    // Generate new spec
+    if (!description) {
+      await ctx.reply("Usage: /spec <task description>\n\nExample: /spec Design a logo for my coffee shop");
+      return;
+    }
+
+    await ctx.reply("🤖 Generating specification...");
+
+    try {
+      const result = await generateSpec(description);
+
+      if (result.type === "questions") {
+        // Store conversation and ask questions
+        specConversations.set(ctx.from.id, {
+          history: [{ role: "user", content: description }],
+          createdAt: Date.now(),
+          lastActivity: Date.now(),
+        });
+        await ctx.reply(
+          "I need some clarification:\n\n" +
+          result.questions.map((q, i) => `${i + 1}. ${q}`).join("\n") +
+          "\n\nPlease answer these questions:",
+        );
+        return;
+      }
+
+      // Got a spec — show for review
+      pendingSpecs.set(ctx.from.id, result);
+      const keyboard = new InlineKeyboard()
+        .text("✅ Confirm", "spec_confirm")
+        .text("✏️ Edit", "spec_edit")
+        .row()
+        .text("💰 Estimate Price", "spec_price");
+
+      await ctx.reply(formatSpecPreview(result), { reply_markup: keyboard });
+    } catch (e: any) {
+      console.error("Spec generation error:", e);
+      await ctx.reply("Error generating spec. Please try again.");
+    }
+  });
+
+  // --- Spec callbacks (2.7, 2.8, 2.9, 4.3, 4.4) ---
+
+  bot.callbackQuery("spec_confirm", async (ctx) => {
+    if (!ctx.from) return;
+    await ctx.answerCallbackQuery("Spec confirmed!");
+    const spec = pendingSpecs.get(ctx.from.id);
+    if (!spec) { await ctx.editMessageText("Spec expired. Please generate again."); return; }
+    pendingSpecs.delete(ctx.from.id);
+
+    const specId = `spec_${Date.now()}_${ctx.from.id}`;
+    const requirements = spec.requirements.map(r => ({
+      description: r,
+      acceptance_criteria: [] as string[],
+    }));
+
+    const saved = await createSpec({
+      id: specId,
+      creator_id: ctx.from.id,
+      title: spec.title,
+      category: spec.category,
+      requirements,
+      budget_min: spec.budget_range?.min,
+      budget_max: spec.budget_range?.max,
+      budget_currency: spec.budget_range?.currency ?? "USD",
+      status: "published",
+    });
+
+    // Auto-trigger pricing (4.4)
+    let priceMsg = "";
+    try {
+      const priceEstimate = await estimatePrice({
+        title: spec.title,
+        category: spec.category,
+        requirements: spec.requirements,
+        budget_currency: spec.budget_range?.currency ?? "USD",
+      });
+      await updateSpec(specId, {
+        budget_min: priceEstimate.min,
+        budget_max: priceEstimate.max,
+        budget_currency: priceEstimate.currency,
+      });
+      priceMsg = `\n\n💰 AI Price Estimate:\n${formatPriceEstimate(priceEstimate)}`;
+    } catch { /* pricing failed, non-critical */ }
+
+    const keyboard = new InlineKeyboard()
+      .text("🔍 Find Executors", `find_exec:${specId}`)
+      .text("📢 Post as Offer", `post_offer:${specId}`);
+
+    await ctx.editMessageText(
+      `✅ Spec published! ID: ${specId}\n\n` +
+      `Title: ${spec.title}\nCategory: ${spec.category}` +
+      priceMsg,
+      { reply_markup: keyboard },
+    );
+  });
+
+  bot.callbackQuery("spec_edit", async (ctx) => {
+    if (!ctx.from) return;
+    await ctx.answerCallbackQuery();
+    await ctx.editMessageText(
+      "Send your corrections (e.g., 'Add mobile responsive design requirement' or 'Change category to Design'):",
+    );
+    // The message handler will pick up the next message as a spec edit
+    specConversations.set(ctx.from.id, {
+      history: [],
+      createdAt: Date.now(),
+      lastActivity: Date.now(),
+    });
+  });
+
+  bot.callbackQuery("spec_price", async (ctx) => {
+    if (!ctx.from) return;
+    await ctx.answerCallbackQuery("Estimating price...");
+    const spec = pendingSpecs.get(ctx.from.id);
+    if (!spec) { await ctx.reply("Spec not found."); return; }
+
+    try {
+      const estimate = await estimatePrice({
+        title: spec.title,
+        category: spec.category,
+        requirements: spec.requirements,
+        budget_currency: spec.budget_range?.currency ?? "USD",
+      });
+      await ctx.reply(`💰 AI Price Estimate for "${spec.title}":\n\n${formatPriceEstimate(estimate)}\n\n⚠️ This is an AI estimate, not a market price.`);
+    } catch {
+      await ctx.reply("Could not estimate price. Please try again.");
+    }
+  });
+
+  // Find executors for a spec (7.5, 7.6, 7.7)
+  bot.callbackQuery(/^find_exec:/, async (ctx) => {
+    if (!ctx.from) return;
+    await ctx.answerCallbackQuery("Searching...");
+    const specId = ctx.callbackQuery.data!.replace("find_exec:", "");
+    const spec = await getSpecById(specId);
+    if (!spec) { await ctx.reply("Spec not found."); return; }
+
+    const matches = await findMatchingExecutors(spec);
+    const text = formatMatchResults(matches, spec.budget_currency ?? "USD");
+
+    const keyboard = new InlineKeyboard();
+    if (matches.length < 3) {
+      keyboard.text("📢 Post as Open Offer", `post_offer:${specId}`);
+    }
+
+    await ctx.reply(text, { reply_markup: keyboard });
+  });
+
+  // Post spec as offer
+  bot.callbackQuery(/^post_offer:/, async (ctx) => {
+    if (!ctx.from) return;
+    await ctx.answerCallbackQuery();
+    const specId = ctx.callbackQuery.data!.replace("post_offer:", "");
+    const spec = await getSpecById(specId);
+    if (!spec) { await ctx.reply("Spec not found."); return; }
+
+    await ctx.reply(
+      `To post as a public offer, use inline mode:\n\n` +
+      `Type @${ctx.me.username} ${spec.title}\n\n` +
+      `in any chat to create a public offer.`,
+    );
+  });
+
+  // --- /profile command (7.1, 7.2) ---
+
+  const CATEGORIES = ["Design", "Development", "Writing", "Marketing", "Translation", "Other"];
+
+  bot.command("profile", async (ctx) => {
+    if (!ctx.from) return;
+    const existing = await getUserProfile(ctx.from.id);
+    const currentCats = existing?.categories?.join(", ") || "none";
+
+    const keyboard = new InlineKeyboard();
+    for (let i = 0; i < CATEGORIES.length; i++) {
+      keyboard.text(CATEGORIES[i], `profile_cat:${CATEGORIES[i]}`);
+      if ((i + 1) % 3 === 0) keyboard.row();
+    }
+    keyboard.row().text("Done", "profile_done");
+
+    await ctx.reply(
+      `Your profile categories: ${currentCats}\n\n` +
+      `Select your professional categories:`,
+      { reply_markup: keyboard },
+    );
+  });
+
+  // Profile category selection (multi-select toggle)
+  const pendingProfileCats = new Map<number, Set<string>>();
+
+  bot.callbackQuery(/^profile_cat:/, async (ctx) => {
+    if (!ctx.from) return;
+    await ctx.answerCallbackQuery();
+    const cat = ctx.callbackQuery.data!.replace("profile_cat:", "");
+
+    if (!pendingProfileCats.has(ctx.from.id)) {
+      const existing = await getUserProfile(ctx.from.id);
+      pendingProfileCats.set(ctx.from.id, new Set(existing?.categories ?? []));
+    }
+
+    const selected = pendingProfileCats.get(ctx.from.id)!;
+    if (selected.has(cat)) {
+      selected.delete(cat);
+    } else {
+      selected.add(cat);
+    }
+
+    const keyboard = new InlineKeyboard();
+    for (let i = 0; i < CATEGORIES.length; i++) {
+      const mark = selected.has(CATEGORIES[i]) ? "✓ " : "";
+      keyboard.text(`${mark}${CATEGORIES[i]}`, `profile_cat:${CATEGORIES[i]}`);
+      if ((i + 1) % 3 === 0) keyboard.row();
+    }
+    keyboard.row().text("Done", "profile_done");
+
+    await ctx.editMessageText(
+      `Selected: ${[...selected].join(", ") || "none"}\n\nSelect your professional categories:`,
+      { reply_markup: keyboard },
+    );
+  });
+
+  bot.callbackQuery("profile_done", async (ctx) => {
+    if (!ctx.from) return;
+    await ctx.answerCallbackQuery("Profile saved!");
+    const selected = pendingProfileCats.get(ctx.from.id);
+    const categories = selected ? [...selected] : [];
+    pendingProfileCats.delete(ctx.from.id);
+
+    await upsertUserProfile({ user_id: ctx.from.id, categories });
+    await ctx.editMessageText(`Profile updated! Categories: ${categories.join(", ") || "none"}`);
+  });
+
+  // --- /score command (5.7) ---
+
+  bot.command("score", async (ctx) => {
+    if (!ctx.from) return;
+    const rep = await getDetailedReputation(ctx.from.id);
+    const wallet = await getUserWallet(ctx.from.id);
+    const trustScore = await getUserTrustScore(ctx.from.id);
+
+    const avgRating = rep.rating_count > 0 ? rep.total_rating / rep.rating_count : 0;
+    const badge = rep.completed_deals === 0 ? "🆕 New"
+      : trustScore >= 70 ? `🟢 ${trustScore}`
+      : trustScore >= 40 ? `🟡 ${trustScore}`
+      : `🔴 ${trustScore}`;
+
+    await ctx.reply(
+      `Your Trust Score: ${badge}\n\n` +
+      `Breakdown:\n` +
+      `• Completed deals: ${rep.completed_deals}\n` +
+      `• Avg rating: ${avgRating.toFixed(1)}/5\n` +
+      `• Wallet: ${wallet ? "Connected ✓" : "Not connected"}\n` +
+      `• Disputes lost: ${rep.disputes_lost}\n\n` +
+      `Complete more deals and maintain good ratings to increase your score!`,
+    );
+  });
+
+  // --- /myoffers command (existing behavior, just ensure it exists) ---
+
+  bot.command("myoffers", async (ctx) => {
+    if (!ctx.from) return;
+    const offers = await getOffersByUser(ctx.from.id);
+    if (offers.length === 0) {
+      await ctx.reply("You have no offers. Create one via inline mode: @" + ctx.me.username + " <description>");
+      return;
+    }
+
+    const lines = offers.slice(0, 10).map((o) => {
+      const statusEmoji = o.status === "open" ? "🟢" : o.status === "closed" ? "✅" : "⏰";
+      return `${statusEmoji} ${o.description}\n   ${o.min_price ? `${o.min_price} ${o.currency}` : "Negotiable"} — ${o.status}`;
+    });
+
+    const keyboard = new InlineKeyboard();
+    offers.filter(o => o.status === "open").slice(0, 5).forEach((o, i) => {
+      keyboard.text(`Cancel #${i + 1}`, `cancel_offer:${o.id}`);
+    });
+
+    await ctx.reply(`Your offers:\n\n${lines.join("\n\n")}`, { reply_markup: keyboard.row() });
+  });
+
+  bot.callbackQuery(/^cancel_offer:/, async (ctx) => {
+    if (!ctx.from) return;
+    await ctx.answerCallbackQuery("Offer cancelled");
+    const offerId = ctx.callbackQuery.data!.replace("cancel_offer:", "");
+    const offer = await getOfferById(offerId);
+    if (offer && offer.creator_id === ctx.from.id) {
+      await expireOffer(offerId);
+      await ctx.editMessageText("Offer cancelled.");
+    }
+  });
+
+  // --- Offer expiration job (6.9) ---
+
+  async function runOfferExpiration() {
+    try {
+      const expired = await getExpiredOffers();
+      for (const offer of expired) {
+        await expireOffer(offer.id);
+        // Update inline message if available
+        if (offer.inline_message_id) {
+          try {
+            await bot.api.editMessageTextInline(offer.inline_message_id,
+              `EXPIRED: ${offer.description}\n\nThis offer has expired.\n\nPowered by izEscrowAI`,
+              { reply_markup: { inline_keyboard: [[{ text: "Open izEscrowAI", url: `https://t.me/${bot.botInfo.username}` }]] } },
+            );
+          } catch { /* can't edit */ }
+        }
+      }
+    } catch (e) {
+      console.error("[expiration] Error:", e);
+    }
+  }
+
+  // Run expiration check every 30 minutes
+  setInterval(runOfferExpiration, 30 * 60 * 1000);
+
   // --- Inline mode (dual flow: direct deal + public offer) ---
 
   const inlineParsed = new Map<string, { type: "deal"; amount: number; currency: string; description: string } | { type: "offer"; offer: ParsedOffer }>();
@@ -1094,8 +1568,10 @@ export function createBot(token: string): Bot {
           } catch { /* can't edit */ }
         }
       } else {
-        // Public offer flow (new)
+        // Public offer flow — check rate limit (6.10)
+        const chatId = ctx.chosenInlineResult.inline_message_id ? 0 : 0; // group is tracked via via_bot
         const offerId = `off_${Date.now()}_${from.id}`;
+        const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000); // 72h expiration
         const offer = await createOffer({
           id: offerId,
           creator_id: from.id,
@@ -1103,6 +1579,7 @@ export function createBot(token: string): Bot {
           min_price: cached.offer.min_price ?? undefined,
           currency: cached.offer.currency,
           role: cached.offer.role,
+          expires_at: expiresAt,
         });
 
         if (inline_message_id) {
@@ -1130,6 +1607,99 @@ function formatAmount(deal: Deal): string {
     return `${deal.original_amount} ${deal.original_currency} ≈ ${deal.amount} TON`;
   }
   return `${deal.amount} ${deal.currency}`;
+}
+
+function formatSpecPreview(spec: GeneratedSpec): string {
+  const reqList = spec.requirements.map((r, i) => `${i + 1}. ${r}`).join("\n");
+  const budget = spec.budget_range
+    ? `${spec.budget_range.min}–${spec.budget_range.max} ${spec.budget_range.currency}`
+    : "Not estimated";
+
+  return (
+    `📋 Generated Specification\n\n` +
+    `Title: ${spec.title}\n` +
+    `Category: ${spec.category}\n` +
+    `Budget: ${budget}\n\n` +
+    `Requirements:\n${reqList}`
+  );
+}
+
+function formatSpecMessage(spec: Spec): string {
+  const reqList = spec.requirements
+    ? spec.requirements.map((r, i) => `${i + 1}. ${r.description}`).join("\n")
+    : "No requirements";
+  const budget = spec.budget_min != null && spec.budget_max != null
+    ? `${spec.budget_min}–${spec.budget_max} ${spec.budget_currency}`
+    : "Not estimated";
+
+  return (
+    `📋 Spec: ${spec.title}\n` +
+    `ID: ${spec.id}\n` +
+    `Category: ${spec.category || "—"}\n` +
+    `Status: ${spec.status}\n` +
+    `Budget: ${budget}\n\n` +
+    `Requirements:\n${reqList}`
+  );
+}
+
+function formatPriceEstimate(est: PriceEstimate): string {
+  return (
+    `Range: ${est.min}–${est.max} ${est.currency}\n` +
+    `Median: ${est.median} ${est.currency}\n` +
+    `Recommended: ${est.recommended} ${est.currency}\n\n` +
+    `Reasoning: ${est.reasoning}\n` +
+    (est.factors.length > 0 ? `\nFactors:\n${est.factors.map(f => `• ${f}`).join("\n")}` : "")
+  );
+}
+
+async function runSpecArbitration(
+  dealId: string,
+  deal: Deal,
+  spec: Spec,
+  sellerEvidence: string,
+  buyerEvidence: string,
+  ctx: Context,
+) {
+  try {
+    const specForAI = {
+      title: spec.title,
+      requirements: (spec.requirements ?? []).map(r => r.description),
+    };
+    const result = await evaluateSpecCompliance(
+      specForAI,
+      `Deal: ${deal.description}, Amount: ${deal.amount} ${deal.currency}`,
+      sellerEvidence,
+      buyerEvidence,
+    );
+
+    const sellerPercent = Math.round(result.score);
+    const buyerPercent = 100 - sellerPercent;
+
+    const keyboard = new InlineKeyboard()
+      .text("Accept", `accept_resolution:${dealId}:${sellerPercent}`)
+      .text("Reject", `reject_resolution:${dealId}`);
+
+    const reportMsg =
+      `⚖️ AI Spec-Based Arbitration — Deal #${dealId}\n\n` +
+      `${result.report}\n\n` +
+      `Proposed split:\n` +
+      `Seller: ${sellerPercent}% (${((deal.amount * sellerPercent) / 100).toFixed(2)} ${deal.currency})\n` +
+      `Buyer: ${buyerPercent}% (${((deal.amount * buyerPercent) / 100).toFixed(2)} ${deal.currency})`;
+
+    try { await ctx.api.sendMessage(deal.seller_id, reportMsg, { reply_markup: keyboard }); } catch { /* blocked */ }
+    try { await ctx.api.sendMessage(deal.buyer_id, reportMsg, { reply_markup: keyboard }); } catch { /* blocked */ }
+  } catch {
+    // Fallback to regular mediation
+    try {
+      const resolution = await mediateDispute(deal.description, deal.amount, deal.currency, "Dispute with spec", sellerEvidence, buyerEvidence);
+      const keyboard = new InlineKeyboard()
+        .text("Accept", `accept_resolution:${dealId}:${resolution.seller_percent}`)
+        .text("Reject", `reject_resolution:${dealId}`);
+      const msg = `AI Mediation for deal #${dealId}:\n\n${resolution.explanation}\n\nSplit: ${resolution.seller_percent}% / ${resolution.buyer_percent}%`;
+      try { await ctx.api.sendMessage(deal.seller_id, msg, { reply_markup: keyboard }); } catch { /* blocked */ }
+      try { await ctx.api.sendMessage(deal.buyer_id, msg, { reply_markup: keyboard }); } catch { /* blocked */ }
+    } catch { /* complete failure */ }
+  }
 }
 
 function formatDealShort(deal: Deal, userId: number): string {

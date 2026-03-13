@@ -19,8 +19,9 @@ import {
   updateJobStatus,
   getJobsByPoster, createJobResponse, getJobResponses, hasUserResponded, countResponsesByJob,
   createDeal,
+  createSpec, getSpecById,
 } from "../db/index.js";
-import { calcTrustScore, calcTrustScoreBreakdown, assessDealRisk, extractSkills, calcSkillMatch, generateProposal } from "../ai/index.js";
+import { calcTrustScore, calcTrustScoreBreakdown, assessDealRisk, extractSkills, calcSkillMatch, generateProposal, generateSpec as generateSpecAI } from "../ai/index.js";
 import { exchangeCode, fetchGithubProfile } from "../github/index.js";
 import { calcGithubScore, detectFlags } from "../github/score.js";
 
@@ -939,6 +940,86 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
       res.json({ responded });
     } catch {
       res.status(500).json({ error: "Failed to check response status" });
+    }
+  });
+
+  // ========== Specs API ==========
+
+  // GET /api/specs/:id — get spec by ID
+  app.get("/api/specs/:id", async (req, res) => {
+    try {
+      const spec = await getSpecById(req.params.id as string);
+      if (!spec) {
+        res.status(404).json({ error: "Spec not found" });
+        return;
+      }
+      res.json(spec);
+    } catch (e: any) {
+      console.error("GET /api/specs/:id error:", e.message);
+      res.status(500).json({ error: "Failed to fetch spec" });
+    }
+  });
+
+  // POST /api/specs — create a new spec
+  app.post("/api/specs", async (req, res) => {
+    try {
+      const userId = (req as any).telegramUserId as number;
+      if (!userId) { res.status(401).json({ error: "User not identified" }); return; }
+
+      const { title, category, requirements, budget_min, budget_max, budget_currency } = req.body;
+      if (!title || typeof title !== "string") {
+        res.status(400).json({ error: "title is required" });
+        return;
+      }
+
+      const specId = `spec_${Date.now()}_${userId}`;
+      const spec = await createSpec({
+        id: specId,
+        creator_id: userId,
+        title,
+        category: category || undefined,
+        requirements: requirements || undefined,
+        budget_min: budget_min !== undefined ? Number(budget_min) : undefined,
+        budget_max: budget_max !== undefined ? Number(budget_max) : undefined,
+        budget_currency: budget_currency || "USD",
+      });
+
+      res.json(spec);
+    } catch (e: any) {
+      console.error("POST /api/specs error:", e.message);
+      res.status(500).json({ error: "Failed to create spec" });
+    }
+  });
+
+  // POST /api/specs/generate — AI generates spec from description
+  app.post("/api/specs/generate", async (req, res) => {
+    try {
+      const userId = (req as any).telegramUserId as number;
+      if (!userId) { res.status(401).json({ error: "User not identified" }); return; }
+
+      const { description } = req.body;
+      if (!description || typeof description !== "string") {
+        res.status(400).json({ error: "description is required" });
+        return;
+      }
+
+      const result = await generateSpecAI(description);
+      res.json(result);
+    } catch (e: any) {
+      console.error("POST /api/specs/generate error:", e.message);
+      res.status(500).json({ error: "Failed to generate spec" });
+    }
+  });
+
+  // GET /api/groups/top — top groups for leaderboard
+  app.get("/api/groups/top", async (req, res) => {
+    try {
+      const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string) || 10));
+      const groups = await getLeaderboard("completed_deals", limit);
+      res.json(groups);
+    } catch (e: any) {
+      console.error("GET /api/groups/top error:", e.message);
+      res.status(500).json({ error: "Failed to fetch top groups" });
     }
   });
 

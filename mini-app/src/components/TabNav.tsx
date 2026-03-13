@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 const tabs = [
   { path: "/wallet", label: "Wallet", icon: "solar:wallet-linear" },
   { path: "/deals", label: "Deals", icon: "solar:clipboard-list-linear" },
+  { path: "/spec/new", label: "Spec", icon: "solar:document-text-linear" },
   { path: "/groups", label: "Groups", icon: "solar:users-group-rounded-linear" },
   { path: "/profile", label: "Profile", icon: "solar:user-linear" },
 ];
@@ -15,7 +16,7 @@ export default function TabNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#0f172a]/90 backdrop-blur-xl border-t border-white/5 safe-area-bottom">
       <div className="max-w-md mx-auto flex items-center justify-around h-16">
         {tabs.map((tab) => {
-          const active = location.pathname === tab.path;
+          const active = location.pathname === tab.path || location.pathname.startsWith(tab.path.replace(/\/new$/, "/"));
           return (
             <button
               key={tab.path}

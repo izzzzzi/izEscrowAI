@@ -543,3 +543,71 @@ export async function createDealFromJob(id: string, respondentId: number, amount
 export async function checkHasResponded(jobId: string): Promise<{ responded: boolean }> {
   return apiFetch(`/jobs/${jobId}/has-responded`);
 }
+
+// --- Specs ---
+
+export interface SpecRequirement {
+  description: string;
+  acceptance_criteria: string[];
+  status?: "met" | "partial" | "not_met";
+}
+
+export interface Spec {
+  id: string;
+  deal_id: string | null;
+  creator_id: number;
+  title: string;
+  category: string | null;
+  requirements: SpecRequirement[] | null;
+  budget_min: number | null;
+  budget_max: number | null;
+  budget_currency: string;
+  status: string;
+  created_at: string;
+}
+
+export function fetchSpec(id: string): Promise<Spec> {
+  return apiFetch(`/api/specs/${id}`);
+}
+
+export function createSpec(data: {
+  title: string;
+  category?: string;
+  requirements?: SpecRequirement[];
+  budget_min?: number;
+  budget_max?: number;
+  budget_currency?: string;
+}): Promise<Spec> {
+  return apiFetch("/api/specs", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export interface GenerateSpecResult {
+  type: "spec";
+  title: string;
+  category: string;
+  requirements: string[];
+  budget_range: { min: number; max: number; currency: string } | null;
+}
+
+export interface GenerateSpecQuestions {
+  type: "questions";
+  questions: string[];
+}
+
+export function generateSpecAI(
+  description: string,
+): Promise<GenerateSpecResult | GenerateSpecQuestions> {
+  return apiFetch("/api/specs/generate", {
+    method: "POST",
+    body: JSON.stringify({ description }),
+  });
+}
+
+// --- Groups Top ---
+
+export function fetchTopGroups(limit = 10): Promise<GroupStat[]> {
+  return fetch(`${API_URL}/api/groups/top?limit=${limit}`).then((r) => r.json());
+}

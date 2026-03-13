@@ -12,6 +12,7 @@ import OfferDetailPage from "./pages/OfferDetailPage";
 import WebProfilePage from "./pages/WebProfilePage";
 import MarketPage from "./pages/MarketPage";
 import MyJobResponsesPage from "./pages/MyJobResponsesPage";
+import SpecWizardPage from "./pages/SpecWizardPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminSources from "./pages/admin/AdminSources";
 import AdminJobs from "./pages/admin/AdminJobs";
@@ -53,6 +54,8 @@ function WebApp() {
         <Route path="/profile" element={<WebProfilePage />} />
         <Route path="/profile/:userId" element={<WebProfilePage />} />
         <Route path="/market" element={<MarketPage />} />
+        <Route path="/spec/new" element={<SpecWizardPage />} />
+        <Route path="/spec/:specId" element={<SpecWizardPage />} />
         <Route path="/my-jobs/:id" element={<MyJobResponsesPage />} />
         <Route path="/groups" element={<LeaderboardPage />} />
         <Route path="/groups/:groupId" element={<GroupDashboardPage />} />
@@ -110,6 +113,8 @@ function MiniApp() {
         <Route path="/profile" element={<AnimatedPage><ProfilePage /></AnimatedPage>} />
         <Route path="/profile/:userId" element={<AnimatedPage><ProfilePage /></AnimatedPage>} />
         <Route path="/my-jobs/:id" element={<AnimatedPage><MyJobResponsesPage /></AnimatedPage>} />
+        <Route path="/spec/new" element={<AnimatedPage><SpecWizardPage /></AnimatedPage>} />
+        <Route path="/spec/:specId" element={<AnimatedPage><SpecWizardPage /></AnimatedPage>} />
         <Route path="/groups" element={<AnimatedPage><LeaderboardPage /></AnimatedPage>} />
         <Route path="/groups/:groupId" element={<AnimatedPage><GroupDashboardPage /></AnimatedPage>} />
         <Route path="*" element={<Navigate to="/wallet" replace />} />

@@ -1,7 +1,7 @@
 import pg from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { eq, or, notInArray, inArray, sql, and, desc, count, gte, lte } from "drizzle-orm";
-import { users, deals, reputation, offers, applications, riskAssessments, groupStats, dealGroups, githubProfiles, sources, parsedJobs, platformSettings, jobResponses } from "./schema.js";
+import { users, deals, reputation, specs, userProfiles, offers, applications, riskAssessments, groupStats, dealGroups, githubProfiles, sources, parsedJobs, platformSettings, jobResponses } from "./schema.js";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 let _pool: pg.Pool | null = null;
@@ -245,6 +245,7 @@ export async function addRating(telegramId: number, rating: number) {
 export interface Offer {
   id: string;
   creator_id: number;
+  spec_id: string | null;
   description: string;
   min_price: number | null;
   currency: string;
@@ -252,7 +253,9 @@ export interface Offer {
   status: string;
   deal_id: string | null;
   max_applicants: number | null;
+  group_chat_id: number | null;
   inline_message_id: string | null;
+  expires_at: string | null;
   created_at: string;
 }
 
@@ -260,6 +263,7 @@ function toOffer(row: any): Offer {
   return {
     ...row,
     created_at: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
+    expires_at: row.expires_at instanceof Date ? row.expires_at.toISOString() : row.expires_at,
   };
 }
 
@@ -270,6 +274,9 @@ export async function createOffer(offer: {
   min_price?: number;
   currency?: string;
   role?: string;
+  spec_id?: string;
+  group_chat_id?: number;
+  expires_at?: Date;
 }): Promise<Offer> {
   const db = getDb();
   await db.insert(offers).values({
@@ -279,6 +286,9 @@ export async function createOffer(offer: {
     min_price: offer.min_price ?? null,
     currency: offer.currency ?? "TON",
     role: offer.role ?? "buyer",
+    spec_id: offer.spec_id ?? null,
+    group_chat_id: offer.group_chat_id ?? null,
+    expires_at: offer.expires_at ?? null,
   });
   return (await getOfferById(offer.id))!;
 }
@@ -1416,4 +1426,204 @@ export async function getGithubProfilesWithSkillOverlap(skills: string[]): Promi
     user_id: r.user_id,
     languages: (r.languages ?? {}) as Record<string, number>,
   }));
+}
+
+// --- Specs ---
+
+export interface Spec {
+  id: string;
+  deal_id: string | null;
+  creator_id: number;
+  title: string;
+  category: string | null;
+  requirements: Array<{ description: string; acceptance_criteria: string[] }> | null;
+  budget_min: number | null;
+  budget_max: number | null;
+  budget_currency: string;
+  status: string;
+  created_at: string;
+}
+
+function toSpec(row: any): Spec {
+  return {
+    ...row,
+    budget_currency: row.budget_currency ?? "USD",
+    created_at: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
+  };
+}
+
+export async function createSpec(data: {
+  id: string;
+  creator_id: number;
+  title: string;
+  category?: string;
+  requirements?: Array<{ description: string; acceptance_criteria: string[] }>;
+  budget_min?: number;
+  budget_max?: number;
+  budget_currency?: string;
+  status?: string;
+}): Promise<Spec> {
+  const db = getDb();
+  await db.insert(specs).values({
+    id: data.id,
+    creator_id: data.creator_id,
+    title: data.title,
+    category: data.category ?? null,
+    requirements: data.requirements ?? null,
+    budget_min: data.budget_min ?? null,
+    budget_max: data.budget_max ?? null,
+    budget_currency: data.budget_currency ?? "USD",
+    status: data.status ?? "draft",
+  });
+  return (await getSpecById(data.id))!;
+}
+
+export async function getSpecById(id: string): Promise<Spec | null> {
+  const db = getDb();
+  const rows = await db.select().from(specs).where(eq(specs.id, id)).limit(1);
+  return rows[0] ? toSpec(rows[0]) : null;
+}
+
+export async function getSpecsByCreator(creatorId: number): Promise<Spec[]> {
+  const db = getDb();
+  const rows = await db.select().from(specs)
+    .where(eq(specs.creator_id, creatorId))
+    .orderBy(desc(specs.created_at));
+  return rows.map(toSpec);
+}
+
+export async function updateSpec(id: string, data: Partial<{
+  title: string;
+  category: string;
+  requirements: Array<{ description: string; acceptance_criteria: string[] }>;
+  budget_min: number;
+  budget_max: number;
+  budget_currency: string;
+  status: string;
+  deal_id: string;
+}>) {
+  const db = getDb();
+  await db.update(specs).set(data).where(eq(specs.id, id));
+}
+
+export async function linkSpecToDeal(specId: string, dealId: string) {
+  const db = getDb();
+  await db.update(specs)
+    .set({ deal_id: dealId, status: "in_deal" })
+    .where(eq(specs.id, specId));
+}
+
+export async function getSpecByDeal(dealId: string): Promise<Spec | null> {
+  const db = getDb();
+  const rows = await db.select().from(specs).where(eq(specs.deal_id, dealId)).limit(1);
+  return rows[0] ? toSpec(rows[0]) : null;
+}
+
+// --- User Profiles ---
+
+export interface UserProfile {
+  user_id: number;
+  categories: string[] | null;
+  bio: string | null;
+  portfolio_url: string | null;
+}
+
+export async function upsertUserProfile(data: {
+  user_id: number;
+  categories?: string[];
+  bio?: string;
+  portfolio_url?: string;
+}) {
+  const db = getDb();
+  await db.insert(userProfiles)
+    .values({
+      user_id: data.user_id,
+      categories: data.categories ?? null,
+      bio: data.bio ?? null,
+      portfolio_url: data.portfolio_url ?? null,
+    })
+    .onConflictDoUpdate({
+      target: userProfiles.user_id,
+      set: {
+        categories: data.categories ?? sql`${userProfiles.categories}`,
+        bio: data.bio ?? sql`${userProfiles.bio}`,
+        portfolio_url: data.portfolio_url ?? sql`${userProfiles.portfolio_url}`,
+      },
+    });
+}
+
+export async function getUserProfile(userId: number): Promise<UserProfile | null> {
+  const db = getDb();
+  const rows = await db.select().from(userProfiles).where(eq(userProfiles.user_id, userId)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function getUsersByCategories(categories: string[]): Promise<UserProfile[]> {
+  const db = getDb();
+  if (categories.length === 0) return [];
+  const rows = await db.select().from(userProfiles)
+    .where(sql`${userProfiles.categories} ?| array[${sql.join(categories.map(c => sql`${c}`), sql`, `)}]`);
+  return rows;
+}
+
+// --- Offer Expiration ---
+
+export async function getExpiredOffers(): Promise<Offer[]> {
+  const db = getDb();
+  const rows = await db.select().from(offers)
+    .where(and(
+      eq(offers.status, "open"),
+      lte(offers.expires_at, sql`now()`),
+    ));
+  return rows.map(toOffer);
+}
+
+export async function expireOffer(id: string) {
+  const db = getDb();
+  await db.update(offers)
+    .set({ status: "expired" })
+    .where(eq(offers.id, id));
+}
+
+export async function getOffersByGroup(groupId: number): Promise<Offer[]> {
+  const db = getDb();
+  const rows = await db.select().from(offers)
+    .where(and(eq(offers.group_chat_id, groupId), eq(offers.status, "open")))
+    .orderBy(desc(offers.created_at));
+  return rows.map(toOffer);
+}
+
+// --- User Trust Score ---
+
+export async function updateUserTrustScore(telegramId: number, score: number) {
+  const db = getDb();
+  await db.update(users)
+    .set({ trust_score: score })
+    .where(eq(users.telegram_id, telegramId));
+}
+
+export async function setFirstDealAt(telegramId: number) {
+  const db = getDb();
+  await db.update(users)
+    .set({ first_deal_at: sql`COALESCE(${users.first_deal_at}, now())` })
+    .where(eq(users.telegram_id, telegramId));
+}
+
+export async function getUserTrustScore(telegramId: number): Promise<number> {
+  const db = getDb();
+  const rows = await db.select({ trust_score: users.trust_score })
+    .from(users)
+    .where(eq(users.telegram_id, telegramId))
+    .limit(1);
+  return rows[0]?.trust_score ?? 10;
+}
+
+export async function getUserFirstDealAt(telegramId: number): Promise<string | null> {
+  const db = getDb();
+  const rows = await db.select({ first_deal_at: users.first_deal_at })
+    .from(users)
+    .where(eq(users.telegram_id, telegramId))
+    .limit(1);
+  const val = rows[0]?.first_deal_at;
+  return val instanceof Date ? val.toISOString() : val ?? null;
 }
