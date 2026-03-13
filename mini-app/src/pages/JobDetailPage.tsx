@@ -298,31 +298,63 @@ export default function JobDetailPage() {
                     {author}
                   </span>
                 ) : (
-                  <span className="text-white">@{author}</span>
+                  <a
+                    href={`https://t.me/${author}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:text-blue-300 transition-colors"
+                  >
+                    @{author}
+                  </a>
                 )}
               </div>
             )}
 
             {/* Contact URL */}
-            {job.contact_url && !isMasked(job.contact_url) && (
+            {job.contact_url && (
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-slate-500 text-xs w-16">Contact</span>
-                <a
-                  href={job.contact_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 transition-colors truncate"
-                >
-                  {job.contact_url}
-                </a>
+                {isMasked(job.contact_url) ? (
+                  <span className="flex items-center gap-1.5 text-slate-400">
+                    <iconify-icon icon="solar:lock-keyhole-linear" width="14" class="text-slate-500" />
+                    {job.contact_url}
+                  </span>
+                ) : (
+                  <a
+                    href={job.contact_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:text-blue-300 transition-colors truncate"
+                  >
+                    {job.contact_url}
+                  </a>
+                )}
               </div>
             )}
 
             {/* Source channel */}
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-slate-500 text-xs w-16">Channel</span>
-              <span className="text-slate-400">{job.source_id}</span>
-            </div>
+            {(job as any).source_title && (
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-slate-500 text-xs w-16">Channel</span>
+                {isMasked((job as any).source_title) ? (
+                  <span className="flex items-center gap-1.5 text-slate-400">
+                    <iconify-icon icon="solar:lock-keyhole-linear" width="14" class="text-slate-500" />
+                    {(job as any).source_title}
+                  </span>
+                ) : (job as any).source_username ? (
+                  <a
+                    href={`https://t.me/${(job as any).source_username}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:text-blue-300 transition-colors"
+                  >
+                    {(job as any).source_title}
+                  </a>
+                ) : (
+                  <span className="text-slate-400">{(job as any).source_title}</span>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Masked values CTA */}
