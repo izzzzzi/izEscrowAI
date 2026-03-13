@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "db:push": "drizzle-kit push",
+    "start": "npx drizzle-kit push && node dist/index.js"
   },
   "dependencies": {
     "@ton/core": "^0.63.1",
@@ -15,6 +16,7 @@
     "@ton/ton": "^16.2.2",
     "cheerio": "^1.2.0",
     "dotenv": "^17.3.1",
+    "drizzle-kit": "^0.31.9",
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
     "grammy": "^1.41.1",
@@ -25,7 +27,6 @@
     "@types/express": "^5.0.6",
     "@types/node": "^25.4.0",
     "@types/pg": "^8.18.0",
-    "drizzle-kit": "^0.31.9",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
