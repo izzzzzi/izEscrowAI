@@ -10,3 +10,8 @@ openspec/
 .claude/
 .codex/
 .opencode/
+
+# Private config files (NOT the .default.ts versions)
+bot/src/ai/prompts.ts
+bot/src/scoring/weights.ts
+bot/src/**/config.private.ts

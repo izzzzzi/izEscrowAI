@@ -1,0 +1,126 @@
+import { useState, useEffect, useCallback } from "react";
+import { fetchJobs, type ParsedJob, type JobFilters } from "../lib/api";
+import { useAuth } from "../contexts/AuthContext";
+import JobCard from "../components/JobCard";
+import JobFiltersPanel from "../components/JobFilters";
+import ProposalModal from "../components/ProposalModal";
+
+export default function MarketPage() {
+  const { isAuthenticated } = useAuth();
+  const [jobs, setJobs] = useState<ParsedJob[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState<JobFilters>({});
+  const [selectedJob, setSelectedJob] = useState<ParsedJob | null>(null);
+  const [proposalOpen, setProposalOpen] = useState(false);
+
+  const loadJobs = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetchJobs({ ...filters, page, limit: 20 });
+      if (page === 1) {
+        setJobs(res.data);
+      } else {
+        setJobs((prev) => [...prev, ...res.data]);
+      }
+      setTotal(res.total);
+    } catch {
+      // ignore
+    } finally {
+      setLoading(false);
+    }
+  }, [filters, page]);
+
+  useEffect(() => {
+    loadJobs();
+  }, [loadJobs]);
+
+  const handleFilterChange = (newFilters: JobFilters) => {
+    setFilters(newFilters);
+    setPage(1);
+    setJobs([]);
+  };
+
+  const handleLoadMore = () => {
+    if (jobs.length < total) {
+      setPage((p) => p + 1);
+    }
+  };
+
+  return (
+    <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
+      <div className="max-w-4xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold">Маркетплейс заказов</h1>
+            <p className="text-sm text-slate-400 mt-1">
+              {total > 0 ? `${total} активных заказов` : "Заказы из Telegram-групп"}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Filters */}
+          <div className="md:w-64 flex-shrink-0">
+            <JobFiltersPanel onChange={handleFilterChange} />
+          </div>
+
+          {/* Job list */}
+          <div className="flex-1 space-y-3">
+            {loading && jobs.length === 0 ? (
+              <div className="space-y-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="bg-white/5 rounded-xl p-4 animate-pulse h-24" />
+                ))}
+              </div>
+            ) : jobs.length === 0 ? (
+              <div className="text-center py-20">
+                <iconify-icon icon="solar:document-linear" width="48" class="text-slate-600 mb-4" />
+                <p className="text-slate-400">Заказов пока нет</p>
+                <p className="text-xs text-slate-500 mt-1">Они появятся когда бот начнёт парсить группы</p>
+              </div>
+            ) : (
+              <>
+                {jobs.map((job) => (
+                  <JobCard
+                    key={job.id}
+                    job={job}
+                    onClick={() => {
+                      setSelectedJob(job);
+                      if (isAuthenticated) {
+                        setProposalOpen(true);
+                      }
+                    }}
+                  />
+                ))}
+                {jobs.length < total && (
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={loading}
+                    className="w-full py-3 text-sm text-slate-400 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
+                  >
+                    {loading ? "Загрузка..." : "Показать ещё"}
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Proposal Modal */}
+      {selectedJob && (
+        <ProposalModal
+          isOpen={proposalOpen}
+          onClose={() => {
+            setProposalOpen(false);
+            setSelectedJob(null);
+          }}
+          jobId={selectedJob.id}
+          jobTitle={selectedJob.title}
+        />
+      )}
+    </div>
+  );
+}

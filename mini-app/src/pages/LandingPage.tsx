@@ -1,7 +1,23 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { fetchStats, fetchPublicOffers, fetchTalent, type PlatformStats, type PublicOffer, type TalentData } from "../lib/api";
+import StatCounter from "../components/StatCounter";
+import TalentGrid from "../components/TalentGrid";
+import ActivityFeed from "../components/ActivityFeed";
+import Roadmap from "../components/Roadmap";
 
 export default function LandingPage() {
   const mainRef = useRef<HTMLElement>(null);
+  const navigate = useNavigate();
+  const [stats, setStats] = useState<PlatformStats | null>(null);
+  const [recentOffers, setRecentOffers] = useState<PublicOffer[]>([]);
+  const [talent, setTalent] = useState<TalentData | null>(null);
+
+  useEffect(() => {
+    fetchStats().then(setStats).catch(() => {});
+    fetchPublicOffers().then((offers) => setRecentOffers(offers.slice(0, 6))).catch(() => {});
+    fetchTalent().then(setTalent).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const sections = mainRef.current?.querySelectorAll("section");
@@ -36,31 +52,6 @@ export default function LandingPage() {
       className="overflow-x-hidden"
       style={{ background: "#0f0f1a", color: "#fff", fontFamily: "'Inter', sans-serif" }}
     >
-      {/* Navigation */}
-      <header className="fixed top-0 left-0 w-full z-50 px-6 py-4">
-        <nav className="max-w-7xl mx-auto flex items-center justify-between glass-panel px-6 py-3 rounded-full">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 ton-gradient rounded-lg flex items-center justify-center">
-              <iconify-icon icon="solar:shield-check-linear" width="20" height="20" class="text-white" />
-            </div>
-            <span className="text-lg font-medium tracking-tight">izEscrowAI</span>
-          </div>
-
-          <div className="hidden md:flex items-center gap-8 text-sm text-slate-400 font-medium">
-            <a href="#how-it-works" className="hover:text-white transition-colors">How it works</a>
-            <a href="#features" className="hover:text-white transition-colors">Features</a>
-            <a href="https://github.com/izzzzzi/izEscrowAI" className="hover:text-white transition-colors">GitHub</a>
-          </div>
-
-          <a
-            href="https://t.me/izEscrowAIBot"
-            className="ton-gradient px-5 py-2 rounded-full text-xs font-medium tracking-wide uppercase hover:opacity-90 transition-all shadow-lg shadow-blue-500/10"
-          >
-            Launch Bot
-          </a>
-        </nav>
-      </header>
-
       <main ref={mainRef} className="relative">
         {/* Background Orbs */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none -z-10">
@@ -74,15 +65,15 @@ export default function LandingPage() {
             <div className="text-left">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-medium tracking-widest uppercase text-[#0098EA] mb-6">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#0098EA] animate-pulse" />
-                Live on Testnet
+                Live on TON
               </div>
               <h1 className="text-5xl md:text-6xl font-semibold tracking-tight leading-[1.1] mb-6">
-                AI-Powered P2P <br />
-                <span className="text-[#0098EA]">Safe Deals</span> on TON.
+                Dev Freelance <br />
+                <span className="text-[#0098EA]">Exchange</span> on TON.
               </h1>
               <p className="text-lg text-slate-400 font-light leading-relaxed max-w-xl mb-10">
-                Describe your deal in natural language. Our AI parses the terms, and funds are locked
-                in a non-custodial smart contract. No middlemen, total trust.
+                Find developers, verify skills via GitHub, and lock payments in a smart contract.
+                AI parses deals from natural language — no middlemen, total trust.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
@@ -92,72 +83,148 @@ export default function LandingPage() {
                   <iconify-icon icon="solar:paper-plane-linear" width="20" height="20" />
                   Open Telegram Bot
                 </a>
-                <a
-                  href="#how-it-works"
-                  className="glass-panel px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/5 transition-all"
+                <button
+                  onClick={() => navigate("/offers")}
+                  className="glass-panel px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/5 transition-all cursor-pointer border-none text-white text-base"
                 >
-                  Learn Workflow
-                </a>
+                  <iconify-icon icon="solar:tag-linear" width="20" height="20" />
+                  Browse Offers
+                </button>
               </div>
             </div>
 
-            {/* Animated Deal Card */}
+            {/* Telegram Chat Mockup — animated */}
             <div className="relative animate-float">
-              <div className="glass-panel rounded-[2.5rem] p-8 border-white/10 glow-blue max-w-[480px] mx-auto">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">
-                    <iconify-icon icon="solar:user-linear" width="20" height="20" class="text-[#0098EA]" />
+              <div className="glass-panel rounded-[1.5rem] max-w-[420px] mx-auto overflow-hidden glow-blue" style={{ background: "rgba(14, 22, 33, 0.85)" }}>
+                {/* Chat header */}
+                <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5" style={{ background: "rgba(23, 33, 48, 0.9)" }}>
+                  <div className="w-9 h-9 rounded-full ton-gradient flex items-center justify-center">
+                    <iconify-icon icon="solar:shield-check-linear" width="18" height="18" class="text-white" />
                   </div>
-                  <div className="deal-bubble px-4 py-3 text-sm font-light leading-relaxed">
-                    "Selling logo design to @ivan for 50 TON"
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">izEscrowAI Bot</div>
+                    <div className="text-[10px] text-[#0098EA]">online</div>
+                  </div>
+                  <iconify-icon icon="solar:phone-linear" width="18" class="text-slate-500" />
+                  <iconify-icon icon="solar:menu-dots-bold" width="18" class="text-slate-500" />
+                </div>
+
+                {/* Chat messages */}
+                <div className="px-3 py-4 space-y-3 min-h-[380px]">
+                  {/* Step 1: User typing indicator */}
+                  <div className="flex justify-end chat-step chat-step-1">
+                    <div className="px-3 py-2 rounded-2xl rounded-br-md text-xs text-slate-400" style={{ background: "#2B5278" }}>
+                      <span className="typing-bubble"><span /><span /><span /></span>
+                    </div>
+                  </div>
+
+                  {/* Step 2: User message appears */}
+                  <div className="flex justify-end chat-step chat-step-2">
+                    <div className="max-w-[80%] px-3 py-2 rounded-2xl rounded-br-md text-sm" style={{ background: "#2B5278" }}>
+                      Selling logo design to @ivan for $50
+                      <div className="text-[10px] text-slate-400 text-right mt-1">12:03</div>
+                    </div>
+                  </div>
+
+                  {/* Step 3: Bot "analyzing" typing */}
+                  <div className="flex items-end gap-2 chat-step chat-step-3">
+                    <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
+                      <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
+                    </div>
+                    <div className="px-3 py-2 rounded-2xl rounded-bl-md text-xs text-slate-400 flex items-center gap-1.5" style={{ background: "rgba(30, 41, 59, 0.8)" }}>
+                      <iconify-icon icon="solar:cpu-linear" width="14" class="text-[#0098EA] animate-spin-slow" />
+                      <span className="typing-dots">Parsing deal terms</span>
+                    </div>
+                  </div>
+
+                  {/* Step 4: Bot response with escrow card */}
+                  <div className="flex items-end gap-2 chat-step chat-step-4">
+                    <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
+                      <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
+                    </div>
+                    <div className="max-w-[85%] rounded-2xl rounded-bl-md overflow-hidden" style={{ background: "rgba(30, 41, 59, 0.8)" }}>
+                      <div className="px-3 pt-2 pb-1 text-sm">
+                        Deal created! Here are the terms:
+                      </div>
+                      {/* Inline escrow card */}
+                      <div className="mx-2 mb-2 rounded-xl overflow-hidden border border-[#0098EA]/20" style={{ background: "rgba(0, 152, 234, 0.05)" }}>
+                        <div className="px-3 py-2 border-b border-[#0098EA]/10">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-semibold uppercase tracking-wider text-[#0098EA]">Escrow Contract</span>
+                            <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[9px] font-semibold">ACTIVE</span>
+                          </div>
+                        </div>
+                        <div className="px-3 py-2 space-y-1.5">
+                          <div className="flex justify-between text-xs">
+                            <span className="text-slate-500">Seller</span>
+                            <span className="font-medium">@you</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span className="text-slate-500">Buyer</span>
+                            <span className="font-medium">@ivan</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span className="text-slate-500">Amount</span>
+                            <span className="font-medium">$50 <span className="text-slate-600">=</span> 20 TON</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span className="text-slate-500">Service</span>
+                            <span className="font-medium">Logo Design</span>
+                          </div>
+                        </div>
+                        <div className="px-2 pb-2 flex gap-1.5">
+                          <div className="flex-1 py-1.5 text-[10px] font-semibold uppercase tracking-wider bg-white/5 border border-white/10 rounded-lg text-center text-slate-300">
+                            Details
+                          </div>
+                          <div className="flex-1 py-1.5 text-[10px] font-semibold uppercase tracking-wider ton-gradient rounded-lg text-center text-white shadow-lg shadow-blue-500/20">
+                            Confirm Deal
+                          </div>
+                        </div>
+                      </div>
+                      <div className="px-3 pb-2">
+                        <div className="flex items-center gap-1 text-[10px] text-emerald-400">
+                          <iconify-icon icon="solar:shield-check-linear" width="11" />
+                          Trust Score: 87 — Low Risk
+                        </div>
+                        <div className="text-[10px] text-slate-500 text-right">12:03</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center gap-4 mb-8">
-                  <div className="h-12 w-px bg-gradient-to-b from-blue-500/50 to-transparent" />
-                  <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
-                    <iconify-icon icon="solar:cpu-linear" width="18" height="18" class="text-[#0098EA]" />
-                    <span className="text-xs font-medium uppercase tracking-widest text-slate-300">
-                      AI Parsing Deal Terms...
-                    </span>
+                {/* Chat input bar */}
+                <div className="flex items-center gap-2 px-3 py-2 border-t border-white/5" style={{ background: "rgba(23, 33, 48, 0.9)" }}>
+                  <iconify-icon icon="solar:smile-circle-linear" width="22" class="text-slate-500" />
+                  <div className="flex-1 bg-white/5 rounded-full px-4 py-2 text-xs text-slate-500">
+                    Message...
                   </div>
-                  <div className="h-12 w-px bg-gradient-to-t from-blue-500/50 to-transparent" />
-                </div>
-
-                <div className="bg-blue-500/5 border border-blue-500/20 rounded-2xl p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-xs font-medium text-slate-400 uppercase tracking-widest">
-                      Escrow Contract
-                    </span>
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-medium uppercase">
-                      Active
-                    </span>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">Amount:</span>
-                      <span className="font-medium">50.00 TON</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">Counterparty:</span>
-                      <span className="font-medium">@ivan</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">Service:</span>
-                      <span className="font-medium italic">Logo Design</span>
-                    </div>
-                  </div>
-                  <div className="mt-6 pt-6 border-t border-white/5 flex gap-3">
-                    <div className="flex-1 py-2 text-xs font-medium uppercase tracking-wider bg-white/5 border border-white/10 rounded-lg text-center">
-                      Details
-                    </div>
-                    <div className="flex-1 py-2 text-xs font-medium uppercase tracking-wider ton-gradient rounded-lg shadow-lg text-center">
-                      Confirm
-                    </div>
-                  </div>
+                  <iconify-icon icon="solar:microphone-linear" width="22" class="text-slate-500" />
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Live Stats Bar */}
+        <section className="py-12 px-6 border-y border-white/5">
+          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats ? (
+              <>
+                <StatCounter value={stats.total_deals} label="Total Deals" />
+                <StatCounter value={stats.total_users} label="Users" />
+                <StatCounter value={stats.github_verified} label="GitHub Verified" />
+                <StatCounter value={stats.success_rate} label="Success Rate" suffix="%" />
+              </>
+            ) : (
+              <>
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="text-center">
+                    <div className="h-8 w-20 mx-auto bg-white/5 rounded animate-pulse mb-2" />
+                    <div className="h-3 w-16 mx-auto bg-white/5 rounded animate-pulse" />
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         </section>
 
@@ -171,7 +238,7 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
               { icon: "solar:chat-line-linear", title: "1. Describe", desc: "Type your deal terms naturally in Telegram to the izEscrowAI Bot." },
-              { icon: "solar:magic-stick-linear", title: "2. AI Parsing", desc: "AI instantly converts your words into structured escrow conditions." },
+              { icon: "solar:magic-stick-linear", title: "2. AI Parsing", desc: "AI parses your deal. GitHub-verified skills are matched automatically." },
               { icon: "solar:wallet-2-linear", title: "3. Deposit", desc: "Connect your TON wallet via the Mini App to lock funds in the contract." },
               { icon: "solar:hand-stars-linear", title: "4. Deliver", desc: "Funds are released upon delivery or via AI-mediated fair dispute split." },
             ].map((step) => (
@@ -226,23 +293,94 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Deep Link Integration — wide */}
+            {/* Multi-Currency + Platform Fee — wide */}
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-10">
               <div className="flex-1">
-                <iconify-icon icon="solar:share-circle-linear" width="40" height="40" class="text-purple-400 mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">Deep Link Integration</h3>
+                <iconify-icon icon="solar:dollar-minimalistic-linear" width="40" height="40" class="text-purple-400 mb-6" />
+                <h3 className="text-2xl font-medium tracking-tight mb-4">Multi-Currency Deals</h3>
                 <p className="text-slate-400 font-light">
-                  Invite your counterparty instantly. Create a deal and share a simple link that opens
-                  the Mini App for them to confirm and start.
+                  Create deals in $, €, or ₽ — automatic conversion to TON via live rates from tonapi.io.
+                  Fair 1% platform fee is deducted on-chain only when the deal completes.
                 </p>
               </div>
-              <div className="w-full md:w-1/3 flex justify-center">
-                <div className="bg-white p-3 rounded-2xl shadow-xl shadow-blue-500/5">
-                  <div className="w-32 h-32 bg-[#0f0f1a] rounded-xl flex items-center justify-center text-white font-bold">
-                    QR
-                  </div>
+              <div className="w-full md:w-1/3 flex flex-col items-center gap-3">
+                <div className="flex gap-4 text-3xl font-semibold">
+                  <span className="text-green-400">$</span>
+                  <span className="text-blue-400">€</span>
+                  <span className="text-amber-400">₽</span>
+                </div>
+                <div className="text-sm text-slate-500 font-light">→ TON</div>
+              </div>
+            </div>
+
+            {/* Inline Offers */}
+            <div className="glass-panel p-10 rounded-[2.5rem] flex flex-col justify-between group">
+              <div>
+                <iconify-icon icon="solar:chat-square-arrow-linear" width="40" height="40" class="text-cyan-400 mb-6" />
+                <h3 className="text-xl font-medium tracking-tight mb-4">Inline Offers</h3>
+              </div>
+              <p className="text-sm text-slate-500 leading-relaxed font-light">
+                Post offers directly into any Telegram chat via inline mode. Anyone can bid — no need to join a channel.
+              </p>
+            </div>
+
+            {/* Auction & Bidding — wide */}
+            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] relative overflow-hidden group">
+              <div className="relative z-10">
+                <iconify-icon icon="solar:sort-by-time-linear" width="40" height="40" class="text-amber-400 mb-6" />
+                <h3 className="text-2xl font-medium tracking-tight mb-4">Auction & Bidding</h3>
+                <p className="text-slate-400 font-light max-w-md">
+                  Create public offers, collect bids from multiple applicants, review Trust Scores, and select the best deal.
+                  Full P2P marketplace built into Telegram.
+                </p>
+              </div>
+              <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-amber-500/5 rounded-full blur-[60px] group-hover:bg-amber-500/10 transition-colors" />
+            </div>
+
+            {/* GitHub Skill Verification — full width */}
+            <div className="md:col-span-3 glass-panel p-10 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-10">
+              <div className="flex-1">
+                <iconify-icon icon="logos:github-icon" width="40" height="40" class="mb-6" />
+                <h3 className="text-2xl font-medium tracking-tight mb-4">GitHub Skill Verification</h3>
+                <p className="text-slate-400 font-light max-w-lg">
+                  Link your GitHub to prove your skills. Languages, repos, and contribution history are analyzed
+                  to build a verifiable developer profile. AI matches your stack to job requirements automatically.
+                </p>
+              </div>
+              <div className="w-full md:w-1/3 flex flex-col items-center gap-4">
+                <div className="w-24 h-24 rounded-full border-4 border-green-500/30 flex items-center justify-center">
+                  <span className="text-3xl font-bold text-green-400">87</span>
+                </div>
+                <span className="text-xs text-green-400 font-semibold uppercase tracking-wider">Trust Score</span>
+                <div className="flex gap-2">
+                  <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 text-[10px]">Established</span>
+                  <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 text-[10px]">Org Member</span>
                 </div>
               </div>
+            </div>
+
+            {/* AI Risk Score */}
+            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] relative overflow-hidden group">
+              <div className="relative z-10">
+                <iconify-icon icon="solar:shield-check-linear" width="40" height="40" class="text-green-400 mb-6" />
+                <h3 className="text-2xl font-medium tracking-tight mb-4">AI Risk Score</h3>
+                <p className="text-slate-400 font-light max-w-md">
+                  Composite Trust Score: Platform (40%) + GitHub (30%) + Wallet (20%) + Verification (10%).
+                  Red/green flags detect fake accounts before you commit.
+                </p>
+              </div>
+              <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-green-500/5 rounded-full blur-[60px] group-hover:bg-green-500/10 transition-colors" />
+            </div>
+
+            {/* Group Analytics */}
+            <div className="glass-panel p-10 rounded-[2.5rem] flex flex-col justify-between">
+              <div>
+                <iconify-icon icon="solar:users-group-rounded-linear" width="40" height="40" class="text-violet-400 mb-6" />
+                <h3 className="text-xl font-medium tracking-tight mb-4">Group Analytics</h3>
+              </div>
+              <p className="text-sm text-slate-500 leading-relaxed font-light">
+                Track which Telegram groups generate the most deals. Leaderboard, stats, and conversion metrics built in.
+              </p>
             </div>
           </div>
         </section>
@@ -258,7 +396,8 @@ export default function LandingPage() {
                 { icon: "logos:typescript-icon", label: "TypeScript" },
                 { icon: "logos:react", label: "React" },
                 { icon: "simple-icons:telegram", label: "TON Connect", cls: "text-[#0088cc]" },
-                { icon: "solar:database-linear", label: "SQLite", cls: "text-white" },
+                { icon: "solar:database-linear", label: "PostgreSQL", cls: "text-white" },
+                { icon: "solar:chart-2-linear", label: "tonapi.io", cls: "text-white" },
               ].map((t) => (
                 <div key={t.label} className={`flex items-center gap-2 ${t.cls ?? ""}`}>
                   <iconify-icon icon={t.icon} width="24" />
@@ -266,6 +405,88 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Available Talent */}
+        {talent && (
+          <section className="py-24 px-6">
+            <div className="max-w-7xl mx-auto text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">Available Talent</h2>
+              <p className="text-slate-400 font-light">GitHub-verified developers ready to work.</p>
+            </div>
+            <div className="max-w-4xl mx-auto">
+              <TalentGrid languages={talent.languages} categories={talent.categories} />
+            </div>
+          </section>
+        )}
+
+        {/* Recent Offers Feed */}
+        {recentOffers.length > 0 && (
+          <section className="py-24 px-6">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex items-center justify-between mb-12">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-2">Live Offers</h2>
+                  <p className="text-slate-400 font-light">Browse and apply — no account needed to start.</p>
+                </div>
+                <button
+                  onClick={() => navigate("/offers")}
+                  className="text-[#0098EA] text-sm font-medium bg-transparent border-none cursor-pointer hover:underline"
+                >
+                  View All →
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {recentOffers.map((offer) => (
+                  <div
+                    key={offer.id}
+                    onClick={() => navigate(`/offers/${offer.id}`)}
+                    className="glass-panel p-6 rounded-2xl cursor-pointer hover:-translate-y-1 transition-all"
+                  >
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="px-2 py-0.5 rounded bg-green-500/10 text-green-400 text-[10px] font-medium uppercase">
+                        Open
+                      </span>
+                      {offer.creator_trust_score !== null && (
+                        <span className="text-[10px] text-slate-500">TS: {offer.creator_trust_score}</span>
+                      )}
+                    </div>
+                    <h3 className="text-sm font-medium mb-3 line-clamp-2">{offer.description}</h3>
+                    <div className="flex justify-between items-center text-xs text-slate-400">
+                      {offer.min_price ? (
+                        <span>from {offer.min_price} {offer.currency}</span>
+                      ) : (
+                        <span>Price negotiable</span>
+                      )}
+                      <span>{offer.application_count ?? 0} bids</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Live Activity */}
+        <section className="py-24 px-6">
+          <div className="max-w-7xl mx-auto text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">Live Activity</h2>
+            <p className="text-slate-400 font-light">Recent deals on the platform — auto-refreshes every 30s.</p>
+          </div>
+          <div className="max-w-2xl mx-auto">
+            <ActivityFeed />
+          </div>
+        </section>
+
+        {/* Roadmap */}
+        <section className="py-24 px-6">
+          <div className="max-w-7xl mx-auto text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">Roadmap</h2>
+            <p className="text-slate-400 font-light">Where we're headed next.</p>
+          </div>
+          <div className="max-w-5xl mx-auto">
+            <Roadmap />
           </div>
         </section>
 
@@ -278,22 +499,28 @@ export default function LandingPage() {
               Ready for safer P2P?
             </h2>
             <p className="text-lg text-slate-400 font-light mb-10">
-              Start your first escrow deal on the TON Testnet today. Safe, fast, and intelligent.
+              Start your first escrow deal on TON today. Safe, fast, and intelligent.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="https://t.me/izEscrowAIBot"
-                className="ton-gradient px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium text-lg hover:shadow-2xl transition-all"
+                className="ton-gradient px-8 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:shadow-2xl transition-all"
               >
-                Launch Telegram Bot
+                Join as Developer
               </a>
-              <a
-                href="https://iz-escrow-ai.vercel.app"
-                className="bg-white/5 border border-white/10 px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium text-lg hover:bg-white/10 transition-all"
+              <button
+                onClick={() => navigate("/offers")}
+                className="bg-white/5 border border-white/10 px-8 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/10 transition-all cursor-pointer text-white"
               >
-                Open Mini App
-              </a>
+                Post a Job
+              </button>
+              <button
+                onClick={() => navigate("/offers")}
+                className="bg-purple-500/10 border border-purple-500/20 px-8 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium text-purple-300 hover:bg-purple-500/20 transition-all cursor-pointer"
+              >
+                I'm a Designer
+              </button>
             </div>
           </div>
         </section>
@@ -320,7 +547,12 @@ export default function LandingPage() {
               </a>
             </div>
 
-            <p className="text-xs text-slate-600">Built for TON Ecosystem</p>
+            <div className="flex items-center gap-4">
+              <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] text-blue-400 font-medium">
+                TON Hackathon 2026
+              </span>
+              <p className="text-xs text-slate-600">Built for TON Ecosystem</p>
+            </div>
           </div>
         </footer>
       </main>

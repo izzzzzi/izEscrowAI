@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { TonConnectUIProvider } from "@tonconnect/ui-react";
+import { AuthProvider } from "./contexts/AuthContext.tsx";
 import App from "./App.tsx";
 import "./index.css";
 
@@ -12,9 +13,11 @@ const manifestUrl =
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <TonConnectUIProvider manifestUrl={manifestUrl}>
-        <App />
-      </TonConnectUIProvider>
+      <AuthProvider>
+        <TonConnectUIProvider manifestUrl={manifestUrl}>
+          <App />
+        </TonConnectUIProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
 );

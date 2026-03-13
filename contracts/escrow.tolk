@@ -21,8 +21,14 @@ const ERR_INVALID_STATE: int    = 402;
 const ERR_WRONG_AMOUNT: int     = 403;
 const ERR_TIMEOUT_NOT_REACHED: int = 404;
 const ERR_ALREADY_FUNDED: int   = 405;
+const ERR_INVALID_BODY: int    = 406;
 
 // --- Storage ---
+struct PlatformConfig {
+    platformAddress: address;
+    feeBps: uint16;
+}
+
 struct EscrowStorage {
     buyer: address;
     seller: address;
@@ -30,6 +36,7 @@ struct EscrowStorage {
     amount: coins;
     timeout: uint32;
     state: uint8;
+    platform: Cell<PlatformConfig>;
 }
 
 fun loadStorage(): EscrowStorage {
@@ -69,6 +76,19 @@ fun sendAllBalance(dest: address) {
     msg.send(SEND_MODE_CARRY_ALL_BALANCE | SEND_MODE_IGNORE_ERRORS);
 }
 
+fun sendFeeAndBalance(recipient: address, platformAddr: address, feeBps: int) {
+    val balance = contract.getOriginalBalance();
+    val available = balance - ton("0.01");
+    val fee = available * feeBps / 10000;
+    if (fee > 0) {
+        sendCoins(platformAddr, fee);
+    }
+    val remaining = available - fee;
+    if (remaining > 0) {
+        sendCoins(recipient, remaining);
+    }
+}
+
 fun returnFunds(dest: address) {
     val msg = createMessage({
         bounce: false,
@@ -89,6 +109,7 @@ fun onInternalMessage(in: InMessage) {
 
     val op = in.body.loadUint(32);
     var storage = loadStorage();
+    val pConfig = storage.platform.load();
 
     if (op == OP_DEPOSIT) {
         // Only buyer can deposit
@@ -110,8 +131,8 @@ fun onInternalMessage(in: InMessage) {
 
         storage.state = STATE_COMPLETED;
         saveStorage(storage);
-        // Send all balance to seller
-        sendAllBalance(storage.seller);
+        // Send fee to platform, remaining to seller
+        sendFeeAndBalance(storage.seller, pConfig.platformAddress, pConfig.feeBps);
         return;
     }
 
@@ -131,6 +152,7 @@ fun onInternalMessage(in: InMessage) {
         // Only arbiter can resolve disputes
         assert(in.senderAddress == storage.arbiter) throw ERR_UNAUTHORIZED;
         assert(storage.state == STATE_FUNDED) throw ERR_INVALID_STATE;
+        assert(in.body.remainingBitsCount() >= 72) throw ERR_INVALID_BODY;
 
         in.body.loadUint(64); // skip queryId
         val sellerPercent = in.body.loadUint(8);
@@ -139,12 +161,16 @@ fun onInternalMessage(in: InMessage) {
         storage.state = STATE_RESOLVED;
         saveStorage(storage);
 
-        // Calculate split
+        // Calculate fee then split remainder
         val balance = contract.getOriginalBalance();
-        // Reserve small amount for storage fees
         val available = balance - ton("0.01");
-        val sellerAmount = available * sellerPercent / 100;
-        val buyerAmount = available - sellerAmount;
+        val fee = available * pConfig.feeBps / 10000;
+        if (fee > 0) {
+            sendCoins(pConfig.platformAddress, fee);
+        }
+        val afterFee = available - fee;
+        val sellerAmount = afterFee * sellerPercent / 100;
+        val buyerAmount = afterFee - sellerAmount;
 
         if (sellerAmount > 0) {
             sendCoins(storage.seller, sellerAmount);
@@ -162,8 +188,8 @@ fun onInternalMessage(in: InMessage) {
 
         storage.state = STATE_COMPLETED;
         saveStorage(storage);
-        // Release to seller
-        sendAllBalance(storage.seller);
+        // Send fee to platform, remaining to seller
+        sendFeeAndBalance(storage.seller, pConfig.platformAddress, pConfig.feeBps);
         return;
     }
 
@@ -181,8 +207,9 @@ fun onBouncedMessage(in: InMessageBounced) {
 // --- Getters ---
 
 @method_id(100)
-fun getDealState(): (int, int, address, address, address, int, int) {
+fun getDealState(): (int, int, address, address, address, address, int, int, int) {
     val s = loadStorage();
+    val p = s.platform.load();
     val balance = contract.getOriginalBalance();
-    return (s.state, balance, s.buyer, s.seller, s.arbiter, s.amount, s.timeout);
+    return (s.state, balance, s.buyer, s.seller, s.arbiter, p.platformAddress, s.amount, s.timeout, p.feeBps);
 }

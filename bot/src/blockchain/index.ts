@@ -26,8 +26,10 @@ export interface DealStateOnChain {
   buyer: Address;
   seller: Address;
   arbiter: Address;
+  platformAddress: Address;
   amount: bigint;
   timeout: number;
+  feeBps: number;
 }
 
 // --- Singleton client ---
@@ -37,7 +39,7 @@ let tonClient: TonClient | null = null;
 export function getTonClient(): TonClient {
   if (!tonClient) {
     tonClient = new TonClient({
-      endpoint: process.env.TON_TESTNET_ENDPOINT || "https://testnet.toncenter.com/api/v2/jsonRPC",
+      endpoint: process.env.TON_ENDPOINT || "https://toncenter.com/api/v2/jsonRPC",
       apiKey: process.env.TON_API_KEY,
     });
   }
@@ -108,9 +110,16 @@ function buildInitData(params: {
   buyer: Address;
   seller: Address;
   arbiter: Address;
+  platformAddress: Address;
   amount: bigint;
+  feeBps: number;
   timeout: number;
 }): Cell {
+  const platformCell = beginCell()
+    .storeAddress(params.platformAddress)
+    .storeUint(params.feeBps, 16)
+    .endCell();
+
   return beginCell()
     .storeAddress(params.buyer)
     .storeAddress(params.seller)
@@ -118,6 +127,7 @@ function buildInitData(params: {
     .storeCoins(params.amount)
     .storeUint(params.timeout, 32)
     .storeUint(0, 8) // state = UNFUNDED
+    .storeRef(platformCell)
     .endCell();
 }
 
@@ -125,7 +135,9 @@ export function computeContractAddress(params: {
   buyer: Address;
   seller: Address;
   arbiter: Address;
+  platformAddress: Address;
   amount: bigint;
+  feeBps: number;
   timeout: number;
 }): Address {
   const code = getEscrowCode();
@@ -143,13 +155,20 @@ export async function deployEscrowContract(params: {
   const { wallet, keyPair } = await getArbiterWallet();
   const arbiterAddress = wallet.address;
 
+  const platformAddrStr = process.env.PLATFORM_WALLET_ADDRESS;
+  if (!platformAddrStr) throw new Error("PLATFORM_WALLET_ADDRESS not set");
+  const platformAddress = Address.parse(platformAddrStr);
+  const feeBps = parseInt(process.env.PLATFORM_FEE_BPS || "100");
+
   const timeout = Math.floor(Date.now() / 1000) + params.timeoutSeconds;
   const code = getEscrowCode();
   const data = buildInitData({
     buyer: params.buyer,
     seller: params.seller,
     arbiter: arbiterAddress,
+    platformAddress,
     amount: params.amount,
+    feeBps,
     timeout,
   });
 
@@ -233,10 +252,12 @@ export async function getDealStateOnChain(contractAddr: Address): Promise<DealSt
     const buyer = result.stack.readAddress();
     const seller = result.stack.readAddress();
     const arbiter = result.stack.readAddress();
+    const platformAddress = result.stack.readAddress();
     const amount = result.stack.readBigNumber();
     const timeout = result.stack.readNumber();
+    const feeBps = result.stack.readNumber();
 
-    return { state, balance, buyer, seller, arbiter, amount, timeout };
+    return { state, balance, buyer, seller, arbiter, platformAddress, amount, timeout, feeBps };
   } catch {
     // Contract might not be deployed yet
     return null;

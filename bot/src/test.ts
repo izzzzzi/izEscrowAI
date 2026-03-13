@@ -3,12 +3,14 @@
  * Run with: npx tsx src/test.ts
  *
  * Prerequisites:
- * - .env configured with BOT_TOKEN, OPENROUTER_API_KEY
+ * - .env configured with BOT_TOKEN, OPENROUTER_API_KEY, DATABASE_URL
  * - For blockchain tests: ARBITER_WALLET_MNEMONIC, contracts/compiled/escrow.hex
  */
 import "dotenv/config";
-import { getDb, createDeal, getDealById, updateDealStatus, upsertUser, getReputation, incrementDeals, addRating, getDealsByUser, setUserWallet, getUserWallet } from "./db/index.js";
+import { getDb, closeDb, createDeal, getDealById, updateDealStatus, upsertUser, getReputation, incrementDeals, addRating, getDealsByUser, setUserWallet, getUserWallet } from "./db/index.js";
 import { classifyAndParse, mediateDispute } from "./ai/index.js";
+import { users, deals, reputation } from "./db/schema.js";
+import { sql } from "drizzle-orm";
 
 let passed = 0;
 let failed = 0;
@@ -27,20 +29,20 @@ async function testDb() {
   console.log("\n== Database Tests ==");
 
   // Init DB
-  getDb();
+  const db = getDb();
   assert(true, "Database initialized");
 
   // Users
-  upsertUser(111, "alice");
-  upsertUser(222, "bob");
+  await upsertUser(111, "alice");
+  await upsertUser(222, "bob");
   assert(true, "Users created");
 
-  setUserWallet(111, "EQA...alice");
-  assert(getUserWallet(111) === "EQA...alice", "Wallet saved and retrieved");
-  assert(getUserWallet(222) === null, "No wallet for bob");
+  await setUserWallet(111, "EQA...alice");
+  assert((await getUserWallet(111)) === "EQA...alice", "Wallet saved and retrieved");
+  assert((await getUserWallet(222)) === null, "No wallet for bob");
 
   // Deals
-  const deal = createDeal({
+  const deal = await createDeal({
     id: "test-001",
     seller_id: 111,
     buyer_id: 222,
@@ -52,43 +54,43 @@ async function testDb() {
   assert(deal.status === "created", "Deal status is 'created'");
   assert(deal.amount === 50, "Deal amount is 50");
 
-  const fetched = getDealById("test-001");
+  const fetched = await getDealById("test-001");
   assert(fetched !== null, "Deal fetched by ID");
   assert(fetched!.description === "Test deal", "Deal description matches");
 
-  updateDealStatus("test-001", "confirmed");
-  assert(getDealById("test-001")!.status === "confirmed", "Deal status updated to confirmed");
+  await updateDealStatus("test-001", "confirmed");
+  assert((await getDealById("test-001"))!.status === "confirmed", "Deal status updated to confirmed");
 
-  updateDealStatus("test-001", "funded");
-  assert(getDealById("test-001")!.status === "funded", "Deal status updated to funded");
+  await updateDealStatus("test-001", "funded");
+  assert((await getDealById("test-001"))!.status === "funded", "Deal status updated to funded");
 
   const deliveredAt = new Date().toISOString();
   const timeoutAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-  updateDealStatus("test-001", "delivered", { delivered_at: deliveredAt, timeout_at: timeoutAt });
-  const delivered = getDealById("test-001")!;
+  await updateDealStatus("test-001", "delivered", { delivered_at: deliveredAt, timeout_at: timeoutAt });
+  const delivered = (await getDealById("test-001"))!;
   assert(delivered.status === "delivered", "Deal status updated to delivered");
   assert(delivered.delivered_at !== null, "delivered_at set");
   assert(delivered.timeout_at !== null, "timeout_at set");
 
-  updateDealStatus("test-001", "completed");
-  assert(getDealById("test-001")!.status === "completed", "Deal completed");
+  await updateDealStatus("test-001", "completed");
+  assert((await getDealById("test-001"))!.status === "completed", "Deal completed");
 
   // User deals
-  const userDeals = getDealsByUser(111);
+  const userDeals = await getDealsByUser(111);
   assert(userDeals.length >= 1, "User deals returned");
 
   // Reputation
-  incrementDeals(111);
-  incrementDeals(222);
-  addRating(111, 5);
-  addRating(111, 4);
-  const rep = getReputation(111);
+  await incrementDeals(111);
+  await incrementDeals(222);
+  await addRating(111, 5);
+  await addRating(111, 4);
+  const rep = await getReputation(111);
   assert(rep.completed_deals >= 1, "Reputation deals count incremented");
   assert(rep.rating_count === 2, "Rating count is 2");
   assert(rep.avg_rating === 4.5, "Average rating is 4.5");
 
   // Cancel flow
-  const deal2 = createDeal({
+  await createDeal({
     id: "test-002",
     seller_id: 111,
     buyer_id: 222,
@@ -96,11 +98,11 @@ async function testDb() {
     currency: "TON",
     description: "Cancel test",
   });
-  updateDealStatus("test-002", "cancelled");
-  assert(getDealById("test-002")!.status === "cancelled", "Deal cancelled");
+  await updateDealStatus("test-002", "cancelled");
+  assert((await getDealById("test-002"))!.status === "cancelled", "Deal cancelled");
 
   // Double deposit protection (edge case in DB)
-  const deal3 = createDeal({
+  await createDeal({
     id: "test-003",
     seller_id: 111,
     buyer_id: 222,
@@ -108,8 +110,8 @@ async function testDb() {
     currency: "TON",
     description: "Edge case test",
   });
-  updateDealStatus("test-003", "confirmed", { contract_address: "EQ...contract" });
-  assert(getDealById("test-003")!.contract_address === "EQ...contract", "Contract address saved");
+  await updateDealStatus("test-003", "confirmed", { contract_address: "EQ...contract" });
+  assert((await getDealById("test-003"))!.contract_address === "EQ...contract", "Contract address saved");
 }
 
 async function testAiParsing() {
@@ -208,12 +210,13 @@ async function main() {
 
   console.log(`\n== Results: ${passed} passed, ${failed} failed ==`);
 
-  // Cleanup test DB
+  // Cleanup test data
   const db = getDb();
-  db.exec("DELETE FROM deals WHERE id LIKE 'test-%'");
-  db.exec("DELETE FROM reputation WHERE user_id IN (111, 222)");
-  db.exec("DELETE FROM users WHERE telegram_id IN (111, 222)");
+  await db.delete(deals).where(sql`id LIKE 'test-%'`);
+  await db.delete(reputation).where(sql`user_id IN (111, 222)`);
+  await db.delete(users).where(sql`telegram_id IN (111, 222)`);
 
+  await closeDb();
   process.exit(failed > 0 ? 1 : 0);
 }
 

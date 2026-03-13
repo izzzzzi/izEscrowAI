@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 const tabs = [
   { path: "/wallet", label: "Wallet", icon: "solar:wallet-linear" },
   { path: "/deals", label: "Deals", icon: "solar:clipboard-list-linear" },
+  { path: "/groups", label: "Groups", icon: "solar:users-group-rounded-linear" },
+  { path: "/profile", label: "Profile", icon: "solar:user-linear" },
 ];
 
 export default function TabNav() {

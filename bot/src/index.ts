@@ -1,8 +1,15 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (c) 2026 izEscrowAI contributors
+
 import "dotenv/config";
 import { createBot } from "./bot/index.js";
 import { createApiServer } from "./api/index.js";
-import { getDb } from "./db/index.js";
-import { checkTimeouts, checkFundingStatus, getActiveDeals } from "./deals/index.js";
+import { getDb, closeDb } from "./db/index.js";
+import { initAI } from "./ai/index.js";
+import { checkTimeouts, checkFundingStatus, getActiveDeals, requoteExpiredRates } from "./deals/index.js";
+import { markJobsExpired } from "./db/index.js";
+import { getTonClient, getArbiterAddress } from "./blockchain/index.js";
+import { fromNano } from "@ton/ton";
 
 // --- Validate env ---
 const BOT_TOKEN = process.env.BOT_TOKEN;
@@ -15,12 +22,15 @@ if (!BOT_TOKEN) {
 console.log("Initializing database...");
 getDb();
 
-// --- Start API server ---
-const PORT = parseInt(process.env.PORT || "3000");
-createApiServer(PORT);
+// --- Initialize AI config ---
+await initAI();
 
 // --- Start bot ---
 const bot = createBot(BOT_TOKEN);
+
+// --- Start API server (with bot instance for notifications) ---
+const PORT = parseInt(process.env.PORT || "3000");
+createApiServer(PORT, bot);
 
 bot.start({
   onStart: () => console.log("Bot started!"),
@@ -31,7 +41,7 @@ bot.start({
 // Check for funding every 30 seconds
 setInterval(async () => {
   try {
-    const deals = getActiveDeals();
+    const deals = await getActiveDeals();
     for (const deal of deals) {
       if (deal.status === "confirmed" && deal.contract_address) {
         const funded = await checkFundingStatus(deal.id);
@@ -85,15 +95,65 @@ setInterval(async () => {
   }
 }, 5 * 60 * 1000);
 
+// Re-quote expired rates every 5 minutes
+setInterval(async () => {
+  try {
+    const requoted = await requoteExpiredRates();
+    for (const deal of requoted) {
+      console.log(`Deal ${deal.id} re-quoted: ${deal.original_amount} ${deal.original_currency} → ${deal.amount} TON`);
+      try {
+        await bot.api.sendMessage(
+          deal.buyer_id,
+          `Deal #${deal.id}: rate expired and was updated.\nNew amount: ${deal.amount} TON (${deal.original_amount} ${deal.original_currency})`,
+        );
+        await bot.api.sendMessage(
+          deal.seller_id,
+          `Deal #${deal.id}: rate expired and was updated.\nNew amount: ${deal.amount} TON (${deal.original_amount} ${deal.original_currency})`,
+        );
+      } catch {
+        // ignore
+      }
+    }
+  } catch (e) {
+    console.error("Rate re-quote error:", e);
+  }
+}, 5 * 60 * 1000);
+
+// Expire old parsed jobs every hour
+setInterval(async () => {
+  try {
+    await markJobsExpired();
+  } catch (e) {
+    console.error("Job expiration error:", e);
+  }
+}, 60 * 60 * 1000);
+
+// Check arbiter balance every 5 minutes
+setInterval(async () => {
+  try {
+    const client = getTonClient();
+    const arbiterAddr = await getArbiterAddress();
+    const balance = await client.getBalance(arbiterAddr);
+    const balanceTon = parseFloat(fromNano(balance));
+    if (balanceTon < 1) {
+      console.warn(`WARNING: Arbiter wallet balance is low: ${balanceTon.toFixed(2)} TON. Top up to ensure gas for operations.`);
+    }
+  } catch (e) {
+    console.error("Arbiter balance check error:", e);
+  }
+}, 5 * 60 * 1000);
+
 // Graceful shutdown
-process.on("SIGINT", () => {
+process.on("SIGINT", async () => {
   console.log("Shutting down...");
   bot.stop();
+  await closeDb();
   process.exit(0);
 });
 
-process.on("SIGTERM", () => {
+process.on("SIGTERM", async () => {
   console.log("Shutting down...");
   bot.stop();
+  await closeDb();
   process.exit(0);
 });

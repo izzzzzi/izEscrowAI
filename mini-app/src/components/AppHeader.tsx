@@ -8,8 +8,8 @@ export default function AppHeader() {
           </div>
           <h1 className="text-lg font-semibold tracking-tight">izEscrowAI</h1>
         </div>
-        <span className="bg-blue-500/10 text-[#0098EA] text-[0.65rem] font-semibold uppercase tracking-widest px-2 py-0.5 rounded border border-blue-500/20">
-          Testnet
+        <span className="bg-emerald-500/10 text-emerald-400 text-[0.65rem] font-semibold uppercase tracking-widest px-2 py-0.5 rounded border border-emerald-500/20">
+          Live
         </span>
       </div>
     </header>
