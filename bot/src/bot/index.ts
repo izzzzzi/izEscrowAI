@@ -164,6 +164,10 @@ export function createBot(token: string): Bot {
       }
     } catch { /* non-critical */ }
 
+    const startKeyboard = new InlineKeyboard()
+      .webApp("Open App", MINI_APP_URL)
+      .url("Web Platform", "https://iz-escrow-ai.vercel.app");
+
     await ctx.reply(
       `Welcome to izEscrowAI!\n\n` +
         `I'm an AI-powered escrow agent for safe P2P deals in Telegram. ` +
@@ -176,6 +180,7 @@ export function createBot(token: string): Bot {
         `/wallet — connect wallet\n` +
         `/mydeals — my deals` +
         jobsNotice,
+      { reply_markup: startKeyboard },
     );
   });
 
