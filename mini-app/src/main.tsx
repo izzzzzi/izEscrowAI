@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
+import ErrorBoundary from "./components/ErrorBoundary.tsx";
 import App from "./App.tsx";
 import "./index.css";
 
@@ -12,12 +13,14 @@ const manifestUrl =
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <TonConnectUIProvider manifestUrl={manifestUrl}>
-          <App />
-        </TonConnectUIProvider>
-      </AuthProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AuthProvider>
+          <TonConnectUIProvider manifestUrl={manifestUrl}>
+            <App />
+          </TonConnectUIProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   </StrictMode>,
 );
