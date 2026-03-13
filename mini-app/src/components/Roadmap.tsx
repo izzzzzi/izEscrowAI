@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 interface RoadmapItem {
   title: string;
   status: "done" | "in-progress" | "planned";
@@ -21,17 +19,18 @@ const roadmapData: Quarter[] = [
         features: [
           "P2P Escrow on TON",
           "AI Deal Parsing",
-          "Inline Offers in Groups",
+          "Inline Offers & Bidding",
           "Reputation System",
         ],
       },
       {
-        title: "Web Marketplace",
+        title: "AI Full Pipeline",
         status: "done",
         features: [
-          "Public offer browsing",
-          "Dual auth (Mini App + Web)",
-          "Progressive gating",
+          "AI Spec Generator",
+          "AI Pricing Engine",
+          "AI Matching & Trust Score",
+          "Spec-Based Arbitration",
         ],
       },
     ],
@@ -50,12 +49,12 @@ const roadmapData: Quarter[] = [
         ],
       },
       {
-        title: "Enhanced Landing",
+        title: "Web Marketplace",
         status: "in-progress",
         features: [
-          "Live stats & activity feed",
-          "Developer talent grid",
-          "Animated hero section",
+          "Job detail pages",
+          "Extended filters & search",
+          "Progressive gating",
         ],
       },
     ],
@@ -108,50 +107,111 @@ const roadmapData: Quarter[] = [
   },
 ];
 
-const statusColors: Record<string, string> = {
-  done: "bg-green-500/20 text-green-400 border-green-500/30",
-  "in-progress": "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  planned: "bg-gray-500/20 text-gray-400 border-gray-500/30",
-};
+function getQuarterProgress(q: Quarter): number {
+  const total = q.items.length;
+  if (total === 0) return 0;
+  const score = q.items.reduce((sum, item) => {
+    if (item.status === "done") return sum + 1;
+    if (item.status === "in-progress") return sum + 0.5;
+    return sum;
+  }, 0);
+  return Math.round((score / total) * 100);
+}
 
-const statusLabels: Record<string, string> = {
-  done: "Completed",
-  "in-progress": "In Progress",
-  planned: "Planned",
-};
+function StatusIcon({ status }: { status: string }) {
+  if (status === "done") {
+    return <span className="text-green-400 flex-shrink-0">&#10003;</span>;
+  }
+  if (status === "in-progress") {
+    return <span className="text-[#0098EA] flex-shrink-0">&rarr;</span>;
+  }
+  return <span className="text-slate-600 flex-shrink-0">&middot;</span>;
+}
 
 export default function Roadmap() {
-  const [expandedQ, setExpandedQ] = useState<number | null>(1); // Q2 expanded by default
-
   return (
-    <div className="w-full">
-      {/* Desktop: horizontal timeline */}
-      <div className="hidden md:flex gap-4 overflow-x-auto pb-4">
-        {roadmapData.map((q, qi) => (
-          <div key={qi} className="flex-1 min-w-[260px]">
-            <div className="text-center mb-4">
-              <span className="text-lg font-bold text-white">{q.label}</span>
+    <div className="w-full max-w-3xl mx-auto">
+      {roadmapData.map((q, qi) => {
+        const progress = getQuarterProgress(q);
+        const isDone = q.items.every((i) => i.status === "done");
+        const isActive = q.items.some((i) => i.status === "in-progress");
+        const isPlanned = q.items.every((i) => i.status === "planned");
+
+        return (
+          <div key={qi} className="flex gap-4 md:gap-6">
+            {/* Timeline column */}
+            <div className="flex flex-col items-center w-8 flex-shrink-0">
+              {/* Dot */}
+              <div
+                className={`w-4 h-4 rounded-full border-2 flex-shrink-0 mt-1 ${
+                  isPlanned
+                    ? "border-slate-600 bg-transparent"
+                    : "border-[#0098EA] bg-[#0098EA]"
+                }`}
+              />
+              {/* Line */}
+              {qi < roadmapData.length - 1 && (
+                <div
+                  className={`w-0.5 flex-1 min-h-[2rem] ${
+                    isDone ? "bg-gradient-to-b from-[#0098EA] to-[#0098EA]" : isActive ? "bg-gradient-to-b from-[#0098EA] to-white/10" : "bg-white/10"
+                  }`}
+                />
+              )}
             </div>
-            <div className="relative">
-              {/* Timeline connector */}
-              <div className="absolute top-0 left-1/2 -translate-x-px w-0.5 h-full bg-white/10" />
-              <div className="absolute top-0 left-1/2 -translate-x-1.5 w-3 h-3 rounded-full bg-blue-500 border-2 border-[#1a1a2e]" />
-              <div className="space-y-3 pt-6">
+
+            {/* Content column */}
+            <div className={`flex-1 ${qi < roadmapData.length - 1 ? "pb-8 md:pb-10" : "pb-0"}`}>
+              {/* Quarter header + progress */}
+              <div className="flex items-center gap-3 mb-3">
+                <h3 className="text-lg font-bold text-white">{q.label}</h3>
+                {/* Progress bar */}
+                <div className="flex-1 max-w-[160px] h-1.5 rounded-full bg-white/5 overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${progress}%`,
+                      background: progress === 100
+                        ? "#22c55e"
+                        : "linear-gradient(90deg, #0098EA, #00D1FF)",
+                    }}
+                  />
+                </div>
+                <span className={`text-xs font-medium ${
+                  progress === 100 ? "text-green-400" : progress > 0 ? "text-[#0098EA]" : "text-slate-600"
+                }`}>
+                  {progress}%
+                </span>
+              </div>
+
+              {/* Feature cards — two columns on desktop */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {q.items.map((item, ii) => (
                   <div
                     key={ii}
-                    className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-blue-500/30 transition-colors"
+                    className={`rounded-xl p-4 border transition-colors ${
+                      item.status === "done"
+                        ? "bg-green-500/5 border-green-500/15"
+                        : item.status === "in-progress"
+                          ? "bg-[#0098EA]/5 border-[#0098EA]/15"
+                          : "bg-white/[0.02] border-white/5"
+                    }`}
                   >
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between mb-2.5">
                       <h4 className="font-semibold text-white text-sm">{item.title}</h4>
-                      <span className={`text-xs px-2 py-0.5 rounded-full border ${statusColors[item.status]}`}>
-                        {statusLabels[item.status]}
+                      <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                        item.status === "done"
+                          ? "bg-green-500/15 text-green-400"
+                          : item.status === "in-progress"
+                            ? "bg-[#0098EA]/15 text-[#0098EA]"
+                            : "bg-white/5 text-slate-500"
+                      }`}>
+                        {item.status === "done" ? "Completed" : item.status === "in-progress" ? "In Progress" : "Planned"}
                       </span>
                     </div>
-                    <ul className="space-y-1">
+                    <ul className="space-y-1.5">
                       {item.features.map((f, fi) => (
-                        <li key={fi} className="text-xs text-gray-400 flex items-center gap-1.5">
-                          <span className="w-1 h-1 rounded-full bg-gray-500 flex-shrink-0" />
+                        <li key={fi} className="text-xs text-slate-400 flex items-center gap-2">
+                          <StatusIcon status={item.status} />
                           {f}
                         </li>
                       ))}
@@ -161,50 +221,8 @@ export default function Roadmap() {
               </div>
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* Mobile: vertical accordion */}
-      <div className="md:hidden space-y-3">
-        {roadmapData.map((q, qi) => (
-          <div key={qi} className="border border-white/10 rounded-xl overflow-hidden">
-            <button
-              onClick={() => setExpandedQ(expandedQ === qi ? null : qi)}
-              className="w-full flex items-center justify-between p-4 text-left"
-            >
-              <span className="font-bold text-white">{q.label}</span>
-              <div className="flex items-center gap-2">
-                {q.items.map((item, ii) => (
-                  <span
-                    key={ii}
-                    className={`text-xs px-2 py-0.5 rounded-full border ${statusColors[item.status]}`}
-                  >
-                    {statusLabels[item.status]}
-                  </span>
-                ))}
-                <span className="text-gray-400">{expandedQ === qi ? "▲" : "▼"}</span>
-              </div>
-            </button>
-            {expandedQ === qi && (
-              <div className="px-4 pb-4 space-y-3">
-                {q.items.map((item, ii) => (
-                  <div key={ii} className="bg-white/5 rounded-lg p-3">
-                    <h4 className="font-semibold text-white text-sm mb-2">{item.title}</h4>
-                    <ul className="space-y-1">
-                      {item.features.map((f, fi) => (
-                        <li key={fi} className="text-xs text-gray-400 flex items-center gap-1.5">
-                          <span className="w-1 h-1 rounded-full bg-gray-500 flex-shrink-0" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }
