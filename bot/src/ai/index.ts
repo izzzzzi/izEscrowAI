@@ -6,26 +6,12 @@ import {
   getDetailedReputation, getDealById, saveRiskAssessment,
   getRiskAssessment, isRiskStale, type DetailedReputation,
 } from "../db/index.js";
-import {
-  SYSTEM_PROMPT as DEFAULT_SYSTEM_PROMPT,
-  MEDIATION_PROMPT as DEFAULT_MEDIATION_PROMPT,
-  classifyMessageTool as defaultClassifyTool,
-  parseDealTool as defaultParseDealTool,
-  parseOfferTool as defaultParseOfferTool,
-  parseBidTool as defaultParseBidTool,
-} from "./prompts.default.js";
+import defaultPrompts from "./prompts.default.js";
 import type { AIPromptsConfig } from "./types.js";
 
 // --- Loaded config (overridable via initAI) ---
 
-let _config: AIPromptsConfig = {
-  systemPrompt: DEFAULT_SYSTEM_PROMPT,
-  mediationPrompt: DEFAULT_MEDIATION_PROMPT,
-  classifyMessageTool: defaultClassifyTool,
-  parseDealTool: defaultParseDealTool,
-  parseOfferTool: defaultParseOfferTool,
-  parseBidTool: defaultParseBidTool,
-};
+let _config: AIPromptsConfig = { ...defaultPrompts };
 
 export async function initAI(): Promise<void> {
   // Try private config first (prompts.ts — gitignored, default export)
