@@ -354,15 +354,13 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
         responseData.contact_url = maskField(job.contact_url);
       }
 
-      // AI price estimate (Task 1.4)
+      // AI price estimate — only generate for authenticated users, serve cached for all
       if (job.ai_price_estimate) {
-        responseData.price_estimate = job.ai_price_estimate;
-      } else {
+        responseData.price_estimate = userId ? job.ai_price_estimate : null;
+      } else if (userId) {
+        // Only call AI for authenticated users
         const ip = req.ip || req.socket.remoteAddress || "unknown";
-        if (!priceEstLimit(ip)) {
-          // Skip AI estimation, return job without price estimate
-          responseData.price_estimate = null;
-        } else {
+        if (priceEstLimit(ip)) {
           try {
             const estimate = await estimatePrice({
               title: job.title,
@@ -374,10 +372,10 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
             responseData.price_estimate = estimate;
           } catch (err: any) {
             console.error("estimatePrice error for job", job.id, err.message);
-            // Don't break the response — just omit price_estimate
           }
         }
       }
+      // Guests get price_estimate: undefined (not included in response)
 
       res.json(responseData);
     } catch (e: any) {

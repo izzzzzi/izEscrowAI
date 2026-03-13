@@ -239,7 +239,7 @@ export default function JobDetailPage() {
         )}
 
         {/* 2.2 — AI Insights section */}
-        {priceEstimate ? (
+        {priceEstimate && isAuthenticated ? (
           <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-4">
             <div className="flex items-center gap-2">
               <iconify-icon icon="solar:magic-stick-3-bold" width="20" class="text-cyan-400" />
@@ -275,6 +275,24 @@ export default function JobDetailPage() {
                 </ul>
               </div>
             )}
+          </div>
+        ) : !isAuthenticated ? (
+          <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-3 relative overflow-hidden">
+            <div className="flex items-center gap-2">
+              <iconify-icon icon="solar:magic-stick-3-bold" width="20" class="text-cyan-400" />
+              <h2 className="text-sm font-semibold text-white">AI Price Insights</h2>
+            </div>
+            <div className="space-y-2 blur-sm select-none pointer-events-none">
+              <div className="h-2 w-full bg-white/10 rounded-full" />
+              <div className="flex justify-between text-xs text-slate-600">
+                <span>$000</span><span>$0,000</span>
+              </div>
+              <div className="h-3 w-3/4 bg-white/5 rounded" />
+              <div className="h-3 w-1/2 bg-white/5 rounded" />
+            </div>
+            <p className="text-xs text-slate-400 text-center pt-2">
+              Sign in to see AI-powered price estimate for this task
+            </p>
           </div>
         ) : loading ? (
           <PriceInsightSkeleton />
