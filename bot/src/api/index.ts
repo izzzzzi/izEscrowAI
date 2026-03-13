@@ -379,7 +379,7 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
       res.status(500).json({ error: "GitHub OAuth not configured" });
       return;
     }
-    const state = req.query.user_id as string || "";
+    const state = (req.query.userId || req.query.user_id) as string || "";
     const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(callbackUrl)}&scope=read:user&state=${state}`;
     res.redirect(url);
   });
