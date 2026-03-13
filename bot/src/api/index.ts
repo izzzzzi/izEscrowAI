@@ -112,7 +112,10 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
     if (telegramAuth) {
       try {
         const data: TelegramLoginData = JSON.parse(telegramAuth);
-        if (!verifyTelegramLoginWidget(data, botToken)) {
+        const verified = verifyTelegramLoginWidget(data, botToken);
+        if (!verified) {
+          const now = Math.floor(Date.now() / 1000);
+          console.error(`[auth] Telegram Login failed for user ${data.id}: auth_date=${data.auth_date}, age=${now - data.auth_date}s, hash=${data.hash?.slice(0, 8)}...`);
           res.status(401).json({ error: "Invalid Telegram auth" });
           return;
         }
