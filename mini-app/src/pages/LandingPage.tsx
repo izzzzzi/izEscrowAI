@@ -113,23 +113,45 @@ export default function LandingPage() {
 
                 {/* Chat messages */}
                 <div className="px-3 py-4 space-y-3 min-h-[380px]">
-                  {/* Step 1: User typing indicator */}
+                  {/* Step 1: User sends /start */}
                   <div className="flex justify-end chat-step chat-step-1">
+                    <div className="max-w-[80%] px-3 py-2 rounded-2xl rounded-br-md text-sm" style={{ background: "#2B5278" }}>
+                      /start
+                      <div className="text-[10px] text-slate-400 text-right mt-1">12:01</div>
+                    </div>
+                  </div>
+
+                  {/* Step 2: Bot welcome message */}
+                  <div className="flex items-end gap-2 chat-step chat-step-2">
+                    <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
+                      <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
+                    </div>
+                    <div className="max-w-[85%] px-3 py-2 rounded-2xl rounded-bl-md text-[13px] leading-relaxed" style={{ background: "rgba(30, 41, 59, 0.8)" }}>
+                      Welcome to izEscrowAI!{"\n\n"}
+                      <span className="text-slate-400">I'm an AI-powered escrow agent for safe P2P deals. Funds are held by a smart contract on TON.</span>{"\n\n"}
+                      <span className="text-slate-400">Just write something like:</span>{"\n"}
+                      <span className="text-[#0098EA]">"Selling logo design to @ivan for 50 TON"</span>
+                      <div className="text-[10px] text-slate-500 text-right mt-1">12:01</div>
+                    </div>
+                  </div>
+
+                  {/* Step 3: User typing */}
+                  <div className="flex justify-end chat-step chat-step-3">
                     <div className="px-3 py-2 rounded-2xl rounded-br-md text-xs text-slate-400" style={{ background: "#2B5278" }}>
                       <span className="typing-bubble"><span /><span /><span /></span>
                     </div>
                   </div>
 
-                  {/* Step 2: User message appears */}
-                  <div className="flex justify-end chat-step chat-step-2">
+                  {/* Step 4: User sends deal message */}
+                  <div className="flex justify-end chat-step chat-step-4">
                     <div className="max-w-[80%] px-3 py-2 rounded-2xl rounded-br-md text-sm" style={{ background: "#2B5278" }}>
-                      Selling logo design to @ivan for $50
-                      <div className="text-[10px] text-slate-400 text-right mt-1">12:03</div>
+                      Selling logo design to @ivan for 50 TON
+                      <div className="text-[10px] text-slate-400 text-right mt-1">12:02</div>
                     </div>
                   </div>
 
-                  {/* Step 3: Bot "analyzing" typing */}
-                  <div className="flex items-end gap-2 chat-step chat-step-3">
+                  {/* Step 5: Bot parsing */}
+                  <div className="flex items-end gap-2 chat-step chat-step-5">
                     <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
                       <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
                     </div>
@@ -139,48 +161,26 @@ export default function LandingPage() {
                     </div>
                   </div>
 
-                  {/* Step 4: Bot response with escrow card */}
-                  <div className="flex items-end gap-2 chat-step chat-step-4">
+                  {/* Step 6: Bot parsed deal confirmation */}
+                  <div className="flex items-end gap-2 chat-step chat-step-6">
                     <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
                       <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
                     </div>
                     <div className="max-w-[85%] rounded-2xl rounded-bl-md overflow-hidden" style={{ background: "rgba(30, 41, 59, 0.8)" }}>
-                      <div className="px-3 pt-2 pb-1 text-sm">
-                        Deal created! Here are the terms:
+                      <div className="px-3 pt-2 pb-1 text-[13px] leading-relaxed">
+                        Parsed deal:{"\n\n"}
+                        <span className="text-slate-400">Seller:</span> @you <span className="text-slate-500">(3 deals, 4.5)</span>{"\n"}
+                        <span className="text-slate-400">Buyer:</span> @ivan <span className="text-slate-500">(0 deals)</span>{"\n"}
+                        <span className="text-slate-400">Amount:</span> 50 TON{"\n"}
+                        <span className="text-slate-400">Description:</span> Logo design{"\n\n"}
+                        <span className="text-slate-400">Is this correct?</span>
                       </div>
-                      {/* Inline escrow card */}
-                      <div className="mx-2 mb-2 rounded-xl overflow-hidden border border-[#0098EA]/20" style={{ background: "rgba(0, 152, 234, 0.05)" }}>
-                        <div className="px-3 py-2 border-b border-[#0098EA]/10">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-semibold uppercase tracking-wider text-[#0098EA]">Escrow Contract</span>
-                            <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[9px] font-semibold">ACTIVE</span>
-                          </div>
+                      <div className="px-2 pb-2 flex gap-1.5">
+                        <div className="flex-1 py-1.5 text-[10px] font-semibold uppercase tracking-wider ton-gradient rounded-lg text-center text-white shadow-lg shadow-blue-500/20">
+                          Confirm
                         </div>
-                        <div className="px-3 py-2 space-y-1.5">
-                          <div className="flex justify-between text-xs">
-                            <span className="text-slate-500">Seller</span>
-                            <span className="font-medium">@you</span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-slate-500">Buyer</span>
-                            <span className="font-medium">@ivan</span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-slate-500">Amount</span>
-                            <span className="font-medium">$50 <span className="text-slate-600">=</span> 20 TON</span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-slate-500">Service</span>
-                            <span className="font-medium">Logo Design</span>
-                          </div>
-                        </div>
-                        <div className="px-2 pb-2 flex gap-1.5">
-                          <div className="flex-1 py-1.5 text-[10px] font-semibold uppercase tracking-wider bg-white/5 border border-white/10 rounded-lg text-center text-slate-300">
-                            Details
-                          </div>
-                          <div className="flex-1 py-1.5 text-[10px] font-semibold uppercase tracking-wider ton-gradient rounded-lg text-center text-white shadow-lg shadow-blue-500/20">
-                            Confirm Deal
-                          </div>
+                        <div className="flex-1 py-1.5 text-[10px] font-semibold uppercase tracking-wider bg-white/5 border border-white/10 rounded-lg text-center text-slate-300">
+                          Cancel
                         </div>
                       </div>
                       <div className="px-3 pb-2">
@@ -188,7 +188,7 @@ export default function LandingPage() {
                           <iconify-icon icon="solar:shield-check-linear" width="11" />
                           Trust Score: 87 — Low Risk
                         </div>
-                        <div className="text-[10px] text-slate-500 text-right">12:03</div>
+                        <div className="text-[10px] text-slate-500 text-right">12:02</div>
                       </div>
                     </div>
                   </div>

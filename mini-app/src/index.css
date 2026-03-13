@@ -145,11 +145,13 @@ button:active {
 }
 
 /* ====== Telegram chat step animation ====== */
-/* Total cycle: 8s
-   Step 1 (user typing):    0s–1.5s    visible
-   Step 2 (user message):   1.5s–8s    visible (replaces step 1)
-   Step 3 (bot analyzing):  2.5s–4.5s  visible
-   Step 4 (bot response):   4.5s–8s    visible (replaces step 3)
+/* Total cycle: 12s
+   Step 1 (user /start):       0s–1s       visible instantly
+   Step 2 (bot welcome):       1s–12s      visible (stays)
+   Step 3 (user typing):       3s–4.5s     visible (typing dots)
+   Step 4 (user deal msg):     4.5s–12s    visible (replaces step 3)
+   Step 5 (bot analyzing):     5.5s–7.5s   visible (parsing)
+   Step 6 (bot confirmation):  7.5s–12s    visible (replaces step 5)
 */
 
 .chat-step {
@@ -157,54 +159,72 @@ button:active {
   transform: translateY(8px);
 }
 
-/* Step 1: user typing bubbles — show 0s..1.5s */
+/* Step 1: user /start — show instantly, stay */
 .chat-step-1 {
-  animation: chat-show-hide 8s ease infinite;
-  animation-delay: 0s;
+  animation: chat-step1 12s ease infinite;
 }
-@keyframes chat-show-hide {
+@keyframes chat-step1 {
   0% { opacity: 0; transform: translateY(8px); }
   2% { opacity: 1; transform: translateY(0); }
-  18% { opacity: 1; transform: translateY(0); }
-  20% { opacity: 0; transform: translateY(-4px); display: none; }
+  92% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; }
 }
 
-/* Step 2: user message — show at 1.5s, stay visible until loop resets */
+/* Step 2: bot welcome — show at 1s, stay */
 .chat-step-2 {
-  animation: chat-appear-stay 8s ease infinite;
-  animation-delay: 0s;
+  animation: chat-step2 12s ease infinite;
 }
-@keyframes chat-appear-stay {
-  0%, 17% { opacity: 0; transform: translateY(8px); }
-  20% { opacity: 1; transform: translateY(0); }
+@keyframes chat-step2 {
+  0%, 7% { opacity: 0; transform: translateY(8px); }
+  10% { opacity: 1; transform: translateY(0); }
   92% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(0); }
-}
-
-/* Step 3: bot analyzing — show at 2.5s, hide at 4.5s */
-.chat-step-3 {
-  animation: chat-analyze 8s ease infinite;
-  animation-delay: 0s;
-}
-@keyframes chat-analyze {
-  0%, 30% { opacity: 0; transform: translateY(8px); }
-  33% { opacity: 1; transform: translateY(0); }
-  54% { opacity: 1; transform: translateY(0); }
-  57% { opacity: 0; transform: translateY(-4px); }
   100% { opacity: 0; }
 }
 
-/* Step 4: bot response — show at 4.5s, stay until loop */
-.chat-step-4 {
-  animation: chat-response 8s ease infinite;
-  animation-delay: 0s;
+/* Step 3: user typing — show at 3s, hide at 4.5s */
+.chat-step-3 {
+  animation: chat-step3 12s ease infinite;
 }
-@keyframes chat-response {
-  0%, 54% { opacity: 0; transform: translateY(12px); }
-  60% { opacity: 1; transform: translateY(0); }
+@keyframes chat-step3 {
+  0%, 24% { opacity: 0; transform: translateY(8px); }
+  26% { opacity: 1; transform: translateY(0); }
+  36% { opacity: 1; transform: translateY(0); }
+  38% { opacity: 0; transform: translateY(-4px); }
+  100% { opacity: 0; }
+}
+
+/* Step 4: user deal message — show at 4.5s, stay */
+.chat-step-4 {
+  animation: chat-step4 12s ease infinite;
+}
+@keyframes chat-step4 {
+  0%, 36% { opacity: 0; transform: translateY(8px); }
+  39% { opacity: 1; transform: translateY(0); }
   92% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(0); }
+  100% { opacity: 0; }
+}
+
+/* Step 5: bot analyzing — show at 5.5s, hide at 7.5s */
+.chat-step-5 {
+  animation: chat-step5 12s ease infinite;
+}
+@keyframes chat-step5 {
+  0%, 44% { opacity: 0; transform: translateY(8px); }
+  47% { opacity: 1; transform: translateY(0); }
+  60% { opacity: 1; transform: translateY(0); }
+  63% { opacity: 0; transform: translateY(-4px); }
+  100% { opacity: 0; }
+}
+
+/* Step 6: bot confirmation — show at 7.5s, stay */
+.chat-step-6 {
+  animation: chat-step6 12s ease infinite;
+}
+@keyframes chat-step6 {
+  0%, 60% { opacity: 0; transform: translateY(12px); }
+  65% { opacity: 1; transform: translateY(0); }
+  92% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; }
 }
 
 /* Typing bubble dots (3 bouncing circles) */
