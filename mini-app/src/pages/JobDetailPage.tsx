@@ -159,13 +159,20 @@ export default function JobDetailPage() {
             </span>
           </div>
 
-          {/* Budget + currency */}
+          {/* Budget + currency (prefer TON) */}
           <div className="mt-2 text-sm text-slate-400">
-            {job.budget_min || job.budget_max ? (
+            {(job as any).budget_min_ton || (job as any).budget_max_ton ? (
+              <span>
+                {(job as any).budget_min_ton ? `from ${(job as any).budget_min_ton.toLocaleString()}` : ""}
+                {(job as any).budget_max_ton ? ` to ${(job as any).budget_max_ton.toLocaleString()}` : ""} TON
+                <span className="text-slate-600 ml-1">
+                  ({job.budget_min ? job.budget_min.toLocaleString() : ""}–{job.budget_max ? job.budget_max.toLocaleString() : ""} {job.currency})
+                </span>
+              </span>
+            ) : job.budget_min || job.budget_max ? (
               <span>
                 {job.budget_min ? `from ${job.budget_min.toLocaleString()}` : ""}
-                {job.budget_max ? ` to ${job.budget_max.toLocaleString()}` : ""}{" "}
-                {job.currency}
+                {job.budget_max ? ` to ${job.budget_max.toLocaleString()}` : ""} {job.currency}
               </span>
             ) : (
               <span>No budget specified</span>

@@ -26,6 +26,7 @@ import {
 import { calcTrustScore, calcTrustScoreBreakdown, assessDealRisk, extractSkills, calcSkillMatch, generateProposal, generateSpec as generateSpecAI, estimatePrice } from "../ai/index.js";
 import { exchangeCode, fetchGithubProfile } from "../github/index.js";
 import { calcGithubScore, detectFlags } from "../github/score.js";
+import { fetchTonPrice, type FiatCurrency } from "../rates.js";
 
 function maskField(value: string | null): string | null {
   if (value === null) return null;
@@ -241,6 +242,19 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
   // Rate-limit tracker for proposal generation: userId -> [timestamps]
   const proposalRateLimit = new Map<number, number[]>();
 
+  // Helper: add TON-converted budget fields to a job
+  async function enrichJobWithTon(job: Record<string, unknown>): Promise<void> {
+    const currency = job.currency as string;
+    if (currency === "TON" || (!job.budget_min && !job.budget_max)) return;
+    const fiat = currency as FiatCurrency;
+    if (!["USD", "EUR", "RUB"].includes(fiat)) return;
+    const prices = await fetchTonPrice();
+    if (!prices || !prices[fiat]) return;
+    const rate = prices[fiat];
+    if (job.budget_min) job.budget_min_ton = Math.round(((job.budget_min as number) / rate) * 100) / 100;
+    if (job.budget_max) job.budget_max_ton = Math.round(((job.budget_max as number) / rate) * 100) / 100;
+  }
+
   // GET /api/jobs/skills — top skills from parsed jobs (public)
   app.get("/api/jobs/skills", async (req, res) => {
     try {
@@ -286,7 +300,9 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
       }
 
       const result = await getParsedJobs({ skills, min_budget, max_budget, currency, sort, has_budget, status, page, limit });
-      const responseData = { data: result.data, total: result.total, page, limit };
+      const enrichedData = result.data.map(j => ({ ...j }));
+      await Promise.all(enrichedData.map(j => enrichJobWithTon(j as Record<string, unknown>)));
+      const responseData = { data: enrichedData, total: result.total, page, limit };
       jobsCache.set(cacheKey, { data: responseData, ts: Date.now() });
       res.json(responseData);
     } catch (e: any) {
@@ -396,6 +412,9 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
         }
       }
       // Guests get price_estimate: undefined (not included in response)
+
+      // Add TON-converted budget
+      await enrichJobWithTon(responseData);
 
       res.json(responseData);
     } catch (e: any) {
