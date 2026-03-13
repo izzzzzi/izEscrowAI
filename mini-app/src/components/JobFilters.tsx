@@ -1,18 +1,7 @@
-import { useState } from "react";
-import { type JobFilters } from "../lib/api";
+import { useState, useEffect } from "react";
+import { type JobFilters, API_URL } from "../lib/api";
 
-const POPULAR_SKILLS = [
-  "React",
-  "TypeScript",
-  "Python",
-  "Node.js",
-  "Go",
-  "Rust",
-  "Java",
-  "PHP",
-  "Solidity",
-  "Figma",
-];
+const FALLBACK_SKILLS = ["React", "TypeScript", "Python", "Node.js", "Go", "Rust", "Java", "PHP", "Solidity", "Figma"];
 
 const CURRENCY_OPTIONS = [
   { label: "All", value: "" },
@@ -38,7 +27,19 @@ interface JobFiltersProps {
 
 export default function JobFiltersPanel({ filters, onChange, totalJobs, shownJobs }: JobFiltersProps) {
   const [open, setOpen] = useState(false);
+  const [popularSkills, setPopularSkills] = useState<string[]>(FALLBACK_SKILLS);
   const selectedSkills = filters.skills ?? [];
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/jobs/skills`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setPopularSkills(data.map((d: { skill: string }) => d.skill));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   function toggleSkill(skill: string) {
     const next = selectedSkills.includes(skill)
@@ -87,7 +88,7 @@ export default function JobFiltersPanel({ filters, onChange, totalJobs, shownJob
       <div>
         <p className="text-xs font-medium text-slate-400 mb-2">Skills</p>
         <div className="flex flex-wrap gap-1.5">
-          {POPULAR_SKILLS.map((skill) => {
+          {popularSkills.map((skill) => {
             const active = selectedSkills.includes(skill);
             return (
               <button

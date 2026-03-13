@@ -241,6 +241,26 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
   // Rate-limit tracker for proposal generation: userId -> [timestamps]
   const proposalRateLimit = new Map<number, number[]>();
 
+  // GET /api/jobs/skills — top skills from parsed jobs (public)
+  app.get("/api/jobs/skills", async (req, res) => {
+    try {
+      const db = (await import("../db/index.js")).getDb();
+      const { sql } = await import("drizzle-orm");
+      const rows = await db.execute(sql`
+        SELECT skill, COUNT(*) as cnt
+        FROM parsed_jobs, jsonb_array_elements_text(required_skills) AS skill
+        WHERE status IN ('new', 'verified')
+        GROUP BY skill
+        ORDER BY cnt DESC
+        LIMIT 20
+      `);
+      res.json(rows.rows.map((r: any) => ({ skill: r.skill, count: Number(r.cnt) })));
+    } catch (e: any) {
+      console.error("GET /api/jobs/skills error:", e.message);
+      res.json([]);
+    }
+  });
+
   // GET /api/jobs — paginated list of parsed jobs (public, no auth)
   app.get("/api/jobs", async (req, res) => {
     try {
