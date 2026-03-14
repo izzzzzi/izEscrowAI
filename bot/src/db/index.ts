@@ -913,6 +913,7 @@ export async function getPlatformStats(): Promise<{
   avg_rating: number;
   github_verified: number;
   success_rate: number;
+  active_jobs: number;
 }> {
   const db = getDb();
 
@@ -928,6 +929,10 @@ export async function getPlatformStats(): Promise<{
     avg_rating: sql<number>`coalesce(avg(case when ${reputation.rating_count} > 0 then ${reputation.total_rating}::float / ${reputation.rating_count} else null end), 0)`,
   }).from(reputation);
 
+  const [jobCount] = await db.select({ total: sql<number>`count(*)` })
+    .from(parsedJobs)
+    .where(inArray(parsedJobs.status, ["new", "verified"]));
+
   const githubCount = await countGithubVerified();
 
   const total = Number(dealStats?.total ?? 0);
@@ -941,6 +946,7 @@ export async function getPlatformStats(): Promise<{
     avg_rating: Math.round((Number(repStats?.avg_rating ?? 0)) * 10) / 10,
     github_verified: githubCount,
     success_rate: total > 0 ? Math.round((completed / total) * 100) : 0,
+    active_jobs: Number(jobCount?.total ?? 0),
   };
 }
 

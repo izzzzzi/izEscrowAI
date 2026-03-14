@@ -213,9 +213,10 @@ export default function LandingPage() {
 
         {/* Live Stats Bar */}
         <section className="py-12 px-6 border-y border-white/5">
-          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-6">
             {stats ? (
               <>
+                <StatCounter value={stats.active_jobs} label="Active Jobs" />
                 <StatCounter value={stats.total_deals} label="Total Deals" />
                 <StatCounter value={stats.total_users} label="Users" />
                 <StatCounter value={stats.github_verified} label="GitHub Verified" />
@@ -223,7 +224,7 @@ export default function LandingPage() {
               </>
             ) : (
               <>
-                {[1, 2, 3, 4].map((i) => (
+                {[1, 2, 3, 4, 5].map((i) => (
                   <div key={i} className="text-center">
                     <div className="h-8 w-20 mx-auto bg-white/5 rounded animate-pulse mb-2" />
                     <div className="h-3 w-16 mx-auto bg-white/5 rounded animate-pulse" />

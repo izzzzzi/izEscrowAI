@@ -197,6 +197,7 @@ export interface PlatformStats {
   avg_rating: number;
   github_verified: number;
   success_rate: number;
+  active_jobs: number;
 }
 
 export function fetchStats(): Promise<PlatformStats> {
