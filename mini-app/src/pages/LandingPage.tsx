@@ -99,9 +99,11 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Telegram Chat Mockup — animated */}
+            {/* Telegram Chat Mockup — iPhone frame */}
             <div className="relative animate-float">
-              <div className="glass-panel rounded-[1.5rem] max-w-[420px] mx-auto overflow-hidden glow-blue" style={{ background: "rgba(14, 22, 33, 0.85)" }}>
+              <div className="mockup-phone mx-auto">
+                <div className="mockup-phone-camera"></div>
+                <div className="mockup-phone-display">
                 {/* Chat header */}
                 <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5" style={{ background: "rgba(23, 33, 48, 0.9)" }}>
                   <div className="w-9 h-9 rounded-full ton-gradient flex items-center justify-center">
@@ -206,8 +208,9 @@ export default function LandingPage() {
                   </div>
                   <iconify-icon icon="solar:microphone-linear" width="22" class="text-slate-500" />
                 </div>
-              </div>
-            </div>
+                </div>{/* /mockup-phone-display */}
+              </div>{/* /mockup-phone */}
+            </div>{/* /animate-float */}
           </div>
         </section>
 
