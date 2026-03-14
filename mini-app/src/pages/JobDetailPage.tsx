@@ -249,12 +249,17 @@ export default function JobDetailPage() {
             </div>
 
             <PriceRange
-              min={priceEstimate.min}
-              max={priceEstimate.max}
-              median={priceEstimate.median}
-              recommended={priceEstimate.recommended}
-              currency={priceEstimate.currency}
+              min={(job as any).price_estimate_ton?.min ?? priceEstimate.min}
+              max={(job as any).price_estimate_ton?.max ?? priceEstimate.max}
+              median={(job as any).price_estimate_ton?.median ?? priceEstimate.median}
+              recommended={(job as any).price_estimate_ton?.recommended ?? priceEstimate.recommended}
+              currency={(job as any).price_estimate_ton ? "TON" : priceEstimate.currency}
             />
+            {(job as any).price_estimate_ton && priceEstimate.currency !== "TON" && (
+              <p className="text-[10px] text-slate-600">
+                Original estimate: {priceEstimate.min.toLocaleString()}–{priceEstimate.max.toLocaleString()} {priceEstimate.currency}
+              </p>
+            )}
 
             {priceEstimate.reasoning && (
               <p className="text-xs text-slate-400 leading-relaxed">

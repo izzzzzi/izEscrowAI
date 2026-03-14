@@ -413,6 +413,24 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
       }
       // Guests get price_estimate: undefined (not included in response)
 
+      // Convert price estimate to TON
+      if (responseData.price_estimate) {
+        const est = responseData.price_estimate as { min: number; median: number; max: number; recommended: number; currency: string };
+        if (est.currency !== "TON" && ["USD", "EUR", "RUB"].includes(est.currency)) {
+          const prices = await fetchTonPrice();
+          if (prices && prices[est.currency as FiatCurrency]) {
+            const rate = prices[est.currency as FiatCurrency];
+            responseData.price_estimate_ton = {
+              min: Math.round((est.min / rate) * 100) / 100,
+              median: Math.round((est.median / rate) * 100) / 100,
+              max: Math.round((est.max / rate) * 100) / 100,
+              recommended: Math.round((est.recommended / rate) * 100) / 100,
+              currency: "TON",
+            };
+          }
+        }
+      }
+
       // Add TON-converted budget
       await enrichJobWithTon(responseData);
 
