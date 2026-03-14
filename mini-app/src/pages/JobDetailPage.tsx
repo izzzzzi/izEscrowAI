@@ -131,8 +131,9 @@ export default function JobDetailPage() {
       : null;
 
   const priceEstimate = job.ai_price_estimate;
-  const author = job.poster_username || job.contact_username;
-  const authorMasked = isMasked(author);
+  const rawAuthor = job.poster_username || job.contact_username;
+  const author = rawAuthor?.replace(/^@+/, "") || null; // strip leading @
+  const authorMasked = isMasked(rawAuthor);
 
   return (
     <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
@@ -202,12 +203,13 @@ export default function JobDetailPage() {
             <h2 className="text-sm font-semibold text-slate-300 mb-3">Required Skills</h2>
             <div className="flex flex-wrap gap-2">
               {job.required_skills.map((skill) => (
-                <span
+                <button
                   key={skill}
-                  className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-xs font-medium border border-blue-500/20"
+                  onClick={() => navigate(`/market?skills=${encodeURIComponent(skill)}`)}
+                  className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-xs font-medium border border-blue-500/20 cursor-pointer hover:bg-blue-500/20 transition-colors"
                 >
                   {skill}
-                </span>
+                </button>
               ))}
             </div>
             {/* Matched / missing skills for auth users */}
@@ -325,25 +327,32 @@ export default function JobDetailPage() {
               </div>
             )}
 
-            {/* Contact URL */}
-            {job.contact_url && (
-              <div className="flex items-center gap-2 text-sm">
-                <span className="text-slate-500 text-xs w-16">Contact</span>
-                {isMasked(job.contact_url) ? (
-                  <span className="flex items-center gap-1.5 text-slate-400">
-                    <iconify-icon icon="solar:lock-keyhole-linear" width="14" class="text-slate-500" />
-                    {job.contact_url}
-                  </span>
-                ) : (
+            {/* Contact URL — skip if same as channel or same as author */}
+            {job.contact_url && !isMasked(job.contact_url) && job.contact_url !== author && (() => {
+              const url = job.contact_url!.startsWith("http") ? job.contact_url! : `https://${job.contact_url}`;
+              // Skip if contact_url points to same channel as source
+              if (job.source_username && url.includes(job.source_username)) return null;
+              return (
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-slate-500 text-xs w-16">Contact</span>
                   <a
-                    href={job.contact_url}
+                    href={url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-400 hover:text-blue-300 transition-colors truncate"
                   >
                     {job.contact_url}
                   </a>
-                )}
+                </div>
+              );
+            })()}
+            {job.contact_url && isMasked(job.contact_url) && (
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-slate-500 text-xs w-16">Contact</span>
+                <span className="flex items-center gap-1.5 text-slate-400">
+                  <iconify-icon icon="solar:lock-keyhole-linear" width="14" class="text-slate-500" />
+                  {job.contact_url}
+                </span>
               </div>
             )}
 

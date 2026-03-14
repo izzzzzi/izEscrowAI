@@ -1,15 +1,22 @@
 import { useState, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
+import { useSearchParams } from "react-router-dom";
 import { fetchJobs, type ParsedJob, type JobFilters } from "../lib/api";
 import JobCard from "../components/JobCard";
 import JobFiltersPanel from "../components/JobFilters";
 
 export default function MarketPage() {
+  const [searchParams] = useSearchParams();
   const [jobs, setJobs] = useState<ParsedJob[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState<JobFilters>({});
+
+  // Initialize filters from URL query params (e.g., ?skills=React)
+  const [filters, setFilters] = useState<JobFilters>(() => {
+    const skillsParam = searchParams.get("skills");
+    return skillsParam ? { skills: skillsParam.split(",").map(s => s.trim()) } : {};
+  });
 
   const loadJobs = useCallback(async () => {
     setLoading(true);
