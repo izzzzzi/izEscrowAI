@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { fetchPublicOffers, type PublicOffer } from "../lib/api";
+import { fetchPublicOffers, createOffer, type PublicOffer } from "../lib/api";
 import OfferCard from "../components/OfferCard";
 import LoginGate from "../components/LoginGate";
-
 
 export default function OffersPage() {
   const [offers, setOffers] = useState<PublicOffer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showCreate, setShowCreate] = useState(false);
+  const [newOffer, setNewOffer] = useState({ description: "", min_price: "", currency: "TON", role: "buyer" });
+  const [creating, setCreating] = useState(false);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     fetchPublicOffers()
@@ -18,6 +19,28 @@ export default function OffersPage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  const handleCreate = async () => {
+    if (!newOffer.description.trim()) return;
+    setCreating(true);
+    try {
+      await createOffer({
+        description: newOffer.description,
+        min_price: newOffer.min_price ? Number(newOffer.min_price) : undefined,
+        currency: newOffer.currency,
+        role: newOffer.role,
+      });
+      setShowCreate(false);
+      setNewOffer({ description: "", min_price: "", currency: "TON", role: "buyer" });
+      // Refresh offers
+      const fresh = await fetchPublicOffers();
+      setOffers(fresh);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setCreating(false);
+    }
+  };
 
   return (
     <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
@@ -33,7 +56,7 @@ export default function OffersPage() {
           </div>
           <LoginGate fallbackText="Login to create offers">
             <button
-              onClick={() => navigate("/offers/create")}
+              onClick={() => setShowCreate(true)}
               className="ton-gradient px-6 py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white"
             >
               Create Offer
@@ -78,6 +101,78 @@ export default function OffersPage() {
           </div>
         )}
       </div>
+
+      {/* Create Offer Modal */}
+      {showCreate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowCreate(false)}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div
+            className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#0f0f1a] shadow-2xl p-6 space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-white">New Offer</h3>
+              <button onClick={() => setShowCreate(false)} className="text-slate-400 bg-transparent border-none cursor-pointer">
+                <iconify-icon icon="solar:close-circle-linear" width="24" />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <textarea
+                value={newOffer.description}
+                onChange={(e) => setNewOffer({ ...newOffer, description: e.target.value })}
+                placeholder="Describe your offer..."
+                rows={3}
+                className="w-full rounded-xl bg-white/5 border border-white/10 text-white text-sm p-3 resize-none focus:outline-none focus:border-blue-500/40 placeholder-slate-500"
+              />
+
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  value={newOffer.min_price}
+                  onChange={(e) => setNewOffer({ ...newOffer, min_price: e.target.value })}
+                  placeholder="Min price"
+                  className="flex-1 rounded-xl bg-white/5 border border-white/10 text-white text-sm p-3 focus:outline-none focus:border-blue-500/40 placeholder-slate-500"
+                />
+                <select
+                  value={newOffer.currency}
+                  onChange={(e) => setNewOffer({ ...newOffer, currency: e.target.value })}
+                  className="rounded-xl bg-white/5 border border-white/10 text-white text-sm p-3 focus:outline-none"
+                >
+                  <option value="TON">TON</option>
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="RUB">RUB</option>
+                </select>
+              </div>
+
+              <div className="flex gap-2">
+                {["buyer", "seller"].map((r) => (
+                  <button
+                    key={r}
+                    onClick={() => setNewOffer({ ...newOffer, role: r })}
+                    className={`flex-1 py-2 rounded-xl text-sm font-medium border cursor-pointer transition-colors ${
+                      newOffer.role === r
+                        ? "bg-blue-500/20 text-blue-400 border-blue-500/30"
+                        : "bg-white/5 text-slate-400 border-white/10"
+                    }`}
+                  >
+                    {r === "buyer" ? "Looking for" : "Offering"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              onClick={handleCreate}
+              disabled={creating || !newOffer.description.trim()}
+              className="w-full py-3 rounded-xl bg-[#0098EA] text-white font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed border-none cursor-pointer"
+            >
+              {creating ? "Creating..." : "Create Offer"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
