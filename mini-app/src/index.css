@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* Phone Mockup (inspired by DaisyUI mockup-phone) */
 .mockup-phone {
   display: inline-block;
@@ -77,6 +79,22 @@ button:active {
 }
 
 /* --- Design System --- */
+
+/* Page wrapper — replaces inline style={{ background: "#0f0f1a", color: "#fff" }} */
+.page-shell {
+  background: #0f0f1a;
+  color: #fff;
+}
+
+/* Mini App: override pt-28 (web navbar offset) — no top navbar in Telegram */
+.app .page-shell {
+  padding-top: 1rem !important;
+}
+
+/* Chat bubble colors (Telegram-style) */
+.chat-bubble-user { background: #2B5278; }
+.chat-bubble-bot { background: rgba(30, 41, 59, 0.8); }
+.chat-header { background: rgba(23, 33, 48, 0.9); }
 
 .glass-card {
   background: rgba(30, 41, 59, 0.5);
@@ -328,6 +346,13 @@ button:active {
 a {
   text-decoration: none;
   color: inherit;
+}
+
+/* Focus ring for keyboard navigation */
+:focus-visible {
+  outline: 2px solid #0098EA;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 @media (prefers-reduced-motion: reduce) {

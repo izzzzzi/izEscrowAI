@@ -25,7 +25,8 @@ export default function LandingPage() {
   return (
     <div
       className="overflow-x-hidden"
-      style={{ background: "#0f0f1a", color: "#fff", fontFamily: "'Inter', sans-serif" }}
+      style={{ fontFamily: "'Inter', sans-serif" }}
+      className="page-shell"
     >
       <Helmet>
         <title>izEscrowAI — AI-Powered P2P Escrow on TON</title>
@@ -77,7 +78,7 @@ export default function LandingPage() {
                 <div className="mockup-phone-camera"></div>
                 <div className="mockup-phone-display">
                 {/* Chat header */}
-                <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5" style={{ background: "rgba(23, 33, 48, 0.9)" }}>
+                <div className="chat-header flex items-center gap-3 px-4 py-3 border-b border-white/5">
                   <div className="w-9 h-9 rounded-full ton-gradient flex items-center justify-center">
                     <iconify-icon icon="solar:shield-check-linear" width="18" height="18" class="text-white" />
                   </div>
@@ -93,7 +94,7 @@ export default function LandingPage() {
                 <div className="px-3 py-4 space-y-3 min-h-[380px]">
                   {/* Step 1: User sends /start */}
                   <div className="flex justify-end chat-step chat-step-1">
-                    <div className="max-w-[80%] px-3 py-2 rounded-2xl rounded-br-md text-sm" style={{ background: "#2B5278" }}>
+                    <div className="chat-bubble-user max-w-[80%] px-3 py-2 rounded-2xl rounded-br-md text-sm">
                       /start
                       <div className="text-[10px] text-slate-400 text-right mt-1">12:01</div>
                     </div>
@@ -104,7 +105,7 @@ export default function LandingPage() {
                     <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
                       <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
                     </div>
-                    <div className="max-w-[85%] px-3 py-2 rounded-2xl rounded-bl-md text-[13px] leading-relaxed" style={{ background: "rgba(30, 41, 59, 0.8)" }}>
+                    <div className="chat-bubble-bot max-w-[85%] px-3 py-2 rounded-2xl rounded-bl-md text-[13px] leading-relaxed">
                       <div className="font-medium mb-1">Welcome to izEscrowAI!</div>
                       <div className="text-slate-400 mb-2">I'm an AI-powered escrow agent for safe P2P deals. Funds are held by a smart contract on TON.</div>
                       <div className="text-slate-400">Just write something like:</div>
@@ -115,14 +116,14 @@ export default function LandingPage() {
 
                   {/* Step 3: User typing */}
                   <div className="flex justify-end chat-step chat-step-3">
-                    <div className="px-3 py-2 rounded-2xl rounded-br-md text-xs text-slate-400" style={{ background: "#2B5278" }}>
+                    <div className="chat-bubble-user px-3 py-2 rounded-2xl rounded-br-md text-xs text-slate-400">
                       <span className="typing-bubble"><span /><span /><span /></span>
                     </div>
                   </div>
 
                   {/* Step 4: User sends deal message */}
                   <div className="flex justify-end chat-step chat-step-4">
-                    <div className="max-w-[80%] px-3 py-2 rounded-2xl rounded-br-md text-sm" style={{ background: "#2B5278" }}>
+                    <div className="chat-bubble-user max-w-[80%] px-3 py-2 rounded-2xl rounded-br-md text-sm">
                       Selling logo design to @ivan for 50 TON
                       <div className="text-[10px] text-slate-400 text-right mt-1">12:02</div>
                     </div>
@@ -133,7 +134,7 @@ export default function LandingPage() {
                     <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
                       <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
                     </div>
-                    <div className="px-3 py-2 rounded-2xl rounded-bl-md text-xs text-slate-400 flex items-center gap-1.5" style={{ background: "rgba(30, 41, 59, 0.8)" }}>
+                    <div className="chat-bubble-bot px-3 py-2 rounded-2xl rounded-bl-md text-xs text-slate-400 flex items-center gap-1.5">
                       <iconify-icon icon="solar:cpu-linear" width="14" class="text-[#0098EA] animate-spin-slow" />
                       <span className="typing-dots">Parsing deal terms</span>
                     </div>
@@ -144,7 +145,7 @@ export default function LandingPage() {
                     <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
                       <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
                     </div>
-                    <div className="max-w-[85%] rounded-2xl rounded-bl-md overflow-hidden" style={{ background: "rgba(30, 41, 59, 0.8)" }}>
+                    <div className="chat-bubble-bot max-w-[85%] rounded-2xl rounded-bl-md overflow-hidden">
                       <div className="px-3 pt-2 pb-1 text-[13px] leading-relaxed">
                         <div className="font-medium mb-1.5">Parsed deal:</div>
                         <div className="space-y-0.5 mb-2">
@@ -175,7 +176,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Chat input bar */}
-                <div className="flex items-center gap-2 px-3 py-2 border-t border-white/5" style={{ background: "rgba(23, 33, 48, 0.9)" }}>
+                <div className="chat-header flex items-center gap-2 px-3 py-2 border-t border-white/5">
                   <iconify-icon icon="solar:smile-circle-linear" width="22" class="text-slate-500" />
                   <div className="flex-1 bg-white/5 rounded-full px-4 py-2 text-xs text-slate-500">
                     Message...
@@ -423,10 +424,10 @@ export default function LandingPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {recentOffers.map((offer) => (
-                  <div
+                  <button
                     key={offer.id}
                     onClick={() => navigate(`/offers/${offer.id}`)}
-                    className="glass-panel p-6 rounded-2xl cursor-pointer hover:-translate-y-1 transition-all"
+                    className="glass-panel p-6 rounded-2xl cursor-pointer hover:-translate-y-1 transition-all text-left w-full"
                   >
                     <div className="flex items-center gap-2 mb-3">
                       <span className="px-2 py-0.5 rounded bg-green-500/10 text-green-400 text-[10px] font-medium uppercase">
@@ -445,7 +446,7 @@ export default function LandingPage() {
                       )}
                       <span>{offer.application_count ?? 0} bids</span>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -470,10 +471,10 @@ export default function LandingPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {topGroups.map((group, i) => (
-                  <div
+                  <button
                     key={group.group_id}
                     onClick={() => navigate(`/groups/${group.group_id}`)}
-                    className="glass-panel p-6 rounded-2xl cursor-pointer hover:-translate-y-1 transition-all"
+                    className="glass-panel p-6 rounded-2xl cursor-pointer hover:-translate-y-1 transition-all text-left w-full"
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <span className="text-2xl font-bold text-slate-600">
@@ -497,7 +498,7 @@ export default function LandingPage() {
                         <div>Avg Check</div>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>

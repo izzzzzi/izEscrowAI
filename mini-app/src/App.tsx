@@ -1,30 +1,54 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense, Component, type ReactNode, type ErrorInfo } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import PaymentPage from "./pages/PaymentPage";
-import DealsPage from "./pages/DealsPage";
-import ProfilePage from "./pages/ProfilePage";
-import LeaderboardPage from "./pages/LeaderboardPage";
-import GroupDashboardPage from "./pages/GroupDashboardPage";
-import LandingPage from "./pages/LandingPage";
-import OffersPage from "./pages/OffersPage";
-import OfferDetailPage from "./pages/OfferDetailPage";
-import WebProfilePage from "./pages/WebProfilePage";
-import MarketPage from "./pages/MarketPage";
-import JobDetailPage from "./pages/JobDetailPage";
-import MyJobResponsesPage from "./pages/MyJobResponsesPage";
-import SpecWizardPage from "./pages/SpecWizardPage";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminSources from "./pages/admin/AdminSources";
-import AdminJobs from "./pages/admin/AdminJobs";
-import AdminUsers from "./pages/admin/AdminUsers";
-import AdminDisputes from "./pages/admin/AdminDisputes";
-import AdminSettings from "./pages/admin/AdminSettings";
-import NotFoundPage from "./pages/NotFoundPage";
 import TabNav from "./components/TabNav";
 import WebNavbar from "./components/WebNavbar";
 import AnimatedPage from "./components/AnimatedPage";
 import { useAuth } from "./contexts/AuthContext";
 import { setTelegramAuthData } from "./lib/api";
+
+// Page-level error boundary — catches crashes in individual routes
+class PageErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error: Error, info: ErrorInfo) { console.error("[PageError]", error, info.componentStack); }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
+          <iconify-icon icon="solar:danger-triangle-linear" width="48" class="text-amber-400 mb-4" />
+          <h2 className="text-lg font-semibold mb-2">Something went wrong</h2>
+          <p className="text-sm text-slate-400 mb-6">This page crashed. Try reloading.</p>
+          <button onClick={() => { this.setState({ hasError: false }); window.location.reload(); }} className="ton-gradient px-6 py-3 rounded-xl text-sm font-medium text-white border-none cursor-pointer">
+            Reload
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+// Lazy-load all pages for code splitting
+const PaymentPage = lazy(() => import("./pages/PaymentPage"));
+const DealsPage = lazy(() => import("./pages/DealsPage"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const LeaderboardPage = lazy(() => import("./pages/LeaderboardPage"));
+const GroupDashboardPage = lazy(() => import("./pages/GroupDashboardPage"));
+const LandingPage = lazy(() => import("./pages/LandingPage"));
+const OffersPage = lazy(() => import("./pages/OffersPage"));
+const OfferDetailPage = lazy(() => import("./pages/OfferDetailPage"));
+const WebProfilePage = lazy(() => import("./pages/WebProfilePage"));
+const MarketPage = lazy(() => import("./pages/MarketPage"));
+const JobDetailPage = lazy(() => import("./pages/JobDetailPage"));
+const MyJobResponsesPage = lazy(() => import("./pages/MyJobResponsesPage"));
+const SpecWizardPage = lazy(() => import("./pages/SpecWizardPage"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminSources = lazy(() => import("./pages/admin/AdminSources"));
+const AdminJobs = lazy(() => import("./pages/admin/AdminJobs"));
+const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
+const AdminDisputes = lazy(() => import("./pages/admin/AdminDisputes"));
+const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 function App() {
   // @ts-expect-error - Telegram WebApp global
@@ -46,8 +70,10 @@ function WebApp() {
   }, [authData]);
 
   return (
-    <div className="overflow-x-hidden" style={{ background: "#0f0f1a", color: "#fff", fontFamily: "'Inter', sans-serif" }}>
+    <div className="overflow-x-hidden page-shell" style={{ fontFamily: "'Inter', sans-serif" }}>
       <WebNavbar />
+      <PageErrorBoundary>
+      <Suspense fallback={<div className="min-h-screen" />}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/offers" element={<OffersPage />} />
@@ -74,6 +100,8 @@ function WebApp() {
         <Route path="/wallet" element={<Navigate to="/profile" replace />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      </Suspense>
+      </PageErrorBoundary>
     </div>
   );
 }
@@ -109,6 +137,8 @@ function MiniApp() {
 
   return (
     <div className="app" style={{ paddingBottom: "56px" }}>
+      <PageErrorBoundary>
+      <Suspense fallback={<div className="min-h-screen" />}>
       <Routes>
         <Route path="/wallet" element={<Navigate to="/profile" replace />} />
         <Route path="/pay/:dealId" element={<AnimatedPage><PaymentPage /></AnimatedPage>} />
@@ -124,6 +154,8 @@ function MiniApp() {
         <Route path="/groups/:groupId" element={<AnimatedPage><GroupDashboardPage /></AnimatedPage>} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      </Suspense>
+      </PageErrorBoundary>
       <TabNav />
     </div>
   );

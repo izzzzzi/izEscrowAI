@@ -18,7 +18,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen pt-28 pb-16" style={{ background: "#0f0f1a", color: "#fff" }}>
+    <div className="min-h-screen page-shell pt-28 pb-16">
       {/* Tab bar */}
       <nav className="flex justify-center px-4 mb-8">
         <div className="glass-panel rounded-full px-2 py-1.5 flex items-center gap-1 overflow-x-auto no-scrollbar">

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 export default function NotFoundPage() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen pt-28 pb-16 px-6 flex items-center justify-center" style={{ background: "#0f0f1a", color: "#fff" }}>
+    <div className="min-h-screen page-shell pt-28 pb-16 px-6 flex items-center justify-center">
       <div className="text-center space-y-4">
         <iconify-icon icon="solar:ghost-linear" width="64" class="text-slate-600" />
         <h1 className="text-2xl font-bold">Page not found</h1>

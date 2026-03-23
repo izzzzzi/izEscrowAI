@@ -43,7 +43,7 @@ export default function OffersPage() {
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
+    <div className="min-h-screen page-shell pt-28 pb-16 px-6">
       <Helmet>
         <title>Offers — izEscrowAI</title>
         <meta name="description" content="Browse public offers on izEscrowAI. Find freelance work or post your own offer with AI-powered escrow protection." />
@@ -104,10 +104,13 @@ export default function OffersPage() {
 
       {/* Create Offer Modal */}
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowCreate(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="presentation" onClick={() => setShowCreate(false)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
             className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#0f0f1a] shadow-2xl p-6 space-y-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Create new offer"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center">

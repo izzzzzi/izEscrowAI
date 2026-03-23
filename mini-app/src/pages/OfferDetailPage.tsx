@@ -43,7 +43,7 @@ export default function OfferDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
+      <div className="min-h-screen page-shell pt-28 pb-16 px-6">
         <div className="max-w-3xl mx-auto">
           <div className="glass-card rounded-2xl p-8 animate-pulse h-64" />
         </div>
@@ -53,7 +53,7 @@ export default function OfferDetailPage() {
 
   if (!offer || error) {
     return (
-      <div className="min-h-screen pt-28 pb-16 px-6 text-center" style={{ background: "#0f0f1a", color: "#fff" }}>
+      <div className="min-h-screen page-shell pt-28 pb-16 px-6 text-center">
         <p className="text-slate-400 mt-20">{error || "Offer not found"}</p>
         <button onClick={() => navigate("/offers")} className="mt-4 text-[#0098EA] text-sm bg-transparent border-none cursor-pointer">
           Back to Offers
@@ -66,7 +66,7 @@ export default function OfferDetailPage() {
   const roleLabel = offer.role === "seller" ? "Offering service" : "Looking for freelancer";
 
   return (
-    <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
+    <div className="min-h-screen page-shell pt-28 pb-16 px-6">
       <div className="max-w-3xl mx-auto">
         <button
           onClick={() => navigate("/offers")}

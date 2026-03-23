@@ -52,7 +52,7 @@ export default function MarketPage() {
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
+    <div className="min-h-screen page-shell pt-28 pb-16 px-6">
       <Helmet>
         <title>Job Marketplace — izEscrowAI</title>
         <meta name="description" content="Browse freelance jobs parsed from Telegram groups. AI pricing, skill matching, and escrow protection." />
@@ -81,7 +81,7 @@ export default function MarketPage() {
           {/* Job list */}
           <div className="flex-1 space-y-3">
             {loading && jobs.length === 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-3" role="status" aria-label="Loading jobs">
                 {[1, 2, 3, 4].map((i) => (
                   <div key={i} className="bg-white/5 rounded-xl p-4 animate-pulse h-24" />
                 ))}

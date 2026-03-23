@@ -53,7 +53,7 @@ export default function WebProfilePage() {
 
   if (isOwnProfile && !isAuthenticated) {
     return (
-      <div className="min-h-screen pt-28 pb-16 px-6 text-center" style={{ background: "#0f0f1a", color: "#fff" }}>
+      <div className="min-h-screen page-shell pt-28 pb-16 px-6 text-center">
         <div className="max-w-md mx-auto mt-20">
           <iconify-icon icon="solar:user-linear" width="48" class="text-slate-600 mb-4" />
           <h2 className="text-xl font-medium mb-4">Your Profile</h2>
@@ -65,7 +65,7 @@ export default function WebProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
+      <div className="min-h-screen page-shell pt-28 pb-16 px-6">
         <div className="max-w-3xl mx-auto">
           <div className="glass-card rounded-2xl p-8 animate-pulse h-48" />
         </div>
@@ -75,7 +75,7 @@ export default function WebProfilePage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen pt-28 pb-16 px-6 text-center" style={{ background: "#0f0f1a", color: "#fff" }}>
+      <div className="min-h-screen page-shell pt-28 pb-16 px-6 text-center">
         <p className="text-slate-400 mt-20">Profile not found</p>
       </div>
     );
@@ -87,7 +87,7 @@ export default function WebProfilePage() {
     : `User #${profile.user_id}`;
 
   return (
-    <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
+    <div className="min-h-screen page-shell pt-28 pb-16 px-6">
       <div className="max-w-3xl mx-auto">
         {/* Profile Card */}
         <div className="glass-card rounded-2xl p-8 mb-6">

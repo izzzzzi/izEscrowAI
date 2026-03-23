@@ -52,7 +52,7 @@ export default function MyJobResponsesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen px-5 pt-8 pb-16" style={{ background: "#0f0f1a", color: "#fff" }}>
+      <div className="min-h-screen page-shell px-5 pt-8 pb-16">
         <div className="max-w-3xl mx-auto">
           <div className="glass-card rounded-2xl p-8 animate-pulse h-48" />
         </div>
@@ -62,7 +62,7 @@ export default function MyJobResponsesPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen px-5 pt-8 pb-16 text-center" style={{ background: "#0f0f1a", color: "#fff" }}>
+      <div className="min-h-screen page-shell px-5 pt-8 pb-16 text-center">
         <p className="text-sm text-red-400 mt-20">{error}</p>
       </div>
     );
@@ -70,14 +70,14 @@ export default function MyJobResponsesPage() {
 
   if (!job) {
     return (
-      <div className="min-h-screen px-5 pt-8 pb-16 text-center" style={{ background: "#0f0f1a", color: "#fff" }}>
+      <div className="min-h-screen page-shell px-5 pt-8 pb-16 text-center">
         <p className="text-sm text-slate-400 mt-20">Job not found</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen px-5 pt-8 pb-16" style={{ background: "#0f0f1a", color: "#fff" }}>
+    <div className="min-h-screen page-shell px-5 pt-8 pb-16">
       <div className="max-w-3xl mx-auto space-y-6">
         {/* Back button */}
         <button

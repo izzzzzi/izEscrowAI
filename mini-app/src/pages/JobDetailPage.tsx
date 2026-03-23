@@ -24,7 +24,7 @@ function isMasked(value: string | null | undefined): boolean {
 
 function PageSkeleton() {
   return (
-    <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
+    <div className="min-h-screen page-shell pt-28 pb-16 px-6">
       <div className="max-w-3xl mx-auto space-y-6">
         {/* back button */}
         <div className="h-4 w-40 bg-white/5 rounded animate-pulse" />
@@ -76,7 +76,7 @@ function PriceInsightSkeleton() {
 function NotFoundState() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: "#0f0f1a", color: "#fff" }}>
+    <div className="min-h-screen page-shell flex items-center justify-center">
       <div className="text-center space-y-4">
         <iconify-icon icon="solar:file-remove-linear" width="64" class="text-slate-600" />
         <h2 className="text-xl font-semibold text-white">Job not found</h2>
@@ -136,7 +136,7 @@ export default function JobDetailPage() {
   const authorMasked = isMasked(rawAuthor);
 
   return (
-    <div className="min-h-screen pt-28 pb-16 px-6" style={{ background: "#0f0f1a", color: "#fff" }}>
+    <div className="min-h-screen page-shell pt-28 pb-16 px-6">
       <Helmet>
         <title>{job.title} — izEscrowAI</title>
         <meta name="description" content={job.description?.slice(0, 160) || job.title} />
