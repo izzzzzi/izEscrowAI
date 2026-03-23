@@ -78,7 +78,7 @@ function PriceInsightSkeleton() {
 function NotFoundState() {
   const navigate = useNavigate();
   return (
-    <div className={isMini ? "mini-page flex items-center justify-center" : "min-h-screen page-shell flex items-center justify-center"}>
+    <div className="min-h-screen page-shell flex items-center justify-center">
       <div className="text-center space-y-4">
         <iconify-icon icon="solar:file-remove-linear" width="64" class="text-slate-600" />
         <h2 className="text-xl font-semibold text-white">Job not found</h2>

@@ -24,9 +24,8 @@ export default function LandingPage() {
 
   return (
     <div
-      className="overflow-x-hidden"
+      className="overflow-x-hidden page-shell"
       style={{ fontFamily: "'Inter', sans-serif" }}
-      className="page-shell"
     >
       <Helmet>
         <title>izEscrowAI — AI-Powered P2P Escrow on TON</title>
