@@ -105,10 +105,10 @@ export default function LandingPage() {
                       <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
                     </div>
                     <div className="max-w-[85%] px-3 py-2 rounded-2xl rounded-bl-md text-[13px] leading-relaxed" style={{ background: "rgba(30, 41, 59, 0.8)" }}>
-                      Welcome to izEscrowAI!{"\n\n"}
-                      <span className="text-slate-400">I'm an AI-powered escrow agent for safe P2P deals. Funds are held by a smart contract on TON.</span>{"\n\n"}
-                      <span className="text-slate-400">Just write something like:</span>{"\n"}
-                      <span className="text-[#0098EA]">"Selling logo design to @ivan for 50 TON"</span>
+                      <div className="font-medium mb-1">Welcome to izEscrowAI!</div>
+                      <div className="text-slate-400 mb-2">I'm an AI-powered escrow agent for safe P2P deals. Funds are held by a smart contract on TON.</div>
+                      <div className="text-slate-400">Just write something like:</div>
+                      <div className="text-[#0098EA]">"Selling logo design to @ivan for 50 TON"</div>
                       <div className="text-[10px] text-slate-500 text-right mt-1">12:01</div>
                     </div>
                   </div>
@@ -146,12 +146,14 @@ export default function LandingPage() {
                     </div>
                     <div className="max-w-[85%] rounded-2xl rounded-bl-md overflow-hidden" style={{ background: "rgba(30, 41, 59, 0.8)" }}>
                       <div className="px-3 pt-2 pb-1 text-[13px] leading-relaxed">
-                        Parsed deal:{"\n\n"}
-                        <span className="text-slate-400">Seller:</span> @you <span className="text-slate-500">(3 deals, 4.5)</span>{"\n"}
-                        <span className="text-slate-400">Buyer:</span> @ivan <span className="text-slate-500">(0 deals)</span>{"\n"}
-                        <span className="text-slate-400">Amount:</span> 50 TON{"\n"}
-                        <span className="text-slate-400">Description:</span> Logo design{"\n\n"}
-                        <span className="text-slate-400">Is this correct?</span>
+                        <div className="font-medium mb-1.5">Parsed deal:</div>
+                        <div className="space-y-0.5 mb-2">
+                          <div><span className="text-slate-400">Seller:</span> @you <span className="text-slate-500">(3 deals, 4.5)</span></div>
+                          <div><span className="text-slate-400">Buyer:</span> @ivan <span className="text-slate-500">(0 deals)</span></div>
+                          <div><span className="text-slate-400">Amount:</span> 50 TON</div>
+                          <div><span className="text-slate-400">Description:</span> Logo design</div>
+                        </div>
+                        <div className="text-slate-400">Is this correct?</div>
                       </div>
                       <div className="px-2 pb-2 flex gap-1.5">
                         <div className="flex-1 py-1.5 text-[10px] font-semibold uppercase tracking-wider ton-gradient rounded-lg text-center text-white shadow-lg shadow-blue-500/20">

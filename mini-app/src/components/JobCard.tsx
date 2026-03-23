@@ -49,13 +49,13 @@ export default function JobCard({ job, onClick }: { job: ParsedJob; onClick?: ()
 
       <div className="flex items-center justify-between">
         <div className="text-xs text-slate-400">
-          {(job as any).budget_min_ton || (job as any).budget_max_ton ? (
+          {job.budget_min_ton || job.budget_max_ton ? (
             <span>
-              {(job as any).budget_min_ton && (job as any).budget_max_ton && (job as any).budget_min_ton === (job as any).budget_max_ton
-                ? `${(job as any).budget_min_ton.toLocaleString()} TON`
+              {job.budget_min_ton && job.budget_max_ton && job.budget_min_ton === job.budget_max_ton
+                ? `${job.budget_min_ton.toLocaleString()} TON`
                 : <>
-                    {(job as any).budget_min_ton ? `from ${(job as any).budget_min_ton.toLocaleString()}` : ""}
-                    {(job as any).budget_max_ton ? ` to ${(job as any).budget_max_ton.toLocaleString()}` : ""} TON
+                    {job.budget_min_ton ? `from ${job.budget_min_ton.toLocaleString()}` : ""}
+                    {job.budget_max_ton ? ` to ${job.budget_max_ton.toLocaleString()}` : ""} TON
                   </>
               }
             </span>

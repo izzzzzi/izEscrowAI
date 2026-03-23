@@ -360,6 +360,10 @@ export interface ParsedJob {
   ai_price_estimate: PriceEstimate | null;
   source_title?: string | null;
   source_username?: string | null;
+  budget_min_ton?: number | null;
+  budget_max_ton?: number | null;
+  price_estimate_ton?: { min: number; median: number; max: number; recommended: number; currency: string } | null;
+  related?: Array<{ id: string; title: string; budget_min: number | null; budget_max: number | null; currency: string; required_skills: string[] | null; budget_min_ton?: number; budget_max_ton?: number; created_at: string }>;
   created_at: string;
   expires_at: string | null;
   skill_match?: { match_percent: number; matched: string[]; missing: string[] };

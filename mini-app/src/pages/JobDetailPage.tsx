@@ -162,13 +162,13 @@ export default function JobDetailPage() {
 
           {/* Budget + currency (prefer TON) */}
           <div className="mt-2 text-sm text-slate-400">
-            {(job as any).budget_min_ton || (job as any).budget_max_ton ? (
+            {job.budget_min_ton || job.budget_max_ton ? (
               <span>
-                {(job as any).budget_min_ton && (job as any).budget_max_ton && (job as any).budget_min_ton === (job as any).budget_max_ton
-                  ? <>{(job as any).budget_min_ton.toLocaleString()} TON</>
+                {job.budget_min_ton && job.budget_max_ton && job.budget_min_ton === job.budget_max_ton
+                  ? <>{job.budget_min_ton.toLocaleString()} TON</>
                   : <>
-                      {(job as any).budget_min_ton ? `from ${(job as any).budget_min_ton.toLocaleString()}` : ""}
-                      {(job as any).budget_max_ton ? ` to ${(job as any).budget_max_ton.toLocaleString()}` : ""} TON
+                      {job.budget_min_ton ? `from ${job.budget_min_ton.toLocaleString()}` : ""}
+                      {job.budget_max_ton ? ` to ${job.budget_max_ton.toLocaleString()}` : ""} TON
                     </>
                 }
                 {job.budget_min && job.budget_max && (
@@ -264,13 +264,13 @@ export default function JobDetailPage() {
             </div>
 
             <PriceRange
-              min={(job as any).price_estimate_ton?.min ?? priceEstimate.min}
-              max={(job as any).price_estimate_ton?.max ?? priceEstimate.max}
-              median={(job as any).price_estimate_ton?.median ?? priceEstimate.median}
-              recommended={(job as any).price_estimate_ton?.recommended ?? priceEstimate.recommended}
-              currency={(job as any).price_estimate_ton ? "TON" : priceEstimate.currency}
+              min={job.price_estimate_ton?.min ?? priceEstimate.min}
+              max={job.price_estimate_ton?.max ?? priceEstimate.max}
+              median={job.price_estimate_ton?.median ?? priceEstimate.median}
+              recommended={job.price_estimate_ton?.recommended ?? priceEstimate.recommended}
+              currency={job.price_estimate_ton ? "TON" : priceEstimate.currency}
             />
-            {(job as any).price_estimate_ton && priceEstimate.currency !== "TON" && (
+            {job.price_estimate_ton && priceEstimate.currency !== "TON" && (
               <p className="text-[10px] text-slate-600">
                 Original estimate: {priceEstimate.min.toLocaleString()}–{priceEstimate.max.toLocaleString()} {priceEstimate.currency}
               </p>
@@ -430,11 +430,11 @@ export default function JobDetailPage() {
           </div>
         )}
         {/* Similar Jobs */}
-        {(job as any).related && (job as any).related.length > 0 && (
+        {job.related && job.related.length > 0 && (
           <div className="space-y-3">
             <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Similar Jobs</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {(job as any).related.map((r: any) => (
+              {job.related.map((r: any) => (
                 <button
                   key={r.id}
                   onClick={() => navigate(`/market/${r.id}`)}
