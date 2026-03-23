@@ -329,3 +329,15 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .chat-step,
+  .chat-step-1, .chat-step-2, .chat-step-3,
+  .chat-step-4, .chat-step-5, .chat-step-6,
+  .typing-bubble span {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

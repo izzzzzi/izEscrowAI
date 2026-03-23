@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import WalletPage from "./pages/WalletPage";
 import PaymentPage from "./pages/PaymentPage";
 import DealsPage from "./pages/DealsPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -20,6 +19,7 @@ import AdminJobs from "./pages/admin/AdminJobs";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminDisputes from "./pages/admin/AdminDisputes";
 import AdminSettings from "./pages/admin/AdminSettings";
+import NotFoundPage from "./pages/NotFoundPage";
 import TabNav from "./components/TabNav";
 import WebNavbar from "./components/WebNavbar";
 import AnimatedPage from "./components/AnimatedPage";
@@ -71,7 +71,8 @@ function WebApp() {
             <Route path="/admin/settings" element={<AdminSettings />} />
           </>
         )}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/wallet" element={<Navigate to="/profile" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
   );
@@ -109,7 +110,7 @@ function MiniApp() {
   return (
     <div className="app" style={{ paddingBottom: "56px" }}>
       <Routes>
-        <Route path="/wallet" element={<AnimatedPage><WalletPage /></AnimatedPage>} />
+        <Route path="/wallet" element={<Navigate to="/profile" replace />} />
         <Route path="/pay/:dealId" element={<AnimatedPage><PaymentPage /></AnimatedPage>} />
         <Route path="/deals" element={<AnimatedPage><DealsPage /></AnimatedPage>} />
         <Route path="/profile" element={<AnimatedPage><ProfilePage /></AnimatedPage>} />
@@ -121,7 +122,7 @@ function MiniApp() {
         <Route path="/spec/:specId" element={<AnimatedPage><SpecWizardPage /></AnimatedPage>} />
         <Route path="/groups" element={<AnimatedPage><LeaderboardPage /></AnimatedPage>} />
         <Route path="/groups/:groupId" element={<AnimatedPage><GroupDashboardPage /></AnimatedPage>} />
-        <Route path="*" element={<Navigate to="/wallet" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <TabNav />
     </div>

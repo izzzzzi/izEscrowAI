@@ -200,7 +200,7 @@ export function createBot(token: string): Bot {
   });
 
   bot.command("wallet", async (ctx) => {
-    const keyboard = new InlineKeyboard().webApp("Connect Wallet", `${MINI_APP_URL}/wallet`);
+    const keyboard = new InlineKeyboard().webApp("Connect Wallet", `${MINI_APP_URL}/profile`);
     await ctx.reply("Connect your TON wallet via Mini App:", { reply_markup: keyboard });
   });
 

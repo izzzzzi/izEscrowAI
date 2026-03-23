@@ -21,12 +21,13 @@ export default function JobCard({ job, onClick }: { job: ParsedJob; onClick?: ()
     : null;
 
   return (
-    <div
+    <button
+      type="button"
       onClick={() => {
         navigate(`/market/${job.id}`);
         onClick?.();
       }}
-      className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-blue-500/30 transition-colors cursor-pointer"
+      className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-blue-500/30 transition-colors cursor-pointer text-left w-full"
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <h3 className="text-sm font-semibold text-white truncate flex-1">{job.title}</h3>
@@ -78,6 +79,6 @@ export default function JobCard({ job, onClick }: { job: ParsedJob; onClick?: ()
           </span>
         )}
       </div>
-    </div>
+    </button>
   );
 }

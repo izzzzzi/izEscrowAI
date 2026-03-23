@@ -68,6 +68,8 @@ export default function WebNavbar() {
               <button
                 onClick={() => setMenuOpen((v) => !v)}
                 className="flex items-center gap-2 bg-transparent border-none cursor-pointer text-white p-0"
+                aria-label="User menu"
+                aria-expanded={menuOpen}
               >
                 {user.photo_url ? (
                   <img src={user.photo_url} alt="" className="w-8 h-8 rounded-full" />
@@ -88,8 +90,9 @@ export default function WebNavbar() {
               </button>
 
               {menuOpen && (
-                <div className="absolute right-0 top-12 w-48 rounded-xl border border-white/10 bg-[#1a1a2e] shadow-2xl overflow-hidden">
+                <div role="menu" className="absolute right-0 top-12 w-48 rounded-xl border border-white/10 bg-[#1a1a2e] shadow-2xl overflow-hidden">
                   <button
+                    role="menuitem"
                     onClick={() => navigate("/profile")}
                     className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors bg-transparent border-none cursor-pointer flex items-center gap-2"
                   >
@@ -97,6 +100,7 @@ export default function WebNavbar() {
                     Profile
                   </button>
                   <button
+                    role="menuitem"
                     onClick={() => navigate("/offers")}
                     className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors bg-transparent border-none cursor-pointer flex items-center gap-2"
                   >
@@ -105,6 +109,7 @@ export default function WebNavbar() {
                   </button>
                   <div className="border-t border-white/5" />
                   <button
+                    role="menuitem"
                     onClick={() => { logout(); setMenuOpen(false); }}
                     className="w-full px-4 py-3 text-left text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors bg-transparent border-none cursor-pointer flex items-center gap-2"
                   >
