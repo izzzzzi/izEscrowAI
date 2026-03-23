@@ -2,10 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
 import { fetchJobs, type ParsedJob, type JobFilters } from "../lib/api";
+import { useIsMiniApp } from "../hooks/useIsMiniApp";
+import AppHeader from "../components/AppHeader";
 import JobCard from "../components/JobCard";
 import JobFiltersPanel from "../components/JobFilters";
 
 export default function MarketPage() {
+  const isMini = useIsMiniApp();
   const [searchParams] = useSearchParams();
   const [jobs, setJobs] = useState<ParsedJob[]>([]);
   const [total, setTotal] = useState(0);
@@ -52,12 +55,13 @@ export default function MarketPage() {
   };
 
   return (
-    <div className="min-h-screen page-shell pt-28 pb-16 px-6">
+    <div className={isMini ? "mini-page" : "min-h-screen page-shell pt-28 pb-16 px-6"}>
+      {isMini && <AppHeader />}
       <Helmet>
         <title>Job Marketplace — izEscrowAI</title>
         <meta name="description" content="Browse freelance jobs parsed from Telegram groups. AI pricing, skill matching, and escrow protection." />
       </Helmet>
-      <div className="max-w-4xl mx-auto">
+      <div className={isMini ? "px-5" : "max-w-4xl mx-auto"}>
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold">Job Marketplace</h1>

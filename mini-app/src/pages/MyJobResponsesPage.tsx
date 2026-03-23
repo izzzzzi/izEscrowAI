@@ -3,8 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchMyJobResponses, createDealFromJob, type ParsedJob, type JobResponse } from "../lib/api";
 import RespondentCard from "../components/RespondentCard";
 import CreateDealModal from "../components/CreateDealModal";
+import { useIsMiniApp } from "../hooks/useIsMiniApp";
+import AppHeader from "../components/AppHeader";
 
 export default function MyJobResponsesPage() {
+  const isMini = useIsMiniApp();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [job, setJob] = useState<ParsedJob | null>(null);
@@ -52,8 +55,9 @@ export default function MyJobResponsesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen page-shell px-5 pt-8 pb-16">
-        <div className="max-w-3xl mx-auto">
+      <div className={isMini ? "mini-page" : "min-h-screen page-shell px-5 pt-8 pb-16"}>
+        {isMini && <AppHeader />}
+        <div className={isMini ? "px-5" : "max-w-3xl mx-auto"}>
           <div className="glass-card rounded-2xl p-8 animate-pulse h-48" />
         </div>
       </div>
@@ -62,7 +66,8 @@ export default function MyJobResponsesPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen page-shell px-5 pt-8 pb-16 text-center">
+      <div className={isMini ? "mini-page text-center" : "min-h-screen page-shell px-5 pt-8 pb-16 text-center"}>
+        {isMini && <AppHeader />}
         <p className="text-sm text-red-400 mt-20">{error}</p>
       </div>
     );
@@ -70,15 +75,17 @@ export default function MyJobResponsesPage() {
 
   if (!job) {
     return (
-      <div className="min-h-screen page-shell px-5 pt-8 pb-16 text-center">
+      <div className={isMini ? "mini-page text-center" : "min-h-screen page-shell px-5 pt-8 pb-16 text-center"}>
+        {isMini && <AppHeader />}
         <p className="text-sm text-slate-400 mt-20">Job not found</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen page-shell px-5 pt-8 pb-16">
-      <div className="max-w-3xl mx-auto space-y-6">
+    <div className={isMini ? "mini-page" : "min-h-screen page-shell px-5 pt-8 pb-16"}>
+      {isMini && <AppHeader />}
+      <div className={isMini ? "px-5 space-y-6" : "max-w-3xl mx-auto space-y-6"}>
         {/* Back button */}
         <button
           type="button"

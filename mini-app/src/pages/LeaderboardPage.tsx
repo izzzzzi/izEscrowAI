@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchLeaderboard, type GroupStat } from "../lib/api";
+import { useIsMiniApp } from "../hooks/useIsMiniApp";
+import AppHeader from "../components/AppHeader";
 
 type SortKey = "completed_deals" | "total_volume" | "avg_check";
 
@@ -11,6 +13,7 @@ const sortTabs: { key: SortKey; label: string }[] = [
 ];
 
 export default function LeaderboardPage() {
+  const isMini = useIsMiniApp();
   const navigate = useNavigate();
   const [groups, setGroups] = useState<GroupStat[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,8 +30,9 @@ export default function LeaderboardPage() {
   const medal = (i: number) => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`;
 
   return (
-    <div className="min-h-screen page-shell pt-28 pb-16 px-6">
-      <div className="max-w-3xl mx-auto space-y-6">
+    <div className={isMini ? "mini-page" : "min-h-screen page-shell pt-28 pb-16 px-6"}>
+      {isMini && <AppHeader />}
+      <div className={isMini ? "px-5 space-y-6" : "max-w-3xl mx-auto space-y-6"}>
         <div>
           <h1 className="text-2xl font-bold text-white">Group Leaderboard</h1>
           <p className="text-sm text-slate-400 mt-1">Telegram groups ranked by escrow activity</p>

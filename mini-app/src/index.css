@@ -91,6 +91,24 @@ button:active {
   padding-top: 1rem !important;
 }
 
+/* Mini App native page wrapper — matches DealsPage/ProfilePage style */
+.mini-page {
+  min-height: 100vh;
+  background: #0f172a;
+  color: #fff;
+  font-family: 'Inter', -apple-system, sans-serif;
+  padding-bottom: 8rem;
+}
+.mini-page h1 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+.mini-page h2 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 /* Chat bubble colors (Telegram-style) */
 .chat-bubble-user { background: #2B5278; }
 .chat-bubble-bot { background: rgba(30, 41, 59, 0.8); }

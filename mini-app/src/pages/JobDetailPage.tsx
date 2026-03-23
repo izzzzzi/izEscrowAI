@@ -3,6 +3,8 @@ import { Helmet } from "react-helmet-async";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchJob, type ParsedJob } from "../lib/api";
 import { useAuth } from "../contexts/AuthContext";
+import { useIsMiniApp } from "../hooks/useIsMiniApp";
+import AppHeader from "../components/AppHeader";
 import PriceRange from "../components/PriceRange";
 import ProposalModal from "../components/ProposalModal";
 
@@ -76,7 +78,7 @@ function PriceInsightSkeleton() {
 function NotFoundState() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen page-shell flex items-center justify-center">
+    <div className={isMini ? "mini-page flex items-center justify-center" : "min-h-screen page-shell flex items-center justify-center"}>
       <div className="text-center space-y-4">
         <iconify-icon icon="solar:file-remove-linear" width="64" class="text-slate-600" />
         <h2 className="text-xl font-semibold text-white">Job not found</h2>
@@ -94,6 +96,7 @@ function NotFoundState() {
 }
 
 export default function JobDetailPage() {
+  const isMini = useIsMiniApp();
   const { jobId } = useParams<{ jobId: string }>();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -136,12 +139,13 @@ export default function JobDetailPage() {
   const authorMasked = isMasked(rawAuthor);
 
   return (
-    <div className="min-h-screen page-shell pt-28 pb-16 px-6">
+    <div className={isMini ? "mini-page" : "min-h-screen page-shell pt-28 pb-16 px-6"}>
+      {isMini && <AppHeader />}
       <Helmet>
         <title>{job.title} — izEscrowAI</title>
         <meta name="description" content={job.description?.slice(0, 160) || job.title} />
       </Helmet>
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className={isMini ? "px-5 space-y-6" : "max-w-3xl mx-auto space-y-6"}>
         {/* 4.4 — Back button */}
         <button
           onClick={() => navigate(-1)}

@@ -4,8 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { fetchPublicOffers, createOffer, type PublicOffer } from "../lib/api";
 import OfferCard from "../components/OfferCard";
 import LoginGate from "../components/LoginGate";
+import { useIsMiniApp } from "../hooks/useIsMiniApp";
+import AppHeader from "../components/AppHeader";
 
 export default function OffersPage() {
+  const isMini = useIsMiniApp();
   const [offers, setOffers] = useState<PublicOffer[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -43,12 +46,13 @@ export default function OffersPage() {
   };
 
   return (
-    <div className="min-h-screen page-shell pt-28 pb-16 px-6">
+    <div className={isMini ? "mini-page" : "min-h-screen page-shell pt-28 pb-16 px-6"}>
+      {isMini && <AppHeader />}
       <Helmet>
         <title>Offers — izEscrowAI</title>
         <meta name="description" content="Browse public offers on izEscrowAI. Find freelance work or post your own offer with AI-powered escrow protection." />
       </Helmet>
-      <div className="max-w-5xl mx-auto">
+      <div className={isMini ? "px-5" : "max-w-5xl mx-auto"}>
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight mb-2">Marketplace</h1>

@@ -4,8 +4,11 @@ import { fetchPublicOffer, applyToOffer, type PublicOfferDetail } from "../lib/a
 import { useAuth } from "../contexts/AuthContext";
 import LoginGate from "../components/LoginGate";
 import WalletGate from "../components/WalletGate";
+import { useIsMiniApp } from "../hooks/useIsMiniApp";
+import AppHeader from "../components/AppHeader";
 
 export default function OfferDetailPage() {
+  const isMini = useIsMiniApp();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
@@ -43,8 +46,9 @@ export default function OfferDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen page-shell pt-28 pb-16 px-6">
-        <div className="max-w-3xl mx-auto">
+      <div className={isMini ? "mini-page" : "min-h-screen page-shell pt-28 pb-16 px-6"}>
+        {isMini && <AppHeader />}
+        <div className={isMini ? "px-5" : "max-w-3xl mx-auto"}>
           <div className="glass-card rounded-2xl p-8 animate-pulse h-64" />
         </div>
       </div>
@@ -53,7 +57,8 @@ export default function OfferDetailPage() {
 
   if (!offer || error) {
     return (
-      <div className="min-h-screen page-shell pt-28 pb-16 px-6 text-center">
+      <div className={isMini ? "mini-page text-center" : "min-h-screen page-shell pt-28 pb-16 px-6 text-center"}>
+        {isMini && <AppHeader />}
         <p className="text-slate-400 mt-20">{error || "Offer not found"}</p>
         <button onClick={() => navigate("/offers")} className="mt-4 text-[#0098EA] text-sm bg-transparent border-none cursor-pointer">
           Back to Offers
@@ -66,8 +71,9 @@ export default function OfferDetailPage() {
   const roleLabel = offer.role === "seller" ? "Offering service" : "Looking for freelancer";
 
   return (
-    <div className="min-h-screen page-shell pt-28 pb-16 px-6">
-      <div className="max-w-3xl mx-auto">
+    <div className={isMini ? "mini-page" : "min-h-screen page-shell pt-28 pb-16 px-6"}>
+      {isMini && <AppHeader />}
+      <div className={isMini ? "px-5" : "max-w-3xl mx-auto"}>
         <button
           onClick={() => navigate("/offers")}
           className="text-sm text-slate-400 hover:text-white mb-6 bg-transparent border-none cursor-pointer flex items-center gap-1"
