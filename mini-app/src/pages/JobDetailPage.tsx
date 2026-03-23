@@ -164,16 +164,31 @@ export default function JobDetailPage() {
           <div className="mt-2 text-sm text-slate-400">
             {(job as any).budget_min_ton || (job as any).budget_max_ton ? (
               <span>
-                {(job as any).budget_min_ton ? `from ${(job as any).budget_min_ton.toLocaleString()}` : ""}
-                {(job as any).budget_max_ton ? ` to ${(job as any).budget_max_ton.toLocaleString()}` : ""} TON
-                <span className="text-slate-600 ml-1">
-                  ({job.budget_min ? job.budget_min.toLocaleString() : ""}–{job.budget_max ? job.budget_max.toLocaleString() : ""} {job.currency})
-                </span>
+                {(job as any).budget_min_ton && (job as any).budget_max_ton && (job as any).budget_min_ton === (job as any).budget_max_ton
+                  ? <>{(job as any).budget_min_ton.toLocaleString()} TON</>
+                  : <>
+                      {(job as any).budget_min_ton ? `from ${(job as any).budget_min_ton.toLocaleString()}` : ""}
+                      {(job as any).budget_max_ton ? ` to ${(job as any).budget_max_ton.toLocaleString()}` : ""} TON
+                    </>
+                }
+                {job.budget_min && job.budget_max && (
+                  <span className="text-slate-600 ml-1">
+                    ({job.budget_min === job.budget_max
+                      ? `${job.budget_min.toLocaleString()} ${job.currency}`
+                      : `${job.budget_min.toLocaleString()}–${job.budget_max.toLocaleString()} ${job.currency}`
+                    })
+                  </span>
+                )}
               </span>
             ) : job.budget_min || job.budget_max ? (
               <span>
-                {job.budget_min ? `from ${job.budget_min.toLocaleString()}` : ""}
-                {job.budget_max ? ` to ${job.budget_max.toLocaleString()}` : ""} {job.currency}
+                {job.budget_min && job.budget_max && job.budget_min === job.budget_max
+                  ? `${job.budget_min.toLocaleString()} ${job.currency}`
+                  : <>
+                      {job.budget_min ? `from ${job.budget_min.toLocaleString()}` : ""}
+                      {job.budget_max ? ` to ${job.budget_max.toLocaleString()}` : ""} {job.currency}
+                    </>
+                }
               </span>
             ) : (
               <span>No budget specified</span>
@@ -289,13 +304,10 @@ export default function JobDetailPage() {
               <iconify-icon icon="solar:magic-stick-3-bold" width="20" class="text-cyan-400" />
               <h2 className="text-sm font-semibold text-white">AI Price Insights</h2>
             </div>
-            <div className="space-y-2 blur-sm select-none pointer-events-none">
+            <div className="space-y-3 blur-md select-none pointer-events-none opacity-40">
               <div className="h-2 w-full bg-white/10 rounded-full" />
-              <div className="flex justify-between text-xs text-slate-600">
-                <span>$000</span><span>$0,000</span>
-              </div>
-              <div className="h-3 w-3/4 bg-white/5 rounded" />
-              <div className="h-3 w-1/2 bg-white/5 rounded" />
+              <div className="h-2 w-3/4 bg-white/10 rounded-full" />
+              <div className="h-2 w-1/2 bg-white/10 rounded-full" />
             </div>
           </div>
         ) : loading ? (

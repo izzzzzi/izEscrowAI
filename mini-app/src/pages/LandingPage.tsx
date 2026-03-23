@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { fetchStats, fetchPublicOffers, fetchTalent, fetchTopGroups, type PlatformStats, type PublicOffer, type TalentData, type GroupStat } from "../lib/api";
@@ -8,7 +8,6 @@ import ActivityFeed from "../components/ActivityFeed";
 import Roadmap from "../components/Roadmap";
 
 export default function LandingPage() {
-  const mainRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [recentOffers, setRecentOffers] = useState<PublicOffer[]>([]);
@@ -22,33 +21,6 @@ export default function LandingPage() {
     fetchTopGroups(5).then(setTopGroups).catch(() => {});
   }, []);
 
-  useEffect(() => {
-    const sections = mainRef.current?.querySelectorAll("section");
-    if (!sections) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            (entry.target as HTMLElement).style.opacity = "1";
-            (entry.target as HTMLElement).style.transform = "translateY(0)";
-          }
-        });
-      },
-      { threshold: 0.1 },
-    );
-
-    sections.forEach((section, i) => {
-      if (i === 0) return; // Hero visible immediately
-      const el = section as HTMLElement;
-      el.style.opacity = "0";
-      el.style.transform = "translateY(20px)";
-      el.style.transition = "all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)";
-      observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <div
@@ -58,7 +30,7 @@ export default function LandingPage() {
       <Helmet>
         <title>izEscrowAI — AI-Powered P2P Escrow on TON</title>
       </Helmet>
-      <main ref={mainRef} className="relative">
+      <main className="relative">
         {/* Background Orbs */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none -z-10">
           <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-[#0098EA]/10 rounded-full blur-[120px]" />

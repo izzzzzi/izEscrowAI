@@ -102,7 +102,7 @@ function MiniApp() {
         }
       }
     } catch {
-      console.log("Not running inside Telegram");
+      // not running inside Telegram
     }
   }, [navigate]);
 

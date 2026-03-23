@@ -50,13 +50,23 @@ export default function JobCard({ job, onClick }: { job: ParsedJob; onClick?: ()
         <div className="text-xs text-slate-400">
           {(job as any).budget_min_ton || (job as any).budget_max_ton ? (
             <span>
-              {(job as any).budget_min_ton ? `from ${(job as any).budget_min_ton.toLocaleString()}` : ""}
-              {(job as any).budget_max_ton ? ` to ${(job as any).budget_max_ton.toLocaleString()}` : ""} TON
+              {(job as any).budget_min_ton && (job as any).budget_max_ton && (job as any).budget_min_ton === (job as any).budget_max_ton
+                ? `${(job as any).budget_min_ton.toLocaleString()} TON`
+                : <>
+                    {(job as any).budget_min_ton ? `from ${(job as any).budget_min_ton.toLocaleString()}` : ""}
+                    {(job as any).budget_max_ton ? ` to ${(job as any).budget_max_ton.toLocaleString()}` : ""} TON
+                  </>
+              }
             </span>
           ) : job.budget_min || job.budget_max ? (
             <span>
-              {job.budget_min ? `from ${job.budget_min.toLocaleString()}` : ""}
-              {job.budget_max ? ` to ${job.budget_max.toLocaleString()}` : ""} {job.currency}
+              {job.budget_min && job.budget_max && job.budget_min === job.budget_max
+                ? `${job.budget_min.toLocaleString()} ${job.currency}`
+                : <>
+                    {job.budget_min ? `from ${job.budget_min.toLocaleString()}` : ""}
+                    {job.budget_max ? ` to ${job.budget_max.toLocaleString()}` : ""} {job.currency}
+                  </>
+              }
             </span>
           ) : (
             <span>No budget specified</span>
