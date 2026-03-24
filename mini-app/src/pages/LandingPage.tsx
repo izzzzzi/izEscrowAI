@@ -154,7 +154,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Chat messages — auto-scrolls to bottom as new messages appear */}
-                <div ref={chatRef} className="px-3 py-4 space-y-3 max-h-[420px] overflow-y-auto no-scrollbar scroll-smooth">
+                <div ref={chatRef} className="px-3 py-4 space-y-3 overflow-y-auto no-scrollbar scroll-smooth">
                   {/* Step 1: User sends /start */}
                   <div className="flex justify-end chat-step chat-step-1">
                     <div className="chat-bubble-user max-w-[80%] px-3 py-2 rounded-[18px] rounded-br-[6px] text-sm">
