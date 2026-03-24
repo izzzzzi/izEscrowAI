@@ -1,3 +1,5 @@
+import { useT } from "../i18n/context";
+
 interface ConfirmDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,9 +16,12 @@ export default function ConfirmDialog({
   onConfirm,
   title,
   message,
-  confirmText = "Confirm",
+  confirmText,
   variant = "normal",
 }: ConfirmDialogProps) {
+  const t = useT();
+  const resolvedConfirmText = confirmText ?? t("confirm.confirm");
+
   if (!isOpen) return null;
 
   const confirmBtnClass =
@@ -58,7 +63,7 @@ export default function ConfirmDialog({
             onClick={onClose}
             className="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
           >
-            Cancel
+            {t("confirm.cancel")}
           </button>
           <button
             type="button"
@@ -68,7 +73,7 @@ export default function ConfirmDialog({
             }}
             className={`px-4 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${confirmBtnClass}`}
           >
-            {confirmText}
+            {resolvedConfirmText}
           </button>
         </div>
       </div>

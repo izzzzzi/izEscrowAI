@@ -1,16 +1,18 @@
 import { useNavigate, useLocation } from "react-router-dom";
-
-const tabs = [
-  { path: "/deals", label: "Deals", icon: "solar:clipboard-list-linear" },
-  { path: "/market", label: "Market", icon: "solar:bag-4-linear" },
-  { path: "/spec/new", label: "Spec", icon: "solar:document-text-linear" },
-  { path: "/groups", label: "Groups", icon: "solar:users-group-rounded-linear" },
-  { path: "/profile", label: "Profile", icon: "solar:user-linear" },
-];
+import { useT } from "../i18n/context";
 
 export default function TabNav() {
   const navigate = useNavigate();
   const location = useLocation();
+  const t = useT();
+
+  const tabs = [
+    { path: "/deals", label: t("tab.deals"), icon: "solar:clipboard-list-linear" },
+    { path: "/market", label: t("tab.market"), icon: "solar:bag-4-linear" },
+    { path: "/spec/new", label: t("tab.spec"), icon: "solar:document-text-linear" },
+    { path: "/groups", label: t("tab.groups"), icon: "solar:users-group-rounded-linear" },
+    { path: "/profile", label: t("tab.profile"), icon: "solar:user-linear" },
+  ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#0f172a]/90 backdrop-blur-xl border-t border-white/5 safe-area-bottom" aria-label="Main navigation">

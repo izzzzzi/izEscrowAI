@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
+import { I18nProvider } from "./i18n/context.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
 import App from "./App.tsx";
 import "./index.css";
@@ -25,15 +26,17 @@ console.log(
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
-      <HelmetProvider>
-        <BrowserRouter>
-          <AuthProvider>
-            <TonConnectUIProvider manifestUrl={manifestUrl}>
-              <App />
-            </TonConnectUIProvider>
-          </AuthProvider>
-        </BrowserRouter>
-      </HelmetProvider>
+      <I18nProvider>
+        <HelmetProvider>
+          <BrowserRouter>
+            <AuthProvider>
+              <TonConnectUIProvider manifestUrl={manifestUrl}>
+                <App />
+              </TonConnectUIProvider>
+            </AuthProvider>
+          </BrowserRouter>
+        </HelmetProvider>
+      </I18nProvider>
     </ErrorBoundary>
   </StrictMode>,
 );

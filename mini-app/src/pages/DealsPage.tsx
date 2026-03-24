@@ -2,28 +2,30 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchDeals, fetchOffers, fetchOffer, createOffer, type Deal, type Offer, type OfferWithApps } from "../lib/api";
 import AppHeader from "../components/AppHeader";
+import { useT } from "../i18n/context";
 
-const statusStyles: Record<string, { label: string; bg: string; text: string }> = {
-  created: { label: "Created", bg: "bg-slate-500/10", text: "text-slate-400" },
-  confirmed: { label: "Confirmed", bg: "bg-blue-500/10", text: "text-blue-400" },
-  funded: { label: "Funded", bg: "bg-green-500/10", text: "text-green-400" },
-  delivered: { label: "Delivered", bg: "bg-amber-500/10", text: "text-amber-400" },
-  completed: { label: "Completed", bg: "bg-green-500/10", text: "text-green-400" },
-  disputed: { label: "Disputed", bg: "bg-red-500/10", text: "text-red-400" },
-  resolved: { label: "Resolved", bg: "bg-slate-500/10", text: "text-slate-400" },
-  cancelled: { label: "Cancelled", bg: "bg-slate-500/10", text: "text-slate-400" },
+const statusStyles: Record<string, { labelKey: string; bg: string; text: string }> = {
+  created: { labelKey: "deals.status.created", bg: "bg-slate-500/10", text: "text-slate-400" },
+  confirmed: { labelKey: "deals.status.confirmed", bg: "bg-blue-500/10", text: "text-blue-400" },
+  funded: { labelKey: "deals.status.funded", bg: "bg-green-500/10", text: "text-green-400" },
+  delivered: { labelKey: "deals.status.delivered", bg: "bg-amber-500/10", text: "text-amber-400" },
+  completed: { labelKey: "deals.status.completed", bg: "bg-green-500/10", text: "text-green-400" },
+  disputed: { labelKey: "deals.status.disputed", bg: "bg-red-500/10", text: "text-red-400" },
+  resolved: { labelKey: "deals.status.resolved", bg: "bg-slate-500/10", text: "text-slate-400" },
+  cancelled: { labelKey: "deals.status.cancelled", bg: "bg-slate-500/10", text: "text-slate-400" },
 };
 
-const offerStatusStyles: Record<string, { label: string; bg: string; text: string }> = {
-  open: { label: "Open", bg: "bg-green-500/10", text: "text-green-400" },
-  closed: { label: "Closed", bg: "bg-slate-500/10", text: "text-slate-400" },
-  cancelled: { label: "Cancelled", bg: "bg-red-500/10", text: "text-red-400" },
+const offerStatusStyles: Record<string, { labelKey: string; bg: string; text: string }> = {
+  open: { labelKey: "deals.offer.open", bg: "bg-green-500/10", text: "text-green-400" },
+  closed: { labelKey: "deals.offer.closed", bg: "bg-slate-500/10", text: "text-slate-400" },
+  cancelled: { labelKey: "deals.status.cancelled", bg: "bg-red-500/10", text: "text-red-400" },
 };
 
 type Tab = "deals" | "offers";
 
 export default function DealsPage() {
   const navigate = useNavigate();
+  const t = useT();
   const [tab, setTab] = useState<Tab>("deals");
   const [deals, setDeals] = useState<Deal[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -94,17 +96,17 @@ export default function DealsPage() {
       <main className="px-5 pb-32 space-y-4">
         {/* Tabs */}
         <div className="flex gap-1 bg-slate-800/50 p-1 rounded-xl">
-          {(["deals", "offers"] as Tab[]).map((t) => (
+          {(["deals", "offers"] as Tab[]).map((tb) => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
+              key={tb}
+              onClick={() => setTab(tb)}
               className={`flex-1 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all border-none cursor-pointer ${
-                tab === t
+                tab === tb
                   ? "bg-[#0098EA]/20 text-[#0098EA]"
                   : "bg-transparent text-slate-500 hover:text-slate-300"
               }`}
             >
-              {t === "deals" ? "Deals" : "Offers"}
+              {tb === "deals" ? t("deals.tab.deals") : t("deals.tab.offers")}
             </button>
           ))}
         </div>
@@ -121,28 +123,28 @@ export default function DealsPage() {
                       <iconify-icon icon="solar:shield-check-linear" width="22" class="text-white" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-white">Welcome to izEscrowAI</h3>
-                      <p className="text-xs text-slate-400">AI-powered escrow on TON</p>
+                      <h3 className="text-sm font-semibold text-white">{t("deals.empty.title")}</h3>
+                      <p className="text-xs text-slate-400">{t("deals.empty.subtitle")}</p>
                     </div>
                   </div>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Your money stays in a smart contract until the work is done. No middlemen, no risk — just you, the other party, and AI that keeps it fair.
+                    {t("deals.empty.description")}
                   </p>
                   <ol className="space-y-2 text-xs text-slate-400">
-                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">1.</span>Tell the bot what you need: "Selling logo to @ivan for 50 TON"</li>
-                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">2.</span>Both sides confirm — AI checks everything</li>
-                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">3.</span>Funds go into escrow until you're happy with the result</li>
+                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">1.</span>{t("deals.empty.step1")}</li>
+                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">2.</span>{t("deals.empty.step2")}</li>
+                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">3.</span>{t("deals.empty.step3")}</li>
                   </ol>
                   <div className="flex gap-2 pt-1">
                     <a href="https://t.me/izEscrowAIBot" target="_blank" rel="noopener noreferrer" className="flex-1 text-center py-2.5 rounded-xl text-xs font-semibold text-white ton-gradient no-underline">
-                      Open Bot
+                      {t("deals.empty.openBot")}
                     </a>
                     <button onClick={() => navigate("/market")} className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-slate-300 bg-white/5 border border-white/10 cursor-pointer">
-                      Browse Jobs
+                      {t("deals.empty.browseJobs")}
                     </button>
                   </div>
                 </div>
-                <p className="text-center text-[10px] text-slate-600">Your deals will appear here once created</p>
+                <p className="text-center text-[10px] text-slate-600">{t("deals.empty.hint")}</p>
               </div>
             ) : (
               deals.map((deal) => <DealCard key={deal.id} deal={deal} />)
@@ -158,13 +160,13 @@ export default function DealsPage() {
               className="w-full py-3 rounded-xl border border-dashed border-slate-600 text-slate-400 text-sm font-medium bg-transparent cursor-pointer hover:border-[#0098EA] hover:text-[#0098EA] transition-all flex items-center justify-center gap-2"
             >
               <iconify-icon icon="solar:add-circle-linear" width="18" />
-              Create Offer
+              {t("deals.createOffer")}
             </button>
 
             {loadingOffers ? (
               <SkeletonCards />
             ) : offers.length === 0 ? (
-              <EmptyState icon="solar:tag-linear" text="No offers yet" sub="Create your first offer above or use inline mode in any chat" />
+              <EmptyState icon="solar:tag-linear" text={t("deals.offers.empty")} sub={t("deals.offers.emptyHint")} />
             ) : (
               offers.map((offer) => (
                 <OfferCardItem
@@ -185,14 +187,14 @@ export default function DealsPage() {
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold">New Offer</h3>
+                    <h3 className="text-lg font-semibold">{t("deals.modal.title")}</h3>
                     <button onClick={() => setShowCreateOffer(false)} className="text-slate-400 bg-transparent border-none cursor-pointer">
                       <iconify-icon icon="solar:close-circle-linear" width="24" />
                     </button>
                   </div>
                   <div className="space-y-3">
                     <textarea
-                      placeholder="Describe what you need..."
+                      placeholder={t("deals.modal.placeholder")}
                       value={newOffer.description}
                       onChange={(e) => setNewOffer((p) => ({ ...p, description: e.target.value }))}
                       className="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-3 text-sm text-white resize-none h-20 outline-none focus:border-[#0098EA]"
@@ -200,7 +202,7 @@ export default function DealsPage() {
                     <div className="flex gap-3">
                       <input
                         type="number"
-                        placeholder="Min price"
+                        placeholder={t("deals.modal.minPrice")}
                         value={newOffer.min_price}
                         onChange={(e) => setNewOffer((p) => ({ ...p, min_price: e.target.value }))}
                         className="flex-1 bg-slate-800/50 border border-slate-700 rounded-xl p-3 text-sm text-white outline-none focus:border-[#0098EA]"
@@ -224,7 +226,7 @@ export default function DealsPage() {
                             newOffer.role === r ? "bg-[#0098EA]/20 text-[#0098EA]" : "bg-slate-800/50 text-slate-500"
                           }`}
                         >
-                          I'm {r === "buyer" ? "Buying" : "Selling"}
+                          {r === "buyer" ? t("deals.modal.buying") : t("deals.modal.selling")}
                         </button>
                       ))}
                     </div>
@@ -234,7 +236,7 @@ export default function DealsPage() {
                     disabled={creating || !newOffer.description.trim()}
                     className="w-full py-3 rounded-xl bg-[#0098EA] text-white font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed border-none cursor-pointer"
                   >
-                    {creating ? "Creating..." : "Create Offer"}
+                    {creating ? t("deals.modal.creating") : t("deals.modal.create")}
                   </button>
                 </div>
               </div>
@@ -247,7 +249,8 @@ export default function DealsPage() {
 }
 
 function DealCard({ deal }: { deal: Deal }) {
-  const s = statusStyles[deal.status] ?? { label: deal.status, bg: "bg-slate-500/10", text: "text-slate-400" };
+  const t = useT();
+  const s = statusStyles[deal.status] ?? { labelKey: deal.status, bg: "bg-slate-500/10", text: "text-slate-400" };
 
   return (
     <div className="glass-card rounded-2xl p-4 flex flex-col gap-3">
@@ -256,7 +259,7 @@ function DealCard({ deal }: { deal: Deal }) {
           <span className="text-xs font-mono text-slate-500">ID: #{deal.id}</span>
           <h3 className="text-sm font-medium leading-tight">{deal.description}</h3>
         </div>
-        <span className={`status-pill ${s.bg} ${s.text}`}>{s.label}</span>
+        <span className={`status-pill ${s.bg} ${s.text}`}>{t(s.labelKey as any)}</span>
       </div>
       <div className="flex justify-between items-center pt-2 border-t border-white/5">
         <span className="text-lg font-semibold tracking-tight">
@@ -290,7 +293,8 @@ function OfferCardItem({
   loadingDetail: boolean;
   onExpand: () => void;
 }) {
-  const s = offerStatusStyles[offer.status] ?? { label: offer.status, bg: "bg-slate-500/10", text: "text-slate-400" };
+  const t = useT();
+  const s = offerStatusStyles[offer.status] ?? { labelKey: offer.status, bg: "bg-slate-500/10", text: "text-slate-400" };
 
   return (
     <div className="glass-card rounded-2xl p-4 flex flex-col gap-3">
@@ -298,7 +302,7 @@ function OfferCardItem({
         <div className="space-y-1 flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="text-xs font-mono text-slate-500">#{offer.id.slice(0, 12)}</span>
-            <span className={`status-pill ${s.bg} ${s.text}`}>{s.label}</span>
+            <span className={`status-pill ${s.bg} ${s.text}`}>{t(s.labelKey as any)}</span>
           </div>
           <h3 className="text-sm font-medium leading-tight truncate">{offer.description}</h3>
         </div>
@@ -313,28 +317,28 @@ function OfferCardItem({
           )}
           <span className="flex items-center gap-1">
             <iconify-icon icon="solar:users-group-rounded-linear" width="14" />
-            {offer.application_count ?? 0} bids
+            {offer.application_count ?? 0} {t("deals.offer.bids")}
           </span>
         </div>
         <button
           onClick={onExpand}
           className="text-xs text-[#0098EA] font-medium bg-transparent border-none cursor-pointer"
         >
-          {expanded ? "Collapse" : "Details"}
+          {expanded ? t("deals.offer.collapse") : t("deals.offer.details")}
         </button>
       </div>
 
       {loadingDetail && (
-        <div className="text-xs text-slate-500 text-center py-2">Loading...</div>
+        <div className="text-xs text-slate-500 text-center py-2">{t("deals.offer.loading")}</div>
       )}
 
       {expanded && (
         <div className="pt-2 border-t border-white/5 space-y-2">
           <div className="text-xs text-slate-400 font-medium uppercase tracking-wider">
-            Applications ({expanded.applications.length})
+            {t("deals.offer.applications")} ({expanded.applications.length})
           </div>
           {expanded.applications.length === 0 ? (
-            <div className="text-xs text-slate-500 py-2">No applications yet</div>
+            <div className="text-xs text-slate-500 py-2">{t("deals.offer.noApps")}</div>
           ) : (
             expanded.applications.map((app) => (
               <div key={app.id} className="bg-slate-800/30 rounded-xl p-3 space-y-1">
@@ -350,11 +354,11 @@ function OfferCardItem({
                 <div className="flex items-center gap-2 text-xs text-slate-500">
                   {app.trust_score !== null && app.trust_score !== undefined && (
                     <span className={`font-medium ${app.trust_score >= 70 ? "text-green-400" : app.trust_score >= 40 ? "text-amber-400" : "text-red-400"}`}>
-                      Trust: {app.trust_score}
+                      {t("deals.offer.trust")}: {app.trust_score}
                     </span>
                   )}
                   {app.reputation && (
-                    <span>{app.reputation.completed_deals} deals</span>
+                    <span>{app.reputation.completed_deals} {t("deals.offer.deals")}</span>
                   )}
                 </div>
               </div>

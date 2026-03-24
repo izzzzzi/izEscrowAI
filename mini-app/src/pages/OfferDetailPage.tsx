@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchPublicOffer, applyToOffer, type PublicOfferDetail } from "../lib/api";
 import { useAuth } from "../contexts/AuthContext";
+import { useT } from "../i18n/context";
 import LoginGate from "../components/LoginGate";
 import WalletGate from "../components/WalletGate";
 import { useIsMiniApp } from "../hooks/useIsMiniApp";
@@ -18,12 +19,13 @@ export default function OfferDetailPage() {
   const [bidMessage, setBidMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const t = useT();
 
   useEffect(() => {
     if (!id) return;
     fetchPublicOffer(id)
       .then(setOffer)
-      .catch(() => setError("Offer not found"))
+      .catch(() => setError(t("offerDetail.notFound")))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -59,16 +61,16 @@ export default function OfferDetailPage() {
     return (
       <div className={isMini ? "mini-page text-center" : "min-h-screen page-shell pt-28 pb-16 px-6 text-center"}>
         {isMini && <AppHeader />}
-        <p className="text-slate-400 mt-20">{error || "Offer not found"}</p>
+        <p className="text-slate-400 mt-20">{error || t("offerDetail.notFound")}</p>
         <button onClick={() => navigate("/offers")} className="mt-4 text-[#0098EA] text-sm bg-transparent border-none cursor-pointer">
-          Back to Offers
+          {t("offerDetail.back")}
         </button>
       </div>
     );
   }
 
   const isOwner = isAuthenticated && user?.id === offer.creator_id;
-  const roleLabel = offer.role === "seller" ? "Offering service" : "Looking for freelancer";
+  const roleLabel = offer.role === "seller" ? t("offerDetail.role.seller") : t("offerDetail.role.buyer");
 
   return (
     <div className={isMini ? "mini-page" : "min-h-screen page-shell pt-28 pb-16 px-6"}>
@@ -78,7 +80,7 @@ export default function OfferDetailPage() {
           onClick={() => navigate("/offers")}
           className="text-sm text-slate-400 hover:text-white mb-6 bg-transparent border-none cursor-pointer flex items-center gap-1"
         >
-          <iconify-icon icon="solar:arrow-left-linear" width="16" /> Back to Offers
+          <iconify-icon icon="solar:arrow-left-linear" width="16" /> {t("offerDetail.back")}
         </button>
 
         {/* Offer Card */}
@@ -106,7 +108,7 @@ export default function OfferDetailPage() {
             )}
             <span>
               <iconify-icon icon="solar:users-group-rounded-linear" width="14" style={{ verticalAlign: "middle" }} />{" "}
-              {offer.application_count} bids
+              {offer.application_count} {t("deals.offer.bids")}
             </span>
           </div>
 
@@ -127,26 +129,26 @@ export default function OfferDetailPage() {
         {/* Apply form (not owner, offer open) */}
         {offer.status === "open" && !isOwner && (
           <div className="glass-card rounded-2xl p-6 mb-6">
-            <h3 className="text-lg font-medium mb-4">Submit your bid</h3>
-            <LoginGate fallbackText="Login with Telegram to apply">
-              <WalletGate fallbackText="Connect Wallet to apply">
+            <h3 className="text-lg font-medium mb-4">{t("offerDetail.bid.title")}</h3>
+            <LoginGate>
+              <WalletGate>
                 <div className="space-y-3">
                   <div>
-                    <label className="text-xs text-slate-400 mb-1 block">Your price ({offer.currency})</label>
+                    <label className="text-xs text-slate-400 mb-1 block">{t("offerDetail.bid.price")} ({offer.currency})</label>
                     <input
                       type="number"
                       value={bidPrice}
                       onChange={(e) => setBidPrice(e.target.value)}
-                      placeholder="e.g. 50"
+                      placeholder={t("offerDetail.bid.pricePlaceholder")}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#0098EA]/50"
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400 mb-1 block">Message (optional)</label>
+                    <label className="text-xs text-slate-400 mb-1 block">{t("offerDetail.bid.message")}</label>
                     <textarea
                       value={bidMessage}
                       onChange={(e) => setBidMessage(e.target.value)}
-                      placeholder="Why you're the best fit..."
+                      placeholder={t("offerDetail.bid.messagePlaceholder")}
                       rows={3}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#0098EA]/50 resize-none"
                     />
@@ -156,7 +158,7 @@ export default function OfferDetailPage() {
                     disabled={!bidPrice || submitting}
                     className="w-full ton-gradient py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white disabled:opacity-50"
                   >
-                    {submitting ? "Submitting..." : "Submit Bid"}
+                    {submitting ? t("offerDetail.bid.submitting") : t("offerDetail.bid.submit")}
                   </button>
                 </div>
               </WalletGate>

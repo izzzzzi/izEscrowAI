@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchMyJobResponses, createDealFromJob, type ParsedJob, type JobResponse } from "../lib/api";
+import { useT } from "../i18n/context";
 import RespondentCard from "../components/RespondentCard";
 import CreateDealModal from "../components/CreateDealModal";
 import { useIsMiniApp } from "../hooks/useIsMiniApp";
@@ -10,6 +11,7 @@ export default function MyJobResponsesPage() {
   const isMini = useIsMiniApp();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const t = useT();
   const [job, setJob] = useState<ParsedJob | null>(null);
   const [responses, setResponses] = useState<JobResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +46,7 @@ export default function MyJobResponsesPage() {
     try {
       await createDealFromJob(id, selectedRespondent.executor.user_id, amount, currency);
       setDealModalOpen(false);
-      setSuccessMsg("Deal created successfully!");
+      setSuccessMsg(t("myJobResponses.success"));
       setTimeout(() => setSuccessMsg(null), 3000);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to create deal");
@@ -77,7 +79,7 @@ export default function MyJobResponsesPage() {
     return (
       <div className={isMini ? "mini-page text-center" : "min-h-screen page-shell px-5 pt-8 pb-16 text-center"}>
         {isMini && <AppHeader />}
-        <p className="text-sm text-slate-400 mt-20">Job not found</p>
+        <p className="text-sm text-slate-400 mt-20">{t("myJobResponses.notFound")}</p>
       </div>
     );
   }
@@ -95,7 +97,7 @@ export default function MyJobResponsesPage() {
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
-          Back
+          {t("myJobResponses.back")}
         </button>
 
         {/* Job details */}
@@ -133,12 +135,12 @@ export default function MyJobResponsesPage() {
         {/* Responses */}
         <div>
           <h2 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-3">
-            Responses ({responses.length})
+            {t("myJobResponses.title")} ({responses.length})
           </h2>
 
           {responses.length === 0 ? (
             <div className="glass-card rounded-2xl p-8 text-center">
-              <p className="text-sm text-slate-500">No responses yet</p>
+              <p className="text-sm text-slate-500">{t("myJobResponses.empty")}</p>
             </div>
           ) : (
             <div className="space-y-3">

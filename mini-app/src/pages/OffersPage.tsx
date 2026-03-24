@@ -6,9 +6,11 @@ import OfferCard from "../components/OfferCard";
 import LoginGate from "../components/LoginGate";
 import { useIsMiniApp } from "../hooks/useIsMiniApp";
 import AppHeader from "../components/AppHeader";
+import { useT } from "../i18n/context";
 
 export default function OffersPage() {
   const isMini = useIsMiniApp();
+  const t = useT();
   const [offers, setOffers] = useState<PublicOffer[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -55,15 +57,15 @@ export default function OffersPage() {
       <div className={isMini ? "px-5" : "max-w-5xl mx-auto"}>
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-semibold tracking-tight mb-2">Marketplace</h1>
-            <p className="text-slate-400 text-sm">Browse open offers and find work or freelancers</p>
+            <h1 className="text-3xl font-semibold tracking-tight mb-2">{t("offers.title")}</h1>
+            <p className="text-slate-400 text-sm">{t("offers.subtitle")}</p>
           </div>
-          <LoginGate fallbackText="Login to create offers">
+          <LoginGate fallbackText={t("offers.loginGate")}>
             <button
               onClick={() => setShowCreate(true)}
               className="ton-gradient px-6 py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white"
             >
-              Create Offer
+              {t("offers.createBtn")}
             </button>
           </LoginGate>
         </div>
@@ -79,22 +81,21 @@ export default function OffersPage() {
             <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-4">
               <h3 className="text-sm font-semibold text-white flex items-center gap-2">
                 <iconify-icon icon="solar:tag-linear" width="18" class="text-[#0098EA]" />
-                Inline Marketplace
+                {t("offers.empty.title")}
               </h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Need something done? Type <span className="text-white font-medium">@izEscrowAIBot</span> in any Telegram chat and describe what you need.
-                Freelancers see it, bid their price, and you pick the one you like. Payment goes straight into escrow.
+                {t("offers.empty.description")}
               </p>
               <ol className="space-y-2 text-xs text-slate-400">
-                <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">1.</span>Describe what you need — in any Telegram chat</li>
-                <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">2.</span>Freelancers bid with their price</li>
-                <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">3.</span>You pick the best — escrow handles the rest</li>
+                <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">1.</span>{t("offers.empty.step1")}</li>
+                <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">2.</span>{t("offers.empty.step2")}</li>
+                <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">3.</span>{t("offers.empty.step3")}</li>
               </ol>
               <button onClick={() => setShowCreate(true)} className="w-full py-2.5 rounded-xl text-xs font-semibold text-white ton-gradient border-none cursor-pointer">
-                Create Your First Offer
+                {t("offers.empty.button")}
               </button>
             </div>
-            <p className="text-center text-[10px] text-slate-600">Offers will appear here once created</p>
+            <p className="text-center text-[10px] text-slate-600">{t("offers.empty.hint")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -132,7 +133,7 @@ export default function OffersPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-white">New Offer</h3>
+              <h3 className="text-lg font-semibold text-white">{t("offers.modal.title")}</h3>
               <button onClick={() => setShowCreate(false)} className="text-slate-400 bg-transparent border-none cursor-pointer">
                 <iconify-icon icon="solar:close-circle-linear" width="24" />
               </button>
@@ -142,7 +143,7 @@ export default function OffersPage() {
               <textarea
                 value={newOffer.description}
                 onChange={(e) => setNewOffer({ ...newOffer, description: e.target.value })}
-                placeholder="Describe your offer..."
+                placeholder={t("offers.modal.placeholder")}
                 rows={3}
                 className="w-full rounded-xl bg-white/5 border border-white/10 text-white text-sm p-3 resize-none focus:outline-none focus:border-blue-500/40 placeholder-slate-500"
               />
@@ -152,7 +153,7 @@ export default function OffersPage() {
                   type="number"
                   value={newOffer.min_price}
                   onChange={(e) => setNewOffer({ ...newOffer, min_price: e.target.value })}
-                  placeholder="Min price"
+                  placeholder={t("offers.modal.minPrice")}
                   className="flex-1 rounded-xl bg-white/5 border border-white/10 text-white text-sm p-3 focus:outline-none focus:border-blue-500/40 placeholder-slate-500"
                 />
                 <select
@@ -178,7 +179,7 @@ export default function OffersPage() {
                         : "bg-white/5 text-slate-400 border-white/10"
                     }`}
                   >
-                    {r === "buyer" ? "Looking for" : "Offering"}
+                    {r === "buyer" ? t("offers.modal.buyer") : t("offers.modal.seller")}
                   </button>
                 ))}
               </div>
@@ -189,7 +190,7 @@ export default function OffersPage() {
               disabled={creating || !newOffer.description.trim()}
               className="w-full py-3 rounded-xl bg-[#0098EA] text-white font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed border-none cursor-pointer"
             >
-              {creating ? "Creating..." : "Create Offer"}
+              {creating ? t("offers.modal.creating") : t("offers.modal.create")}
             </button>
           </div>
         </div>

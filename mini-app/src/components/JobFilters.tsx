@@ -1,22 +1,8 @@
 import { useState, useEffect } from "react";
 import { type JobFilters, API_URL } from "../lib/api";
+import { useT } from "../i18n/context";
 
 const FALLBACK_SKILLS = ["React", "TypeScript", "Python", "Node.js", "Go", "Rust", "Java", "PHP", "Solidity", "Figma"];
-
-const CURRENCY_OPTIONS = [
-  { label: "All", value: "" },
-  { label: "USD", value: "USD" },
-  { label: "RUB", value: "RUB" },
-  { label: "TON", value: "TON" },
-  { label: "USDT", value: "USDT" },
-  { label: "EUR", value: "EUR" },
-];
-
-const SORT_OPTIONS = [
-  { label: "Newest", value: "newest" },
-  { label: "Price \u2191", value: "price_asc" },
-  { label: "Price \u2193", value: "price_desc" },
-];
 
 interface JobFiltersProps {
   filters: JobFilters;
@@ -26,7 +12,23 @@ interface JobFiltersProps {
 }
 
 export default function JobFiltersPanel({ filters, onChange, totalJobs, shownJobs }: JobFiltersProps) {
+  const t = useT();
   const [open, setOpen] = useState(false);
+
+  const CURRENCY_OPTIONS = [
+    { label: t("filters.currencyAll"), value: "" },
+    { label: "USD", value: "USD" },
+    { label: "RUB", value: "RUB" },
+    { label: "TON", value: "TON" },
+    { label: "USDT", value: "USDT" },
+    { label: "EUR", value: "EUR" },
+  ];
+
+  const SORT_OPTIONS = [
+    { label: t("filters.sortNewest"), value: "newest" },
+    { label: t("filters.sortPriceAsc"), value: "price_asc" },
+    { label: t("filters.sortPriceDesc"), value: "price_desc" },
+  ];
   const [popularSkills, setPopularSkills] = useState<string[]>(FALLBACK_SKILLS);
   const selectedSkills = filters.skills ?? [];
 
@@ -86,7 +88,7 @@ export default function JobFiltersPanel({ filters, onChange, totalJobs, shownJob
     <div className="mt-3 md:mt-0 p-4 rounded-xl bg-white/5 border border-white/10 space-y-4">
       {/* Skills */}
       <div>
-        <p className="text-xs font-medium text-slate-400 mb-2">Skills</p>
+        <p className="text-xs font-medium text-slate-400 mb-2">{t("filters.skills")}</p>
         <div className="flex flex-wrap gap-1.5">
           {popularSkills.map((skill) => {
             const active = selectedSkills.includes(skill);
@@ -110,11 +112,11 @@ export default function JobFiltersPanel({ filters, onChange, totalJobs, shownJob
 
       {/* Budget range */}
       <div>
-        <p className="text-xs font-medium text-slate-400 mb-2">Budget range</p>
+        <p className="text-xs font-medium text-slate-400 mb-2">{t("filters.budget")}</p>
         <div className="flex items-center gap-2">
           <input
             type="number"
-            placeholder="Min"
+            placeholder={t("filters.min")}
             value={filters.min_budget ?? ""}
             onChange={(e) => setBudgetMin(e.target.value)}
             className="w-full px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-blue-500/40"
@@ -122,7 +124,7 @@ export default function JobFiltersPanel({ filters, onChange, totalJobs, shownJob
           <span className="text-slate-500 text-xs">&ndash;</span>
           <input
             type="number"
-            placeholder="Max"
+            placeholder={t("filters.max")}
             value={filters.max_budget ?? ""}
             onChange={(e) => setBudgetMax(e.target.value)}
             className="w-full px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-blue-500/40"
@@ -132,7 +134,7 @@ export default function JobFiltersPanel({ filters, onChange, totalJobs, shownJob
 
       {/* Currency dropdown */}
       <div>
-        <p className="text-xs font-medium text-slate-400 mb-2">Currency</p>
+        <p className="text-xs font-medium text-slate-400 mb-2">{t("filters.currency")}</p>
         <select
           value={filters.currency ?? ""}
           onChange={(e) => setCurrency(e.target.value)}
@@ -149,7 +151,7 @@ export default function JobFiltersPanel({ filters, onChange, totalJobs, shownJob
 
       {/* Sort dropdown */}
       <div>
-        <p className="text-xs font-medium text-slate-400 mb-2">Sort by</p>
+        <p className="text-xs font-medium text-slate-400 mb-2">{t("filters.sort")}</p>
         <select
           value={filters.sort ?? "newest"}
           onChange={(e) => setSort(e.target.value)}
@@ -173,7 +175,7 @@ export default function JobFiltersPanel({ filters, onChange, totalJobs, shownJob
             onChange={toggleHasBudget}
             className="w-3.5 h-3.5 rounded border-white/20 bg-white/5 text-blue-500 focus:ring-blue-500/30 focus:ring-offset-0 cursor-pointer"
           />
-          <span className="text-xs text-slate-400">Only with budget</span>
+          <span className="text-xs text-slate-400">{t("filters.hasBudget")}</span>
         </label>
       </div>
 
@@ -184,7 +186,7 @@ export default function JobFiltersPanel({ filters, onChange, totalJobs, shownJob
           onClick={clearAll}
           className="text-xs text-red-400 hover:text-red-300 transition-colors"
         >
-          Clear all filters
+          {t("filters.clearAll")}
         </button>
       )}
     </div>
@@ -208,7 +210,7 @@ export default function JobFiltersPanel({ filters, onChange, totalJobs, shownJob
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
-          Filters
+          {t("filters.toggle")}
           {activeCount > 0 && (
             <span className="ml-1 px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-[10px] font-semibold">
               {activeCount}
@@ -226,7 +228,7 @@ export default function JobFiltersPanel({ filters, onChange, totalJobs, shownJob
       {/* Result count */}
       {totalJobs != null && totalJobs > 0 && (
         <p className="text-[10px] text-slate-500 mt-2">
-          Showing {shownJobs ?? 0} of {totalJobs} jobs
+          {t("filters.resultCount").replace("{shown}", String(shownJobs ?? 0)).replace("{total}", String(totalJobs))}
         </p>
       )}
     </div>

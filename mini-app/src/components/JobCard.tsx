@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { type ParsedJob } from "../lib/api";
+import { useT } from "../i18n/context";
 
 function timeAgo(date: string): string {
   const ms = Date.now() - new Date(date).getTime();
@@ -13,6 +14,7 @@ function timeAgo(date: string): string {
 
 export default function JobCard({ job, onClick }: { job: ParsedJob; onClick?: () => void }) {
   const navigate = useNavigate();
+  const t = useT();
   const matchPercent = job.skill_match?.match_percent;
   const matchColor = matchPercent != null
     ? matchPercent >= 70 ? "bg-green-500/10 text-green-400 border-green-500/20"
@@ -70,12 +72,12 @@ export default function JobCard({ job, onClick }: { job: ParsedJob; onClick?: ()
               }
             </span>
           ) : (
-            <span>No budget specified</span>
+            <span>{t("jobCard.noBudget")}</span>
           )}
         </div>
         {matchColor && matchPercent != null && (
           <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${matchColor}`}>
-            {matchPercent}% match
+            {matchPercent}% {t("jobCard.match")}
           </span>
         )}
       </div>

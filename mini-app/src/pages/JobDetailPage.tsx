@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchJob, type ParsedJob } from "../lib/api";
 import { useAuth } from "../contexts/AuthContext";
 import { useIsMiniApp } from "../hooks/useIsMiniApp";
+import { useT } from "../i18n/context";
 import AppHeader from "../components/AppHeader";
 import PriceRange from "../components/PriceRange";
 import ProposalModal from "../components/ProposalModal";
@@ -77,18 +78,19 @@ function PriceInsightSkeleton() {
 
 function NotFoundState() {
   const navigate = useNavigate();
+  const t = useT();
   return (
     <div className="min-h-screen page-shell flex items-center justify-center">
       <div className="text-center space-y-4">
         <iconify-icon icon="solar:file-remove-linear" width="64" class="text-slate-600" />
-        <h2 className="text-xl font-semibold text-white">Job not found</h2>
-        <p className="text-sm text-slate-400">This job may have been removed or expired.</p>
+        <h2 className="text-xl font-semibold text-white">{t("jobDetail.notFound.title")}</h2>
+        <p className="text-sm text-slate-400">{t("jobDetail.notFound.subtitle")}</p>
         <button
           onClick={() => navigate("/market")}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors"
         >
           <iconify-icon icon="solar:arrow-left-linear" width="16" />
-          Back to marketplace
+          {t("jobDetail.back")}
         </button>
       </div>
     </div>
@@ -100,6 +102,7 @@ export default function JobDetailPage() {
   const { jobId } = useParams<{ jobId: string }>();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const t = useT();
 
   const [job, setJob] = useState<ParsedJob | null>(null);
   const [loading, setLoading] = useState(true);
@@ -152,7 +155,7 @@ export default function JobDetailPage() {
           className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors -mb-2"
         >
           <iconify-icon icon="solar:arrow-left-linear" width="16" />
-          Back to marketplace
+          {t("jobDetail.back")}
         </button>
 
         {/* 2.1 — Header */}
@@ -195,7 +198,7 @@ export default function JobDetailPage() {
                 }
               </span>
             ) : (
-              <span>No budget specified</span>
+              <span>{t("jobDetail.noBudget")}</span>
             )}
           </div>
         </div>
@@ -204,13 +207,13 @@ export default function JobDetailPage() {
         {isAuthenticated && matchColor && matchPercent != null && (
           <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-medium ${matchColor}`}>
             <iconify-icon icon="solar:star-bold" width="14" />
-            {matchPercent}% skill match
+            {matchPercent}% {t("jobDetail.skillMatch")}
           </div>
         )}
 
         {/* 2.1 — Description card */}
         <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6">
-          <h2 className="text-sm font-semibold text-slate-300 mb-3">Description</h2>
+          <h2 className="text-sm font-semibold text-slate-300 mb-3">{t("jobDetail.description")}</h2>
           <p className="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">
             {job.description}
           </p>
@@ -219,7 +222,7 @@ export default function JobDetailPage() {
         {/* 2.1 — Skills chips */}
         {job.required_skills && job.required_skills.length > 0 && (
           <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6">
-            <h2 className="text-sm font-semibold text-slate-300 mb-3">Required Skills</h2>
+            <h2 className="text-sm font-semibold text-slate-300 mb-3">{t("jobDetail.skills")}</h2>
             <div className="flex flex-wrap gap-2">
               {job.required_skills.map((skill) => (
                 <button
@@ -236,7 +239,7 @@ export default function JobDetailPage() {
               <div className="mt-4 pt-4 border-t border-white/5 space-y-2">
                 {job.skill_match.matched.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
-                    <span className="text-[10px] text-green-400 mr-1">Matched:</span>
+                    <span className="text-[10px] text-green-400 mr-1">{t("jobDetail.matched")}</span>
                     {job.skill_match.matched.map((s) => (
                       <span key={s} className="px-2 py-0.5 rounded bg-green-500/10 text-green-400 text-[10px] font-medium">
                         {s}
@@ -246,7 +249,7 @@ export default function JobDetailPage() {
                 )}
                 {job.skill_match.missing.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
-                    <span className="text-[10px] text-red-400 mr-1">Missing:</span>
+                    <span className="text-[10px] text-red-400 mr-1">{t("jobDetail.missing")}</span>
                     {job.skill_match.missing.map((s) => (
                       <span key={s} className="px-2 py-0.5 rounded bg-red-500/10 text-red-400 text-[10px] font-medium">
                         {s}
@@ -264,7 +267,7 @@ export default function JobDetailPage() {
           <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-4">
             <div className="flex items-center gap-2">
               <iconify-icon icon="solar:magic-stick-3-bold" width="20" class="text-cyan-400" />
-              <h2 className="text-sm font-semibold text-white">AI Price Insights</h2>
+              <h2 className="text-sm font-semibold text-white">{t("jobDetail.priceInsights")}</h2>
             </div>
 
             <PriceRange
@@ -276,7 +279,7 @@ export default function JobDetailPage() {
             />
             {job.price_estimate_ton && priceEstimate.currency !== "TON" && (
               <p className="text-[10px] text-slate-600">
-                Original estimate: {priceEstimate.min.toLocaleString()}–{priceEstimate.max.toLocaleString()} {priceEstimate.currency}
+                {t("jobDetail.originalEstimate")} {priceEstimate.min.toLocaleString()}–{priceEstimate.max.toLocaleString()} {priceEstimate.currency}
               </p>
             )}
 
@@ -289,7 +292,7 @@ export default function JobDetailPage() {
             {priceEstimate.factors && priceEstimate.factors.length > 0 && (
               <div>
                 <p className="text-[10px] font-medium text-slate-500 mb-2 uppercase tracking-wider">
-                  Factors
+                  {t("jobDetail.factors")}
                 </p>
                 <ul className="space-y-1">
                   {priceEstimate.factors.map((factor, i) => (
@@ -306,7 +309,7 @@ export default function JobDetailPage() {
           <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-3 relative overflow-hidden">
             <div className="flex items-center gap-2">
               <iconify-icon icon="solar:magic-stick-3-bold" width="20" class="text-cyan-400" />
-              <h2 className="text-sm font-semibold text-white">AI Price Insights</h2>
+              <h2 className="text-sm font-semibold text-white">{t("jobDetail.priceInsights")}</h2>
             </div>
             <div className="space-y-3 blur-md select-none pointer-events-none opacity-40">
               <div className="h-2 w-full bg-white/10 rounded-full" />
@@ -322,14 +325,14 @@ export default function JobDetailPage() {
         <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-3">
           <div className="flex items-center gap-2">
             <iconify-icon icon="solar:user-circle-linear" width="20" class="text-slate-400" />
-            <h2 className="text-sm font-semibold text-white">Source</h2>
+            <h2 className="text-sm font-semibold text-white">{t("jobDetail.source")}</h2>
           </div>
 
           <div className="space-y-2">
             {/* Author */}
             {author && (
               <div className="flex items-center gap-2 text-sm">
-                <span className="text-slate-500 text-xs w-16">Author</span>
+                <span className="text-slate-500 text-xs w-16">{t("jobDetail.author")}</span>
                 {authorMasked ? (
                   <span className="flex items-center gap-1.5 text-slate-400">
                     <iconify-icon icon="solar:lock-keyhole-linear" width="14" class="text-slate-500" />
@@ -355,7 +358,7 @@ export default function JobDetailPage() {
               if (job.source_username && url.includes(job.source_username)) return null;
               return (
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="text-slate-500 text-xs w-16">Contact</span>
+                  <span className="text-slate-500 text-xs w-16">{t("jobDetail.contact")}</span>
                   <a
                     href={url}
                     target="_blank"
@@ -369,7 +372,7 @@ export default function JobDetailPage() {
             })()}
             {job.contact_url && isMasked(job.contact_url) && (
               <div className="flex items-center gap-2 text-sm">
-                <span className="text-slate-500 text-xs w-16">Contact</span>
+                <span className="text-slate-500 text-xs w-16">{t("jobDetail.contact")}</span>
                 <span className="flex items-center gap-1.5 text-slate-400">
                   <iconify-icon icon="solar:lock-keyhole-linear" width="14" class="text-slate-500" />
                   {job.contact_url}
@@ -380,7 +383,7 @@ export default function JobDetailPage() {
             {/* Source channel */}
             {job.source_title && (
               <div className="flex items-center gap-2 text-sm">
-                <span className="text-slate-500 text-xs w-16">Channel</span>
+                <span className="text-slate-500 text-xs w-16">{t("jobDetail.channel")}</span>
                 {isMasked(job.source_title) ? (
                   <span className="flex items-center gap-1.5 text-slate-400">
                     <iconify-icon icon="solar:lock-keyhole-linear" width="14" class="text-slate-500" />
@@ -411,16 +414,16 @@ export default function JobDetailPage() {
             className="w-full py-3.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[#0098EA] to-[#00D1FF] hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
           >
             <iconify-icon icon="solar:rocket-2-bold" width="18" />
-            Craft Your Proposal
+            {t("jobDetail.craftProposal")}
           </button>
         )}
 
         {/* 2.5 — Single auth CTA for guests */}
         {!isAuthenticated && (
           <div className="bg-gradient-to-br from-[#0098EA]/10 to-transparent backdrop-blur-lg rounded-2xl border border-[#0098EA]/20 p-6 space-y-3">
-            <h3 className="text-sm font-semibold text-white">Interested in this job?</h3>
+            <h3 className="text-sm font-semibold text-white">{t("jobDetail.notAuth.title")}</h3>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Sign in to see AI pricing, contact the author, and craft a personalized proposal.
+              {t("jobDetail.notAuth.description")}
             </p>
             <a
               href="https://t.me/izEscrowAIBot"
@@ -428,7 +431,7 @@ export default function JobDetailPage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[#0098EA] to-[#00D1FF] hover:opacity-90 transition-opacity"
             >
-              Sign in with Telegram
+              {t("jobDetail.notAuth.button")}
               <iconify-icon icon="solar:arrow-right-linear" width="16" />
             </a>
           </div>
@@ -436,7 +439,7 @@ export default function JobDetailPage() {
         {/* Similar Jobs */}
         {job.related && job.related.length > 0 && (
           <div className="space-y-3">
-            <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Similar Jobs</h2>
+            <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">{t("jobDetail.similar")}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {job.related.map((r: any) => (
                 <button
@@ -464,7 +467,7 @@ export default function JobDetailPage() {
                         {r.budget_max ? ` to ${r.budget_max.toLocaleString()}` : ""} {r.currency}
                       </span>
                     ) : (
-                      <span className="text-slate-600">No budget</span>
+                      <span className="text-slate-600">{t("jobDetail.noBudget")}</span>
                     )}
                   </div>
                 </button>

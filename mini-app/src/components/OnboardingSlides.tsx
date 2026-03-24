@@ -1,32 +1,34 @@
 import { useState } from "react";
-
-const slides = [
-  {
-    icon: "solar:shield-check-bold",
-    title: "AI-Powered Escrow",
-    text: "Your money stays in a smart contract until the work is done. No middlemen, no risk.",
-    accent: "from-[#0098EA] to-[#0070B8]",
-  },
-  {
-    icon: "solar:chat-round-dots-bold",
-    title: "Deals in Plain Text",
-    text: "Just write: \"Selling logo to @ivan for 50 TON\" — AI parses everything and creates the deal.",
-    accent: "from-[#0098EA] to-[#22d3ee]",
-  },
-  {
-    icon: "solar:verified-check-bold",
-    title: "GitHub Verified Trust",
-    text: "Link your GitHub to prove your skills. AI scores your profile and matches you to relevant jobs.",
-    accent: "from-emerald-500 to-emerald-400",
-  },
-];
+import { useT } from "../i18n/context";
 
 interface Props {
   onComplete: () => void;
 }
 
 export default function OnboardingSlides({ onComplete }: Props) {
+  const t = useT();
   const [current, setCurrent] = useState(0);
+
+  const slides = [
+    {
+      icon: "solar:shield-check-bold",
+      title: t("onboarding.slide1.title"),
+      text: t("onboarding.slide1.text"),
+      accent: "from-[#0098EA] to-[#0070B8]",
+    },
+    {
+      icon: "solar:chat-round-dots-bold",
+      title: t("onboarding.slide2.title"),
+      text: t("onboarding.slide2.text"),
+      accent: "from-[#0098EA] to-[#22d3ee]",
+    },
+    {
+      icon: "solar:verified-check-bold",
+      title: t("onboarding.slide3.title"),
+      text: t("onboarding.slide3.text"),
+      accent: "from-emerald-500 to-emerald-400",
+    },
+  ];
   const isLast = current === slides.length - 1;
 
   const next = () => {
@@ -50,7 +52,7 @@ export default function OnboardingSlides({ onComplete }: Props) {
           onClick={onComplete}
           className="text-xs text-slate-500 bg-transparent border-none cursor-pointer hover:text-slate-300 transition-colors"
         >
-          Skip
+          {t("onboarding.skip")}
         </button>
       </div>
 
@@ -86,7 +88,7 @@ export default function OnboardingSlides({ onComplete }: Props) {
           onClick={next}
           className="w-full py-4 rounded-2xl text-sm font-semibold text-white ton-gradient border-none cursor-pointer transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
         >
-          {isLast ? "Get Started" : "Next"}
+          {isLast ? t("onboarding.getStarted") : t("onboarding.next")}
         </button>
       </div>
     </div>

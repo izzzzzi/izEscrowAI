@@ -6,9 +6,11 @@ import { useIsMiniApp } from "../hooks/useIsMiniApp";
 import AppHeader from "../components/AppHeader";
 import JobCard from "../components/JobCard";
 import JobFiltersPanel from "../components/JobFilters";
+import { useT } from "../i18n/context";
 
 export default function MarketPage() {
   const isMini = useIsMiniApp();
+  const t = useT();
   const [searchParams] = useSearchParams();
   const [jobs, setJobs] = useState<ParsedJob[]>([]);
   const [total, setTotal] = useState(0);
@@ -64,9 +66,9 @@ export default function MarketPage() {
       <div className={isMini ? "px-5" : "max-w-4xl mx-auto"}>
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-semibold">Job Marketplace</h1>
+            <h1 className="text-2xl font-semibold">{t("market.title")}</h1>
             <p className="text-sm text-slate-400 mt-1">
-              {total > 0 ? `${total} active jobs` : "Jobs from Telegram groups"}
+              {total > 0 ? `${total} ${t("market.activeJobs")}` : t("market.subtitle")}
             </p>
           </div>
         </div>
@@ -95,23 +97,22 @@ export default function MarketPage() {
                 <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-4">
                   <h3 className="text-sm font-semibold text-white flex items-center gap-2">
                     <iconify-icon icon="solar:cpu-linear" width="18" class="text-[#0098EA]" />
-                    AI Job Marketplace
+                    {t("market.empty.title")}
                   </h3>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    AI watches 19 Telegram groups for you and picks out real job posts automatically.
-                    It reads the requirements, figures out the budget and skills needed, and notifies you when something fits your profile.
+                    {t("market.empty.description")}
                   </p>
                   <ol className="space-y-2 text-xs text-slate-400">
-                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">1.</span>A job gets posted in a Telegram group</li>
-                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">2.</span>AI reads it and extracts what matters — budget, skills, deadline</li>
-                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">3.</span>If your skills match, you get a ping — one tap to apply</li>
+                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">1.</span>{t("market.empty.step1")}</li>
+                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">2.</span>{t("market.empty.step2")}</li>
+                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">3.</span>{t("market.empty.step3")}</li>
                   </ol>
                   <a href="https://t.me/izEscrowAIBot" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs text-[#0098EA] font-medium no-underline hover:underline">
                     <iconify-icon icon="solar:chat-round-dots-linear" width="14" />
-                    Open Bot to link your GitHub
+                    {t("market.empty.linkGithub")}
                   </a>
                 </div>
-                <p className="text-center text-[10px] text-slate-600">Jobs will appear here as groups are parsed</p>
+                <p className="text-center text-[10px] text-slate-600">{t("market.empty.hint")}</p>
               </div>
             ) : (
               <>
@@ -124,7 +125,7 @@ export default function MarketPage() {
                     disabled={loading}
                     className="w-full py-3 text-sm text-slate-400 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
                   >
-                    {loading ? "Loading..." : "Show more"}
+                    {loading ? t("market.loading") : t("market.showMore")}
                   </button>
                 )}
               </>

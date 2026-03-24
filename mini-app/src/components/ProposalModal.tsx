@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { fetchJobProposal, respondToJob, checkHasResponded } from "../lib/api";
+import { useT } from "../i18n/context";
 
 interface ProposalModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface ProposalModalProps {
 }
 
 export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: ProposalModalProps) {
+  const t = useT();
   const [proposal, setProposal] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -72,7 +74,7 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <h2 className="text-sm font-semibold text-white truncate">Generate Proposal</h2>
+            <h2 className="text-sm font-semibold text-white truncate">{t("proposal.title")}</h2>
             <p className="text-xs text-slate-500 truncate mt-0.5">{jobTitle}</p>
           </div>
           <button
@@ -92,7 +94,7 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
           {loading && (
             <div className="flex flex-col items-center justify-center py-12 gap-3">
               <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-              <p className="text-xs text-slate-500">Analyzing your GitHub profile against job requirements...</p>
+              <p className="text-xs text-slate-500">{t("proposal.loading")}</p>
             </div>
           )}
 
@@ -104,7 +106,7 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
                 onClick={loadProposal}
                 className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
               >
-                Retry
+                {t("proposal.retry")}
               </button>
             </div>
           )}
@@ -115,7 +117,7 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
               onChange={(e) => setProposal(e.target.value)}
               rows={12}
               className="w-full rounded-xl bg-white/5 border border-white/10 text-white text-sm p-3 resize-y focus:outline-none focus:border-blue-500/40 placeholder-slate-500"
-              placeholder="Proposal will appear here..."
+              placeholder={t("proposal.placeholder")}
             />
           )}
         </div>
@@ -125,7 +127,7 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
           <div className="space-y-2 pt-2 border-t border-white/5">
             {hasResponded && (
               <div className="text-center text-xs text-green-400 font-medium py-1">
-                Already responded
+                {t("proposal.alreadyResponded")}
               </div>
             )}
             <div className="flex items-center justify-end gap-2">
@@ -134,14 +136,14 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
                 onClick={onClose}
                 className="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition-colors"
               >
-                Close
+                {t("proposal.close")}
               </button>
               <button
                 type="button"
                 onClick={handleCopy}
                 className="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 border border-white/10 hover:bg-white/5 transition-colors"
               >
-                {copied ? "Copied!" : "Copy"}
+                {copied ? t("proposal.copied") : t("proposal.copy")}
               </button>
               <button
                 type="button"
@@ -159,7 +161,7 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
                 }}
                 className="px-4 py-2 rounded-lg text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {responding ? "..." : "Respond"}
+                {responding ? "..." : t("proposal.respond")}
               </button>
             </div>
           </div>
@@ -168,7 +170,7 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
         {/* Toast */}
         {copied && (
           <div className="absolute bottom-[-3rem] left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg bg-green-500/20 border border-green-500/30 text-green-400 text-xs font-medium animate-pulse">
-            Copied to clipboard
+            {t("proposal.copiedToast")}
           </div>
         )}
       </div>

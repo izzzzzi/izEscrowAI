@@ -3,18 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { fetchLeaderboard, type GroupStat } from "../lib/api";
 import { useIsMiniApp } from "../hooks/useIsMiniApp";
 import AppHeader from "../components/AppHeader";
+import { useT } from "../i18n/context";
 
 type SortKey = "completed_deals" | "total_volume" | "avg_check";
 
-const sortTabs: { key: SortKey; label: string }[] = [
-  { key: "completed_deals", label: "Deals" },
-  { key: "total_volume", label: "Volume" },
-  { key: "avg_check", label: "Avg Check" },
+const sortTabs: { key: SortKey; labelKey: string }[] = [
+  { key: "completed_deals", labelKey: "leaderboard.sort.deals" },
+  { key: "total_volume", labelKey: "leaderboard.sort.volume" },
+  { key: "avg_check", labelKey: "leaderboard.sort.avgCheck" },
 ];
 
 export default function LeaderboardPage() {
   const isMini = useIsMiniApp();
   const navigate = useNavigate();
+  const t = useT();
   const [groups, setGroups] = useState<GroupStat[]>([]);
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState<SortKey>("completed_deals");
@@ -34,8 +36,8 @@ export default function LeaderboardPage() {
       {isMini && <AppHeader />}
       <div className={isMini ? "px-5 space-y-6" : "max-w-3xl mx-auto space-y-6"}>
         <div>
-          <h1 className="text-2xl font-semibold text-white">Group Leaderboard</h1>
-          <p className="text-sm text-slate-400 mt-1">Telegram groups ranked by escrow activity</p>
+          <h1 className="text-2xl font-semibold text-white">{t("leaderboard.title")}</h1>
+          <p className="text-sm text-slate-400 mt-1">{t("leaderboard.subtitle")}</p>
         </div>
 
         <div className="flex gap-2">
@@ -49,7 +51,7 @@ export default function LeaderboardPage() {
                   : "bg-white/5 text-slate-400 hover:bg-white/10"
               }`}
             >
-              {tab.label}
+              {t(tab.labelKey as any)}
             </button>
           ))}
         </div>
@@ -64,27 +66,27 @@ export default function LeaderboardPage() {
           <div className="space-y-6">
             <div className="text-center py-16">
               <iconify-icon icon="solar:users-group-rounded-linear" width="56" class="text-slate-600" />
-              <p className="text-lg text-slate-400 mt-4">No groups with escrow activity yet</p>
-              <p className="text-sm text-slate-500 mt-2">Groups appear here once deals are completed through the bot</p>
+              <p className="text-lg text-slate-400 mt-4">{t("leaderboard.empty.title")}</p>
+              <p className="text-sm text-slate-500 mt-2">{t("leaderboard.empty.subtitle")}</p>
             </div>
 
             <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-4">
               <h3 className="text-sm font-semibold text-white flex items-center gap-2">
                 <iconify-icon icon="solar:info-circle-linear" width="18" class="text-blue-400" />
-                How to get listed
+                {t("leaderboard.howTo.title")}
               </h3>
               <ol className="space-y-3 text-sm text-slate-400">
                 <li className="flex gap-3">
                   <span className="text-blue-400 font-semibold">1.</span>
-                  Add <a href="https://t.me/izEscrowAIBot" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">@izEscrowAIBot</a> to your Telegram group
+                  {t("leaderboard.howTo.step1")}
                 </li>
                 <li className="flex gap-3">
                   <span className="text-blue-400 font-semibold">2.</span>
-                  Create deals using inline mode: type <code className="text-xs bg-white/5 px-1.5 py-0.5 rounded">@izEscrowAIBot</code> in the group
+                  {t("leaderboard.howTo.step2")}
                 </li>
                 <li className="flex gap-3">
                   <span className="text-blue-400 font-semibold">3.</span>
-                  Complete deals — groups with finished escrow transactions appear on the leaderboard
+                  {t("leaderboard.howTo.step3")}
                 </li>
               </ol>
             </div>
@@ -113,7 +115,7 @@ export default function LeaderboardPage() {
                       : g.completed_deals}
                   </p>
                   <p className="text-xs text-slate-400">
-                    {sort === "completed_deals" ? "deals" : sort === "total_volume" ? "volume" : "avg"}
+                    {sort === "completed_deals" ? t("leaderboard.stat.deals") : sort === "total_volume" ? t("leaderboard.stat.volume") : t("leaderboard.stat.avg")}
                   </p>
                 </div>
               </button>

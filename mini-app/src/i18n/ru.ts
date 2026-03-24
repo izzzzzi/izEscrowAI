@@ -1,0 +1,369 @@
+import type { TranslationKey } from "./en";
+
+const ru: Record<TranslationKey, string> = {
+  // TabNav
+  "tab.deals": "Сделки",
+  "tab.market": "Рынок",
+  "tab.spec": "Спек",
+  "tab.groups": "Группы",
+  "tab.profile": "Профиль",
+
+  // AppHeader
+  "header.title": "izEscrowAI",
+  "header.live": "Live",
+
+  // Onboarding
+  "onboarding.skip": "Пропустить",
+  "onboarding.next": "Дальше",
+  "onboarding.getStarted": "Начать",
+  "onboarding.slide1.title": "AI-Эскроу",
+  "onboarding.slide1.text":
+    "Ваши деньги в смарт-контракте, пока работа не сделана. Без посредников, без риска.",
+  "onboarding.slide2.title": "Сделки текстом",
+  "onboarding.slide2.text":
+    'Напишите: «Продаю логотип @ivan за 50 TON» — AI разберётся и создаст сделку.',
+  "onboarding.slide3.title": "Доверие через GitHub",
+  "onboarding.slide3.text":
+    "Привяжите GitHub, чтобы подтвердить навыки. AI оценит профиль и подберёт подходящие заказы.",
+
+  // DealsPage
+  "deals.tab.deals": "Сделки",
+  "deals.tab.offers": "Офферы",
+  "deals.empty.title": "Добро пожаловать в izEscrowAI",
+  "deals.empty.subtitle": "AI-эскроу на блокчейне TON",
+  "deals.empty.description":
+    "Ваши деньги в смарт-контракте, пока работа не сделана. Без посредников, без риска — только вы, другая сторона и AI, который следит за справедливостью.",
+  "deals.empty.step1":
+    'Напишите боту: «Продаю логотип @ivan за 50 TON»',
+  "deals.empty.step2": "Обе стороны подтверждают — AI проверяет всё",
+  "deals.empty.step3":
+    "Деньги в эскроу, пока вы не довольны результатом",
+  "deals.empty.openBot": "Открыть бота",
+  "deals.empty.browseJobs": "Смотреть заказы",
+  "deals.empty.hint": "Ваши сделки появятся здесь после создания",
+  "deals.status.created": "Создана",
+  "deals.status.confirmed": "Подтверждена",
+  "deals.status.funded": "Оплачена",
+  "deals.status.delivered": "Доставлена",
+  "deals.status.completed": "Завершена",
+  "deals.status.disputed": "Спор",
+  "deals.status.resolved": "Разрешена",
+  "deals.status.cancelled": "Отменена",
+  "deals.offer.open": "Открыт",
+  "deals.offer.closed": "Закрыт",
+  "deals.offer.bids": "ставок",
+  "deals.offer.collapse": "Свернуть",
+  "deals.offer.details": "Подробнее",
+  "deals.offer.loading": "Загрузка...",
+  "deals.offer.applications": "Заявки",
+  "deals.offer.noApps": "Заявок пока нет",
+  "deals.offer.trust": "Доверие",
+  "deals.offer.deals": "сделок",
+  "deals.createOffer": "Создать оффер",
+  "deals.offers.empty": "Офферов пока нет",
+  "deals.offers.emptyHint":
+    "Создайте первый оффер выше или используйте inline-режим в любом чате",
+  "deals.modal.title": "Новый оффер",
+  "deals.modal.placeholder": "Опишите, что вам нужно...",
+  "deals.modal.minPrice": "Мин. цена",
+  "deals.modal.buying": "Покупаю",
+  "deals.modal.selling": "Продаю",
+  "deals.modal.creating": "Создание...",
+  "deals.modal.create": "Создать оффер",
+
+  // MarketPage
+  "market.title": "Рынок заказов",
+  "market.subtitle": "Заказы из Telegram-групп",
+  "market.activeJobs": "активных заказов",
+  "market.empty.title": "AI-рынок заказов",
+  "market.empty.description":
+    "AI мониторит 19 Telegram-групп и автоматически находит заказы. Считывает требования, бюджет и навыки — и уведомляет, когда что-то подходит вашему профилю.",
+  "market.empty.step1": "В Telegram-группе появляется заказ",
+  "market.empty.step2":
+    "AI читает и извлекает главное — бюджет, навыки, сроки",
+  "market.empty.step3":
+    "Если навыки совпадают — вы получаете уведомление. Один тап — и вы откликнулись",
+  "market.empty.linkGithub": "Привязать GitHub через бота",
+  "market.empty.hint": "Заказы появятся по мере парсинга групп",
+  "market.showMore": "Показать ещё",
+  "market.loading": "Загрузка...",
+
+  // ProfilePage
+  "profile.loading": "Загрузка профиля...",
+  "profile.trustScore": "Оценка доверия",
+  "profile.trust.notRated": "Нет оценки",
+  "profile.trust.excellent": "Отлично",
+  "profile.trust.good": "Хорошо",
+  "profile.trust.average": "Средне",
+  "profile.trust.low": "Низко",
+  "profile.stat.deals": "Сделки",
+  "profile.stat.avgDays": "Ср. дней",
+  "profile.stat.cancelled": "Отменено",
+  "profile.stat.disputes": "Споры",
+  "profile.stat.repeatClients": "Повторные",
+  "profile.stat.rating": "Рейтинг",
+  "profile.breakdown.title": "Разбор доверия",
+  "profile.breakdown.platform": "Платформа",
+  "profile.breakdown.github": "GitHub",
+  "profile.breakdown.wallet": "Кошелёк",
+  "profile.breakdown.verification": "Верификация",
+  "profile.wallet.title": "TON Кошелёк",
+  "profile.wallet.copy": "Скопировать",
+  "profile.wallet.disconnect": "Отключить",
+  "profile.wallet.connect": "Подключить кошелёк",
+  "profile.github.unlink": "Отвязать GitHub",
+  "profile.github.link": "Привязать GitHub",
+  "profile.github.flag.established": "Опытный разработчик",
+  "profile.github.flag.starredRepos": "Популярные репозитории",
+  "profile.github.flag.externalPrs": "Open-source контрибьютор",
+  "profile.github.flag.orgMember": "Член организации",
+  "profile.github.flag.newAccount": "Новый аккаунт",
+  "profile.github.flag.allForks": "Только форки",
+  "profile.github.flag.emptyActivity": "Нет активности",
+  "profile.github.flag.burstActivity": "Всплеск активности",
+  "profile.myJobs": "Мои заказы из групп",
+  "profile.myProfile": "Мой профиль",
+  "profile.userProfile": "Профиль пользователя",
+  "profile.totalDeals": "Всего сделок:",
+  "profile.github.unlinkConfirm": "Отвязать аккаунт GitHub?",
+
+  // LeaderboardPage
+  "leaderboard.title": "Рейтинг групп",
+  "leaderboard.subtitle": "Telegram-группы по активности эскроу",
+  "leaderboard.sort.deals": "Сделки",
+  "leaderboard.sort.volume": "Объём",
+  "leaderboard.sort.avgCheck": "Ср. чек",
+  "leaderboard.empty.title": "Нет групп с эскроу-активностью",
+  "leaderboard.empty.subtitle":
+    "Группы появятся после завершения сделок через бота",
+  "leaderboard.howTo.title": "Как попасть в рейтинг",
+  "leaderboard.howTo.step1":
+    "Добавьте @izEscrowAIBot в вашу Telegram-группу",
+  "leaderboard.howTo.step2":
+    "Создавайте сделки через inline-режим: наберите @izEscrowAIBot в группе",
+  "leaderboard.howTo.step3":
+    "Завершайте сделки — группы с эскроу-транзакциями попадают в рейтинг",
+  "leaderboard.stat.deals": "сделок",
+  "leaderboard.stat.volume": "объём",
+  "leaderboard.stat.avg": "средний",
+
+  // OffersPage
+  "offers.title": "Маркетплейс",
+  "offers.subtitle":
+    "Открытые офферы — найдите работу или исполнителя",
+  "offers.createBtn": "Создать оффер",
+  "offers.loginGate": "Войдите, чтобы создавать офферы",
+  "offers.empty.title": "Inline-маркетплейс",
+  "offers.empty.description":
+    "Нужно что-то сделать? Наберите @izEscrowAIBot в любом чате Telegram. Фрилансеры увидят, предложат цену — вы выберете лучшего. Оплата сразу в эскроу.",
+  "offers.empty.step1": "Опишите задачу — в любом чате Telegram",
+  "offers.empty.step2": "Фрилансеры предлагают свою цену",
+  "offers.empty.step3": "Выбираете лучшего — эскроу всё оформит",
+  "offers.empty.button": "Создать первый оффер",
+  "offers.empty.hint": "Офферы появятся здесь после создания",
+  "offers.modal.title": "Новый оффер",
+  "offers.modal.placeholder": "Опишите ваш оффер...",
+  "offers.modal.minPrice": "Мин. цена",
+  "offers.modal.buyer": "Ищу исполнителя",
+  "offers.modal.seller": "Предлагаю услугу",
+  "offers.modal.creating": "Создание...",
+  "offers.modal.create": "Создать оффер",
+  "offers.price.negotiable": "Цена договорная",
+
+  // JobDetailPage
+  "jobDetail.back": "Назад к рынку",
+  "jobDetail.skillMatch": "совпадение",
+  "jobDetail.description": "Описание",
+  "jobDetail.skills": "Требуемые навыки",
+  "jobDetail.matched": "Совпадают:",
+  "jobDetail.missing": "Не хватает:",
+  "jobDetail.priceInsights": "AI-аналитика цен",
+  "jobDetail.factors": "Факторы",
+  "jobDetail.originalEstimate": "Оценка:",
+  "jobDetail.source": "Источник",
+  "jobDetail.author": "Автор",
+  "jobDetail.contact": "Контакт",
+  "jobDetail.channel": "Канал",
+  "jobDetail.craftProposal": "Составить предложение",
+  "jobDetail.notAuth.title": "Заинтересовались?",
+  "jobDetail.notAuth.description":
+    "Войдите, чтобы увидеть AI-цены, связаться с автором и отправить персональное предложение.",
+  "jobDetail.notAuth.button": "Войти через Telegram",
+  "jobDetail.similar": "Похожие заказы",
+  "jobDetail.noBudget": "Бюджет не указан",
+  "jobDetail.notFound.title": "Заказ не найден",
+  "jobDetail.notFound.subtitle":
+    "Возможно, заказ был удалён или истёк.",
+
+  // OfferDetailPage
+  "offerDetail.back": "Назад к офферам",
+  "offerDetail.role.seller": "Предлагает услугу",
+  "offerDetail.role.buyer": "Ищет исполнителя",
+  "offerDetail.bid.title": "Ваша ставка",
+  "offerDetail.bid.price": "Цена",
+  "offerDetail.bid.pricePlaceholder": "напр. 50",
+  "offerDetail.bid.message": "Сообщение (опционально)",
+  "offerDetail.bid.messagePlaceholder": "Почему вы — лучший выбор...",
+  "offerDetail.bid.submitting": "Отправка...",
+  "offerDetail.bid.submit": "Отправить ставку",
+  "offerDetail.notFound": "Оффер не найден",
+
+  // NotFoundPage
+  "notFound.title": "Страница не найдена",
+  "notFound.subtitle":
+    "Такой страницы не существует или она была перемещена.",
+  "notFound.button": "На главную",
+
+  // MyJobResponsesPage
+  "myJobResponses.back": "Назад",
+  "myJobResponses.title": "Отклики",
+  "myJobResponses.empty": "Откликов пока нет",
+  "myJobResponses.success": "Сделка создана!",
+  "myJobResponses.notFound": "Заказ не найден",
+
+  // JobCard
+  "jobCard.match": "совпадение",
+  "jobCard.noBudget": "Бюджет не указан",
+
+  // JobFilters
+  "filters.skills": "Навыки",
+  "filters.budget": "Бюджет",
+  "filters.min": "Мин",
+  "filters.max": "Макс",
+  "filters.currency": "Валюта",
+  "filters.currencyAll": "Все",
+  "filters.sort": "Сортировка",
+  "filters.sortNewest": "Новые",
+  "filters.sortPriceAsc": "Цена ↑",
+  "filters.sortPriceDesc": "Цена ↓",
+  "filters.hasBudget": "Только с бюджетом",
+  "filters.clearAll": "Сбросить фильтры",
+  "filters.toggle": "Фильтры",
+  "filters.resultCount": "Показано {shown} из {total} заказов",
+
+  // ProposalModal
+  "proposal.title": "Генерация предложения",
+  "proposal.loading":
+    "Анализируем ваш GitHub-профиль и требования заказа...",
+  "proposal.retry": "Повторить",
+  "proposal.placeholder": "Предложение появится здесь...",
+  "proposal.close": "Закрыть",
+  "proposal.copy": "Скопировать",
+  "proposal.copied": "Скопировано!",
+  "proposal.alreadyResponded": "Уже откликнулись",
+  "proposal.respond": "Откликнуться",
+  "proposal.copiedToast": "Скопировано в буфер",
+
+  // LoginGate
+  "loginGate.default": "Войдите через Telegram",
+
+  // WalletGate
+  "walletGate.default": "Подключите кошелёк",
+
+  // ConfirmDialog
+  "confirm.confirm": "Подтвердить",
+  "confirm.cancel": "Отмена",
+
+  // WebNavbar
+  "nav.howItWorks": "Как работает",
+  "nav.market": "Рынок",
+  "nav.groups": "Группы",
+  "nav.offers": "Офферы",
+  "nav.admin": "Админ",
+  "nav.menu.profile": "Профиль",
+  "nav.menu.myOffers": "Мои офферы",
+  "nav.menu.logout": "Выйти",
+
+  // Landing page
+  "landing.hero.badge": "Live на TON",
+  "landing.hero.title1": "Фриланс-биржа",
+  "landing.hero.title2": "разработчиков",
+  "landing.hero.title3": "на TON.",
+  "landing.hero.subtitle":
+    "Находите разработчиков, проверяйте навыки через GitHub и блокируйте оплату в смарт-контракте. AI парсит сделки из обычного текста — без посредников, с полным доверием.",
+  "landing.hero.openBot": "Открыть Telegram-бота",
+  "landing.hero.browseOffers": "Смотреть офферы",
+  "landing.stats.jobs": "заказов из",
+  "landing.stats.groups": "групп",
+  "landing.stats.users": "пользователей",
+  "landing.stats.github": "GitHub верифицировано",
+  "landing.stats.deals": "сделок завершено",
+  "landing.workflow.title": "Простой процесс",
+  "landing.workflow.subtitle": "От нуля до защиты за 60 секунд.",
+  "landing.workflow.step1": "1. Опишите",
+  "landing.workflow.step1.desc":
+    "Опишите задачу обычным языком — AI поймёт контекст.",
+  "landing.workflow.step2": "2. AI-спека",
+  "landing.workflow.step2.desc":
+    "AI создаёт структурированную спецификацию с критериями приёмки.",
+  "landing.workflow.step3": "3. AI-цена",
+  "landing.workflow.step3.desc":
+    "AI оценивает справедливый диапазон цен по сложности спеки.",
+  "landing.workflow.step4": "4. AI-подбор",
+  "landing.workflow.step4.desc":
+    "AI находит лучших исполнителей и ранжирует по соответствию.",
+  "landing.workflow.step5": "5. Эскроу",
+  "landing.workflow.step5.desc":
+    "Средства в смарт-контракте TON. Без хранения у третьих лиц.",
+  "landing.workflow.step6": "6. AI-проверка",
+  "landing.workflow.step6.desc":
+    "AI сверяет результат с критериями спеки пункт за пунктом.",
+  "landing.talent.title": "Доступные специалисты",
+  "landing.talent.subtitle":
+    "Разработчики с верификацией через GitHub.",
+  "landing.offers.title": "Актуальные офферы",
+  "landing.offers.subtitle":
+    "Смотрите и откликайтесь — аккаунт не нужен.",
+  "landing.offers.viewAll": "Все офферы →",
+  "landing.groups.title": "Топ групп",
+  "landing.groups.subtitle": "Самые активные Telegram-сообщества.",
+  "landing.groups.leaderboard": "Полный рейтинг →",
+  "landing.activity.title": "Активность",
+  "landing.activity.subtitle":
+    "Последние сделки — обновляется каждые 30 сек.",
+  "landing.roadmap.title": "Дорожная карта",
+  "landing.roadmap.subtitle": "Что дальше.",
+  "landing.cta.title": "Готовы к безопасному P2P?",
+  "landing.cta.subtitle":
+    "Создайте первую эскроу-сделку на TON. Безопасно, быстро и с AI.",
+  "landing.cta.developer": "Я разработчик",
+  "landing.cta.postJob": "Разместить заказ",
+  "landing.cta.designer": "Я дизайнер",
+  "landing.footer.hackathon": "TON Hackathon 2026",
+  "landing.footer.built": "Для экосистемы TON",
+  "landing.chat.botName": "izEscrowAI Bot",
+  "landing.chat.online": "в сети",
+  "landing.chat.welcome": "Добро пожаловать в izEscrowAI!",
+  "landing.chat.welcomeText":
+    "Я AI-агент для безопасных P2P-сделок. Средства хранятся в смарт-контракте на TON.",
+  "landing.chat.prompt": "Просто напишите:",
+  "landing.chat.example": '«Продаю дизайн логотипа @ivan за 50 TON»',
+  "landing.chat.dealExample":
+    "Продаю дизайн логотипа @ivan за 50 TON",
+  "landing.chat.parsing": "Анализирую условия сделки",
+  "landing.chat.parsed": "Разобранная сделка:",
+  "landing.chat.seller": "Продавец:",
+  "landing.chat.buyer": "Покупатель:",
+  "landing.chat.amount": "Сумма:",
+  "landing.chat.description": "Описание:",
+  "landing.chat.correct": "Всё верно?",
+  "landing.chat.confirm": "Подтвердить",
+  "landing.chat.cancel": "Отменить",
+  "landing.chat.trustScore": "Доверие: 87 — Низкий риск",
+  "landing.chat.message": "Сообщение...",
+
+  // Common
+  "common.loading": "Загрузка...",
+  "common.error": "Что-то пошло не так",
+  "common.retry": "Повторить",
+  "common.back": "Назад",
+  "common.close": "Закрыть",
+  "common.save": "Сохранить",
+  "common.delete": "Удалить",
+  "common.edit": "Редактировать",
+  "common.from": "от",
+  "common.to": "до",
+  "common.ton": "TON",
+};
+
+export default ru;

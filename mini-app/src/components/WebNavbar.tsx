@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useT } from "../i18n/context";
 import TelegramLogin from "./TelegramLogin";
 
 export default function WebNavbar() {
   const { isAuthenticated, user, logout, isAdmin } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const t = useT();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -29,13 +31,13 @@ export default function WebNavbar() {
   }, [location.pathname]);
 
   const navLinks = [
-    { path: "/#how-it-works", label: "How it works" },
-    { path: "/market", label: "Market" },
+    { path: "/#how-it-works", label: t("nav.howItWorks") },
+    { path: "/market", label: t("nav.market") },
     ...(isAuthenticated ? [
-      { path: "/groups", label: "Groups" },
-      { path: "/offers", label: "Offers" },
+      { path: "/groups", label: t("nav.groups") },
+      { path: "/offers", label: t("nav.offers") },
     ] : []),
-    ...(isAdmin ? [{ path: "/admin", label: "Admin" }] : []),
+    ...(isAdmin ? [{ path: "/admin", label: t("nav.admin") }] : []),
   ];
 
   return (
@@ -97,7 +99,7 @@ export default function WebNavbar() {
                     className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors bg-transparent border-none cursor-pointer flex items-center gap-2"
                   >
                     <iconify-icon icon="solar:user-linear" width="16" height="16" />
-                    Profile
+                    {t("nav.menu.profile")}
                   </button>
                   <button
                     role="menuitem"
@@ -105,7 +107,7 @@ export default function WebNavbar() {
                     className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors bg-transparent border-none cursor-pointer flex items-center gap-2"
                   >
                     <iconify-icon icon="solar:tag-linear" width="16" height="16" />
-                    My Offers
+                    {t("nav.menu.myOffers")}
                   </button>
                   <div className="border-t border-white/5" />
                   <button
@@ -114,7 +116,7 @@ export default function WebNavbar() {
                     className="w-full px-4 py-3 text-left text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors bg-transparent border-none cursor-pointer flex items-center gap-2"
                   >
                     <iconify-icon icon="solar:logout-2-linear" width="16" height="16" />
-                    Logout
+                    {t("nav.menu.logout")}
                   </button>
                 </div>
               )}

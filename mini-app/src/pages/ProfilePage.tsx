@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTonConnectUI, useTonWallet, useTonAddress } from "@tonconnect/ui-react";
 import { fetchProfile, fetchUserProfile, fetchMyJobs, fetchGithubUnlink, type ProfileWithGithub, type MyJob, API_URL, getInitData } from "../lib/api";
+import { useT } from "../i18n/context";
+import type { TranslationKey } from "../i18n/en";
 import AppHeader from "../components/AppHeader";
 import GitHubCard from "../components/GitHubCard";
 import MyJobCard from "../components/MyJobCard";
@@ -15,6 +17,7 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
 
   const isOwnProfile = !userId;
+  const t = useT();
   const [tonConnectUI] = useTonConnectUI();
   const wallet = useTonWallet();
   const walletAddress = useTonAddress();
@@ -43,11 +46,11 @@ export default function ProfilePage() {
   }, [userId, isOwnProfile]);
 
   const trustLabel = (score: number | null) => {
-    if (score === null) return { text: "Not rated", color: "text-slate-500" };
-    if (score >= 80) return { text: "Excellent", color: "text-green-400" };
-    if (score >= 60) return { text: "Good", color: "text-blue-400" };
-    if (score >= 40) return { text: "Average", color: "text-amber-400" };
-    return { text: "Low", color: "text-red-400" };
+    if (score === null) return { text: t("profile.trust.notRated"), color: "text-slate-500" };
+    if (score >= 80) return { text: t("profile.trust.excellent"), color: "text-green-400" };
+    if (score >= 60) return { text: t("profile.trust.good"), color: "text-blue-400" };
+    if (score >= 40) return { text: t("profile.trust.average"), color: "text-amber-400" };
+    return { text: t("profile.trust.low"), color: "text-red-400" };
   };
 
   return (
@@ -55,12 +58,12 @@ export default function ProfilePage() {
       <AppHeader />
       <main className="px-5 pb-32 space-y-6">
         <h2 className="text-sm font-medium text-slate-400 uppercase tracking-widest pl-1">
-          {isOwnProfile ? "My Profile" : "User Profile"}
+          {isOwnProfile ? t("profile.myProfile") : t("profile.userProfile")}
         </h2>
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <span className="text-sm text-slate-500">Loading profile...</span>
+            <span className="text-sm text-slate-500">{t("profile.loading")}</span>
           </div>
         ) : error ? (
           <div className="flex items-center justify-center py-20">
@@ -78,7 +81,7 @@ export default function ProfilePage() {
                   {profile.trust_score !== null ? profile.trust_score : "—"}
                 </div>
                 <div className={`text-sm font-medium ${trustLabel(profile.trust_score).color}`}>
-                  Trust Score {trustLabel(profile.trust_score).text !== "Not rated" && `— ${trustLabel(profile.trust_score).text}`}
+                  {t("profile.trustScore")} {trustLabel(profile.trust_score).text !== t("profile.trust.notRated") && `— ${trustLabel(profile.trust_score).text}`}
                 </div>
               </div>
               {profile.trust_score !== null && (
@@ -93,13 +96,13 @@ export default function ProfilePage() {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-3">
-              <StatCard label="Deals" value={profile.reputation.completed_deals} icon="solar:clipboard-check-linear" />
-              <StatCard label="Avg Days" value={profile.reputation.avg_completion_days?.toFixed(1) ?? "—"} icon="solar:clock-circle-linear" />
-              <StatCard label="Cancelled" value={profile.reputation.cancelled_deals} icon="solar:close-circle-linear" />
-              <StatCard label="Disputes" value={profile.reputation.disputes_opened} icon="solar:danger-triangle-linear" />
-              <StatCard label="Repeat Clients" value={profile.reputation.repeat_clients} icon="solar:users-group-rounded-linear" />
+              <StatCard label={t("profile.stat.deals")} value={profile.reputation.completed_deals} icon="solar:clipboard-check-linear" />
+              <StatCard label={t("profile.stat.avgDays")} value={profile.reputation.avg_completion_days?.toFixed(1) ?? "—"} icon="solar:clock-circle-linear" />
+              <StatCard label={t("profile.stat.cancelled")} value={profile.reputation.cancelled_deals} icon="solar:close-circle-linear" />
+              <StatCard label={t("profile.stat.disputes")} value={profile.reputation.disputes_opened} icon="solar:danger-triangle-linear" />
+              <StatCard label={t("profile.stat.repeatClients")} value={profile.reputation.repeat_clients} icon="solar:users-group-rounded-linear" />
               <StatCard
-                label="Rating"
+                label={t("profile.stat.rating")}
                 value={profile.reputation.rating > 0 ? `${profile.reputation.rating.toFixed(1)}/5` : "—"}
                 icon="solar:star-linear"
               />
@@ -108,12 +111,12 @@ export default function ProfilePage() {
             {/* Trust Score Breakdown */}
             {profile.trust_breakdown && (
               <div className="glass-card rounded-2xl p-5 space-y-3">
-                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">Trust Breakdown</h3>
+                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">{t("profile.breakdown.title")}</h3>
                 {[
-                  { label: "Platform", value: profile.trust_breakdown.platform, weight: "40%", color: "bg-blue-500" },
-                  { label: "GitHub", value: profile.trust_breakdown.github, weight: "30%", color: "bg-green-500" },
-                  { label: "Wallet", value: profile.trust_breakdown.wallet, weight: "20%", color: "bg-purple-500" },
-                  { label: "Verification", value: profile.trust_breakdown.verification, weight: "10%", color: "bg-cyan-500" },
+                  { label: t("profile.breakdown.platform"), value: profile.trust_breakdown.platform, weight: "40%", color: "bg-blue-500" },
+                  { label: t("profile.breakdown.github"), value: profile.trust_breakdown.github, weight: "30%", color: "bg-green-500" },
+                  { label: t("profile.breakdown.wallet"), value: profile.trust_breakdown.wallet, weight: "20%", color: "bg-purple-500" },
+                  { label: t("profile.breakdown.verification"), value: profile.trust_breakdown.verification, weight: "10%", color: "bg-cyan-500" },
                 ].map((c) => (
                   <div key={c.label}>
                     <div className="flex justify-between text-xs mb-1">
@@ -131,7 +134,7 @@ export default function ProfilePage() {
             {/* Wallet Section */}
             {isOwnProfile && (
               <div className="glass-card rounded-2xl p-5 space-y-3">
-                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">TON Wallet</h3>
+                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">{t("profile.wallet.title")}</h3>
                 {wallet ? (
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -145,13 +148,13 @@ export default function ProfilePage() {
                         onClick={() => navigator.clipboard.writeText(walletAddress)}
                         className="text-xs text-slate-400 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
                       >
-                        Copy
+                        {t("profile.wallet.copy")}
                       </button>
                       <button
                         onClick={() => tonConnectUI.disconnect()}
                         className="text-xs text-red-400 hover:text-red-300 transition-colors bg-transparent border-none cursor-pointer"
                       >
-                        Disconnect
+                        {t("profile.wallet.disconnect")}
                       </button>
                     </div>
                   </div>
@@ -161,7 +164,7 @@ export default function ProfilePage() {
                     className="w-full py-3 rounded-xl text-sm font-medium bg-[#0098EA]/10 text-[#0098EA] border border-[#0098EA]/20 cursor-pointer hover:bg-[#0098EA]/20 transition-colors flex items-center justify-center gap-2"
                   >
                     <iconify-icon icon="solar:wallet-2-linear" width="18" />
-                    Connect Wallet
+                    {t("profile.wallet.connect")}
                   </button>
                 )}
               </div>
@@ -174,13 +177,13 @@ export default function ProfilePage() {
                 {isOwnProfile && (
                   <button
                     onClick={async () => {
-                      if (!confirm("Unlink your GitHub account?")) return;
+                      if (!confirm(t("profile.github.unlinkConfirm"))) return;
                       await fetchGithubUnlink();
                       setProfile((p) => p ? { ...p, github: null } : p);
                     }}
                     className="w-full py-2 text-xs text-red-400 bg-red-500/5 border border-red-500/10 rounded-xl cursor-pointer hover:bg-red-500/10 transition-colors"
                   >
-                    Unlink GitHub
+                    {t("profile.github.unlink")}
                   </button>
                 )}
               </div>
@@ -192,30 +195,46 @@ export default function ProfilePage() {
                 className="block w-full py-3 text-center text-sm font-medium glass-card rounded-2xl hover:bg-white/5 transition-colors"
               >
                 <iconify-icon icon="logos:github-icon" width="18" style={{ verticalAlign: "middle" }} />{" "}
-                Link GitHub Account
+                {t("profile.github.link")}
               </a>
             ) : null}
 
             {/* Red/Green Flags */}
             {profile.github?.flags && (
               <div className="flex flex-wrap gap-2">
-                {profile.github.flags.green.map((f) => (
-                  <span key={f} className="px-2 py-1 rounded-full bg-green-500/10 text-green-400 text-[10px] font-medium">
-                    {f === "established" ? "Established developer" : f === "starred_repos" ? "Popular repos" : f === "external_prs" ? "Open source contributor" : f === "org_member" ? "Org member" : f}
-                  </span>
-                ))}
-                {profile.github.flags.red.map((f) => (
-                  <span key={f} className="px-2 py-1 rounded-full bg-red-500/10 text-red-400 text-[10px] font-medium">
-                    {f === "new_account" ? "New account" : f === "all_forks" ? "All repos forked" : f === "empty_activity" ? "No activity" : f === "burst_activity" ? "Sudden activity" : f}
-                  </span>
-                ))}
+                {profile.github.flags.green.map((f) => {
+                  const flagMap: Record<string, TranslationKey> = {
+                    established: "profile.github.flag.established",
+                    starred_repos: "profile.github.flag.starredRepos",
+                    external_prs: "profile.github.flag.externalPrs",
+                    org_member: "profile.github.flag.orgMember",
+                  };
+                  return (
+                    <span key={f} className="px-2 py-1 rounded-full bg-green-500/10 text-green-400 text-[10px] font-medium">
+                      {flagMap[f] ? t(flagMap[f]) : f}
+                    </span>
+                  );
+                })}
+                {profile.github.flags.red.map((f) => {
+                  const flagMap: Record<string, TranslationKey> = {
+                    new_account: "profile.github.flag.newAccount",
+                    all_forks: "profile.github.flag.allForks",
+                    empty_activity: "profile.github.flag.emptyActivity",
+                    burst_activity: "profile.github.flag.burstActivity",
+                  };
+                  return (
+                    <span key={f} className="px-2 py-1 rounded-full bg-red-500/10 text-red-400 text-[10px] font-medium">
+                      {flagMap[f] ? t(flagMap[f]) : f}
+                    </span>
+                  );
+                })}
               </div>
             )}
 
             {/* My Jobs from Groups */}
             {isOwnProfile && myJobs.length > 0 && (
               <div className="glass-card rounded-2xl p-5 space-y-3">
-                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">My Jobs from Groups</h3>
+                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">{t("profile.myJobs")}</h3>
                 <div className="space-y-3">
                   {myJobs.map((job) => (
                     <MyJobCard
@@ -230,7 +249,7 @@ export default function ProfilePage() {
 
             {isOwnProfile && profile.deal_count !== undefined && (
               <div className="text-center text-xs text-slate-500 pt-2">
-                Total deals: {profile.deal_count}
+                {t("profile.totalDeals")} {profile.deal_count}
               </div>
             )}
           </div>
