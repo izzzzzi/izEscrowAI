@@ -196,16 +196,15 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Live Stats + AI Pipeline */}
+        {/* Live Stats */}
         <section className="py-16 px-6 border-y border-white/5">
-          <div className="max-w-5xl mx-auto space-y-12">
-            {/* Stat cards */}
+          <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { value: stats?.active_jobs ?? 0, label: "Active Jobs", icon: "solar:document-text-linear", gradient: "from-blue-500/20 to-cyan-500/20", border: "border-blue-500/20", glow: "shadow-blue-500/5" },
-                { value: 19, label: "Sources Monitored", icon: "solar:radar-2-linear", gradient: "from-purple-500/20 to-pink-500/20", border: "border-purple-500/20", glow: "shadow-purple-500/5" },
-                { value: stats?.total_users ?? 0, label: "Users", icon: "solar:users-group-rounded-linear", gradient: "from-emerald-500/20 to-green-500/20", border: "border-emerald-500/20", glow: "shadow-emerald-500/5" },
-                { value: -1, label: "Mainnet Live", icon: "solar:verified-check-linear", gradient: "from-green-500/20 to-emerald-500/20", border: "border-green-500/20", glow: "shadow-green-500/5" },
+                { value: stats?.active_jobs ?? 0, label: t("landing.stats.jobs").split(" ")[0] || "Active Jobs", icon: "solar:document-text-linear", gradient: "from-blue-500/20 to-cyan-500/20", border: "border-blue-500/20", glow: "shadow-blue-500/5" },
+                { value: 19, label: "Sources", icon: "solar:radar-2-linear", gradient: "from-purple-500/20 to-pink-500/20", border: "border-purple-500/20", glow: "shadow-purple-500/5" },
+                { value: stats?.total_users ?? 0, label: t("landing.stats.users"), icon: "solar:users-group-rounded-linear", gradient: "from-emerald-500/20 to-green-500/20", border: "border-emerald-500/20", glow: "shadow-emerald-500/5" },
+                { value: -1, label: "Mainnet", icon: "solar:verified-check-linear", gradient: "from-green-500/20 to-emerald-500/20", border: "border-green-500/20", glow: "shadow-green-500/5" },
               ].map((stat) => (
                 <div
                   key={stat.label}
@@ -228,39 +227,6 @@ export default function LandingPage() {
                   <div className="text-[11px] text-slate-400 mt-1 font-medium tracking-wide">{stat.label}</div>
                 </div>
               ))}
-            </div>
-
-            {/* AI Pipeline visualization */}
-            <div>
-              <p className="text-center text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-8">
-                6-Step AI Pipeline
-              </p>
-              <div className="flex items-start justify-between max-w-3xl mx-auto relative">
-                {/* Connection line */}
-                <div className="absolute top-5 left-[8%] right-[8%] h-px">
-                  <div className="h-full w-full bg-gradient-to-r from-[#0098EA]/50 via-[#00D1FF]/30 to-[#0098EA]/50 pipeline-line" />
-                </div>
-
-                {[
-                  { icon: "solar:chat-line-linear", label: "Describe" },
-                  { icon: "solar:document-add-linear", label: "AI Spec" },
-                  { icon: "solar:tag-price-linear", label: "AI Price" },
-                  { icon: "solar:users-group-rounded-linear", label: "AI Match" },
-                  { icon: "solar:wallet-2-linear", label: "Escrow" },
-                  { icon: "solar:shield-check-linear", label: "AI Verify" },
-                ].map((step, i) => (
-                  <div
-                    key={step.label}
-                    className="flex flex-col items-center gap-2 relative z-10"
-                    style={{ animation: `fadeSlideUp 0.5s ease-out ${i * 100}ms both` }}
-                  >
-                    <div className="w-10 h-10 rounded-full bg-[#0098EA]/10 border border-[#0098EA]/20 flex items-center justify-center hover:bg-[#0098EA]/20 hover:border-[#0098EA]/40 hover:scale-110 transition-all duration-200">
-                      <iconify-icon icon={step.icon} width="18" class="text-[#0098EA]" />
-                    </div>
-                    <span className="text-[9px] md:text-[10px] text-slate-500 font-medium whitespace-nowrap">{step.label}</span>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </section>
