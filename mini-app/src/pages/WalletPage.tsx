@@ -26,7 +26,7 @@ export default function WalletPage() {
     : "";
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div className="mini-page">
       <AppHeader />
       <main className="px-5 pb-32 space-y-6">
         {/* Balance Card */}

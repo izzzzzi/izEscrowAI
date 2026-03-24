@@ -150,7 +150,7 @@ export default function SpecWizardPage() {
   const stepLabels = ["Describe", "Requirements", "Budget", "Review"];
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div className="mini-page">
       <AppHeader />
       <main className="px-5 pb-32 space-y-6">
         <h2 className="text-sm font-medium text-slate-400 uppercase tracking-widest pl-1">

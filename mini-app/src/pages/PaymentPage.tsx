@@ -55,7 +55,7 @@ export default function PaymentPage() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-[#0f172a] text-white flex items-center justify-center" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <div className="mini-page flex items-center justify-center">
         <span className="text-sm text-slate-500">Loading deal...</span>
       </div>
     );
@@ -63,14 +63,14 @@ export default function PaymentPage() {
 
   if (status === "error" || !deal) {
     return (
-      <div className="min-h-screen bg-[#0f172a] text-white flex items-center justify-center" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <div className="mini-page flex items-center justify-center">
         <p className="text-sm text-red-400">Error loading deal. Please try again.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0f172a]/95 text-white flex flex-col p-5" style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div className="mini-page flex flex-col p-5">
       <div className="flex-1 flex flex-col items-center justify-center text-center max-w-xs mx-auto space-y-6">
         {/* Icon */}
         <div className="w-20 h-20 rounded-full bg-blue-500/10 flex items-center justify-center text-[#0098EA] animate-pulse">
