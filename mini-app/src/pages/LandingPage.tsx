@@ -136,7 +136,7 @@ export default function LandingPage() {
             </div>
 
             {/* Telegram Chat Mockup — iPhone frame */}
-            <div className="relative animate-float" style={{ transform: "scale(0.78)", transformOrigin: "top center" }}>
+            <div className="relative animate-float max-h-[70vh] overflow-hidden" style={{ transform: "scale(0.75)", transformOrigin: "top center" }}>
               <div className="mockup-phone mx-auto shimmer-border">
                 <div className="mockup-phone-camera"></div>
                 <div className="mockup-phone-display chat-bg">
