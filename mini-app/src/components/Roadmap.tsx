@@ -18,26 +18,28 @@ const roadmapData: Quarter[] = [
     items: [
       { titleKey: "roadmap.q1.core.title", status: "done", icon: "solar:shield-check-linear", featureKeys: ["roadmap.q1.core.f1", "roadmap.q1.core.f2", "roadmap.q1.core.f3", "roadmap.q1.core.f4"] },
       { titleKey: "roadmap.q1.ai.title", status: "done", icon: "solar:magic-stick-3-linear", featureKeys: ["roadmap.q1.ai.f1", "roadmap.q1.ai.f2", "roadmap.q1.ai.f3", "roadmap.q1.ai.f4"] },
+      { titleKey: "roadmap.q1.parser.title", status: "done", icon: "solar:radar-2-linear", featureKeys: ["roadmap.q1.parser.f1", "roadmap.q1.parser.f2", "roadmap.q1.parser.f3"] },
     ],
   },
   {
     label: "Q2 2026",
     items: [
-      { titleKey: "roadmap.q2.github.title", status: "in-progress", icon: "solar:code-scan-linear", featureKeys: ["roadmap.q2.github.f1", "roadmap.q2.github.f2", "roadmap.q2.github.f3", "roadmap.q2.github.f4"] },
-      { titleKey: "roadmap.q2.web.title", status: "in-progress", icon: "solar:bag-4-linear", featureKeys: ["roadmap.q2.web.f1", "roadmap.q2.web.f2", "roadmap.q2.web.f3"] },
+      { titleKey: "roadmap.q2.github.title", status: "done", icon: "solar:code-scan-linear", featureKeys: ["roadmap.q2.github.f1", "roadmap.q2.github.f2", "roadmap.q2.github.f3", "roadmap.q2.github.f4"] },
+      { titleKey: "roadmap.q2.web.title", status: "done", icon: "solar:bag-4-linear", featureKeys: ["roadmap.q2.web.f1", "roadmap.q2.web.f2", "roadmap.q2.web.f3", "roadmap.q2.web.f4"] },
+      { titleKey: "roadmap.q2.platform.title", status: "done", icon: "solar:settings-linear", featureKeys: ["roadmap.q2.platform.f1", "roadmap.q2.platform.f2", "roadmap.q2.platform.f3"] },
     ],
   },
   {
     label: "Q3 2026",
     items: [
-      { titleKey: "roadmap.q3.portfolio.title", status: "planned", icon: "solar:gallery-wide-linear", featureKeys: ["roadmap.q3.portfolio.f1", "roadmap.q3.portfolio.f2", "roadmap.q3.portfolio.f3"] },
+      { titleKey: "roadmap.q3.cocoon.title", status: "planned", icon: "solar:cpu-bolt-linear", featureKeys: ["roadmap.q3.cocoon.f1", "roadmap.q3.cocoon.f2", "roadmap.q3.cocoon.f3"] },
       { titleKey: "roadmap.q3.comms.title", status: "planned", icon: "solar:chat-round-dots-linear", featureKeys: ["roadmap.q3.comms.f1", "roadmap.q3.comms.f2", "roadmap.q3.comms.f3"] },
     ],
   },
   {
     label: "Q4 2026",
     items: [
-      { titleKey: "roadmap.q4.market.title", status: "planned", icon: "solar:shop-2-linear", featureKeys: ["roadmap.q4.market.f1", "roadmap.q4.market.f2", "roadmap.q4.market.f3"] },
+      { titleKey: "roadmap.q4.ton.title", status: "planned", icon: "solar:link-round-linear", featureKeys: ["roadmap.q4.ton.f1", "roadmap.q4.ton.f2", "roadmap.q4.ton.f3"] },
       { titleKey: "roadmap.q4.scale.title", status: "planned", icon: "solar:graph-up-linear", featureKeys: ["roadmap.q4.scale.f1", "roadmap.q4.scale.f2", "roadmap.q4.scale.f3"] },
     ],
   },
