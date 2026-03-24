@@ -91,10 +91,27 @@ export default function MarketPage() {
                 ))}
               </div>
             ) : jobs.length === 0 ? (
-              <div className="text-center py-20">
-                <iconify-icon icon="solar:document-linear" width="48" class="text-slate-600 mb-4" />
-                <p className="text-slate-400">No jobs yet</p>
-                <p className="text-xs text-slate-500 mt-1">They will appear once the bot starts parsing groups</p>
+              <div className="space-y-6 py-8">
+                <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-4">
+                  <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                    <iconify-icon icon="solar:cpu-linear" width="18" class="text-[#0098EA]" />
+                    AI Job Marketplace
+                  </h3>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    AI watches 19 Telegram groups for you and picks out real job posts automatically.
+                    It reads the requirements, figures out the budget and skills needed, and notifies you when something fits your profile.
+                  </p>
+                  <ol className="space-y-2 text-xs text-slate-400">
+                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">1.</span>A job gets posted in a Telegram group</li>
+                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">2.</span>AI reads it and extracts what matters — budget, skills, deadline</li>
+                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">3.</span>If your skills match, you get a ping — one tap to apply</li>
+                  </ol>
+                  <a href="https://t.me/izEscrowAIBot" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs text-[#0098EA] font-medium no-underline hover:underline">
+                    <iconify-icon icon="solar:chat-round-dots-linear" width="14" />
+                    Open Bot to link your GitHub
+                  </a>
+                </div>
+                <p className="text-center text-[10px] text-slate-600">Jobs will appear here as groups are parsed</p>
               </div>
             ) : (
               <>

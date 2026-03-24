@@ -75,12 +75,26 @@ export default function OffersPage() {
             ))}
           </div>
         ) : offers.length === 0 ? (
-          <div className="text-center py-20">
-            <iconify-icon icon="solar:box-minimalistic-linear" width="48" height="48" class="text-slate-600 mb-4" />
-            <h3 className="text-lg font-medium text-slate-400 mb-2">No offers yet</h3>
-            <p className="text-sm text-slate-500">
-              Be the first to post an offer! Use the bot or create one here.
-            </p>
+          <div className="space-y-6 py-8">
+            <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-4">
+              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                <iconify-icon icon="solar:tag-linear" width="18" class="text-[#0098EA]" />
+                Inline Marketplace
+              </h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Need something done? Type <span className="text-white font-medium">@izEscrowAIBot</span> in any Telegram chat and describe what you need.
+                Freelancers see it, bid their price, and you pick the one you like. Payment goes straight into escrow.
+              </p>
+              <ol className="space-y-2 text-xs text-slate-400">
+                <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">1.</span>Describe what you need — in any Telegram chat</li>
+                <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">2.</span>Freelancers bid with their price</li>
+                <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">3.</span>You pick the best — escrow handles the rest</li>
+              </ol>
+              <button onClick={() => setShowCreate(true)} className="w-full py-2.5 rounded-xl text-xs font-semibold text-white ton-gradient border-none cursor-pointer">
+                Create Your First Offer
+              </button>
+            </div>
+            <p className="text-center text-[10px] text-slate-600">Offers will appear here once created</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

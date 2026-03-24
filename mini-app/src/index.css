@@ -100,13 +100,13 @@ button:active {
   padding-bottom: 8rem;
 }
 .mini-page h1 {
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
   letter-spacing: -0.025em;
 }
 .mini-page h2 {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
 }
 
 /* Chat bubble colors (Telegram-style) */

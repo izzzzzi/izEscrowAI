@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { fetchDeals, fetchOffers, fetchOffer, createOffer, type Deal, type Offer, type OfferWithApps } from "../lib/api";
 import AppHeader from "../components/AppHeader";
 
@@ -22,6 +23,7 @@ const offerStatusStyles: Record<string, { label: string; bg: string; text: strin
 type Tab = "deals" | "offers";
 
 export default function DealsPage() {
+  const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("deals");
   const [deals, setDeals] = useState<Deal[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -112,7 +114,36 @@ export default function DealsPage() {
             {loadingDeals ? (
               <SkeletonCards />
             ) : deals.length === 0 ? (
-              <EmptyState icon="solar:box-minimalistic-linear" text="No deals yet" />
+              <div className="space-y-6">
+                <div className="glass-card rounded-2xl p-6 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0098EA] to-[#22d3ee] flex items-center justify-center">
+                      <iconify-icon icon="solar:shield-check-linear" width="22" class="text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-white">Welcome to izEscrowAI</h3>
+                      <p className="text-xs text-slate-400">AI-powered escrow on TON</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    Your money stays in a smart contract until the work is done. No middlemen, no risk — just you, the other party, and AI that keeps it fair.
+                  </p>
+                  <ol className="space-y-2 text-xs text-slate-400">
+                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">1.</span>Tell the bot what you need: "Selling logo to @ivan for 50 TON"</li>
+                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">2.</span>Both sides confirm — AI checks everything</li>
+                    <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">3.</span>Funds go into escrow until you're happy with the result</li>
+                  </ol>
+                  <div className="flex gap-2 pt-1">
+                    <a href="https://t.me/izEscrowAIBot" target="_blank" rel="noopener noreferrer" className="flex-1 text-center py-2.5 rounded-xl text-xs font-semibold text-white ton-gradient no-underline">
+                      Open Bot
+                    </a>
+                    <button onClick={() => navigate("/market")} className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-slate-300 bg-white/5 border border-white/10 cursor-pointer">
+                      Browse Jobs
+                    </button>
+                  </div>
+                </div>
+                <p className="text-center text-[10px] text-slate-600">Your deals will appear here once created</p>
+              </div>
             ) : (
               deals.map((deal) => <DealCard key={deal.id} deal={deal} />)
             )}

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { fetchStats, fetchPublicOffers, fetchTalent, fetchTopGroups, type PlatformStats, type PublicOffer, type TalentData, type GroupStat } from "../lib/api";
-import StatCounter from "../components/StatCounter";
 import TalentGrid from "../components/TalentGrid";
 import ActivityFeed from "../components/ActivityFeed";
 import Roadmap from "../components/Roadmap";
@@ -188,29 +187,25 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Live Stats Bar */}
-        <section className="py-12 px-6 border-y border-white/5">
-          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-6">
-            {stats ? (
-              <>
-                <StatCounter value={stats.active_jobs} label="Active Jobs" />
-                <StatCounter value={stats.total_deals} label="Total Deals" />
-                <StatCounter value={stats.total_users} label="Users" />
-                <StatCounter value={stats.github_verified} label="GitHub Verified" />
-                <StatCounter value={stats.success_rate} label="Success Rate" suffix="%" />
-              </>
-            ) : (
-              <>
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="text-center">
-                    <div className="h-8 w-20 mx-auto bg-white/5 rounded animate-pulse mb-2" />
-                    <div className="h-3 w-16 mx-auto bg-white/5 rounded animate-pulse" />
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
-        </section>
+        {/* Live Stats — compact inline */}
+        {stats && (stats.active_jobs > 0 || stats.total_users > 0) && (
+          <section className="py-8 px-6">
+            <div className="max-w-3xl mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-400">
+              {stats.active_jobs > 0 && (
+                <span><span className="text-white font-semibold">{stats.active_jobs}</span> jobs parsed from <span className="text-white font-semibold">19</span> groups</span>
+              )}
+              {stats.total_users > 0 && (
+                <span><span className="text-white font-semibold">{stats.total_users}</span> users</span>
+              )}
+              {stats.github_verified > 0 && (
+                <span><span className="text-white font-semibold">{stats.github_verified}</span> GitHub verified</span>
+              )}
+              {stats.total_deals > 0 && (
+                <span><span className="text-white font-semibold">{stats.total_deals}</span> deals completed</span>
+              )}
+            </div>
+          </section>
+        )}
 
         {/* How It Works */}
         <section id="how-it-works" className="py-24 px-6 relative">
