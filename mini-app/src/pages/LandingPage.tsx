@@ -5,9 +5,11 @@ import { fetchStats, fetchPublicOffers, fetchTalent, fetchTopGroups, type Platfo
 import TalentGrid from "../components/TalentGrid";
 import ActivityFeed from "../components/ActivityFeed";
 import Roadmap from "../components/Roadmap";
+import { useT } from "../i18n/context";
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const t = useT();
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [recentOffers, setRecentOffers] = useState<PublicOffer[]>([]);
   const [talent, setTalent] = useState<TalentData | null>(null);
@@ -20,6 +22,29 @@ export default function LandingPage() {
     fetchTopGroups(5).then(setTopGroups).catch(() => {});
   }, []);
 
+  // TODO: Add keys to en.ts for features bento grid:
+  // landing.feature.specGen.title, landing.feature.specGen.desc,
+  // landing.feature.pricing.title, landing.feature.pricing.desc,
+  // landing.feature.matching.title, landing.feature.matching.desc,
+  // landing.feature.arbitration.title, landing.feature.arbitration.desc,
+  // landing.feature.arbitration.compliance,
+  // landing.feature.inline.title, landing.feature.inline.desc,
+  // landing.feature.auction.title, landing.feature.auction.desc,
+  // landing.feature.github.title, landing.feature.github.desc,
+  // landing.feature.github.trustScore, landing.feature.github.established, landing.feature.github.orgMember,
+  // landing.feature.risk.title, landing.feature.risk.desc,
+  // landing.feature.groupAnalytics.title, landing.feature.groupAnalytics.desc,
+  // landing.tech.poweredBy
+  // landing.groups.deals, landing.groups.volume, landing.groups.avgCheck
+
+  const workflowSteps = [
+    { icon: "solar:chat-line-linear", title: t("landing.workflow.step1"), desc: t("landing.workflow.step1.desc") },
+    { icon: "solar:document-add-linear", title: t("landing.workflow.step2"), desc: t("landing.workflow.step2.desc") },
+    { icon: "solar:dollar-minimalistic-linear", title: t("landing.workflow.step3"), desc: t("landing.workflow.step3.desc") },
+    { icon: "solar:users-group-rounded-linear", title: t("landing.workflow.step4"), desc: t("landing.workflow.step4.desc") },
+    { icon: "solar:wallet-2-linear", title: t("landing.workflow.step5"), desc: t("landing.workflow.step5.desc") },
+    { icon: "solar:shield-check-linear", title: t("landing.workflow.step6"), desc: t("landing.workflow.step6.desc") },
+  ];
 
   return (
     <div
@@ -42,15 +67,14 @@ export default function LandingPage() {
             <div className="text-left">
               <div className="animate-fade-up inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-medium tracking-widest uppercase text-[#0098EA] mb-6">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#0098EA]" />
-                Live on TON
+                {t("landing.hero.badge")}
               </div>
               <h1 className="animate-fade-up delay-100 text-5xl md:text-6xl font-semibold tracking-tight leading-[1.1] mb-6">
-                Dev Freelance <br />
-                <span className="text-[#0098EA]">Exchange</span> on TON.
+                {t("landing.hero.title1")} <br />
+                <span className="text-[#0098EA]">{t("landing.hero.title2")}</span> {t("landing.hero.title3")}
               </h1>
               <p className="animate-fade-up delay-200 text-lg text-slate-400 font-light leading-relaxed max-w-xl mb-10">
-                Find developers, verify skills via GitHub, and lock payments in a smart contract.
-                AI parses deals from natural language — no middlemen, total trust.
+                {t("landing.hero.subtitle")}
               </p>
               <div className="animate-fade-up delay-300 flex flex-col sm:flex-row gap-4">
                 <a
@@ -58,14 +82,14 @@ export default function LandingPage() {
                   className="ton-gradient px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium transition-transform hover:-translate-y-0.5"
                 >
                   <iconify-icon icon="solar:paper-plane-linear" width="20" height="20" />
-                  Open Telegram Bot
+                  {t("landing.hero.openBot")}
                 </a>
                 <button
                   onClick={() => navigate("/offers")}
                   className="glass-panel px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/5 transition-all cursor-pointer border-none text-white text-base"
                 >
                   <iconify-icon icon="solar:tag-linear" width="20" height="20" />
-                  Browse Offers
+                  {t("landing.hero.browseOffers")}
                 </button>
               </div>
             </div>
@@ -81,8 +105,8 @@ export default function LandingPage() {
                     <iconify-icon icon="solar:shield-check-linear" width="18" height="18" class="text-white" />
                   </div>
                   <div className="flex-1">
-                    <div className="text-sm font-medium">izEscrowAI Bot</div>
-                    <div className="text-[10px] text-[#0098EA]">online</div>
+                    <div className="text-sm font-medium">{t("landing.chat.botName")}</div>
+                    <div className="text-[10px] text-[#0098EA]">{t("landing.chat.online")}</div>
                   </div>
                   <iconify-icon icon="solar:phone-linear" width="18" class="text-slate-500" />
                   <iconify-icon icon="solar:menu-dots-bold" width="18" class="text-slate-500" />
@@ -104,10 +128,10 @@ export default function LandingPage() {
                       <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
                     </div>
                     <div className="chat-bubble-bot max-w-[85%] px-3 py-2 rounded-2xl rounded-bl-md text-[13px] leading-relaxed">
-                      <div className="font-medium mb-1">Welcome to izEscrowAI!</div>
-                      <div className="text-slate-400 mb-2">I'm an AI-powered escrow agent for safe P2P deals. Funds are held by a smart contract on TON.</div>
-                      <div className="text-slate-400">Just write something like:</div>
-                      <div className="text-[#0098EA]">"Selling logo design to @ivan for 50 TON"</div>
+                      <div className="font-medium mb-1">{t("landing.chat.welcome")}</div>
+                      <div className="text-slate-400 mb-2">{t("landing.chat.welcomeText")}</div>
+                      <div className="text-slate-400">{t("landing.chat.prompt")}</div>
+                      <div className="text-[#0098EA]">{t("landing.chat.example")}</div>
                       <div className="text-[10px] text-slate-500 text-right mt-1">12:01</div>
                     </div>
                   </div>
@@ -122,7 +146,7 @@ export default function LandingPage() {
                   {/* Step 4: User sends deal message */}
                   <div className="flex justify-end chat-step chat-step-4">
                     <div className="chat-bubble-user max-w-[80%] px-3 py-2 rounded-2xl rounded-br-md text-sm">
-                      Selling logo design to @ivan for 50 TON
+                      {t("landing.chat.dealExample")}
                       <div className="text-[10px] text-slate-400 text-right mt-1">12:02</div>
                     </div>
                   </div>
@@ -134,7 +158,7 @@ export default function LandingPage() {
                     </div>
                     <div className="chat-bubble-bot px-3 py-2 rounded-2xl rounded-bl-md text-xs text-slate-400 flex items-center gap-1.5">
                       <iconify-icon icon="solar:cpu-linear" width="14" class="text-[#0098EA] animate-spin-slow" />
-                      <span className="typing-dots">Parsing deal terms</span>
+                      <span className="typing-dots">{t("landing.chat.parsing")}</span>
                     </div>
                   </div>
 
@@ -145,27 +169,27 @@ export default function LandingPage() {
                     </div>
                     <div className="chat-bubble-bot max-w-[85%] rounded-2xl rounded-bl-md overflow-hidden">
                       <div className="px-3 pt-2 pb-1 text-[13px] leading-relaxed">
-                        <div className="font-medium mb-1.5">Parsed deal:</div>
+                        <div className="font-medium mb-1.5">{t("landing.chat.parsed")}</div>
                         <div className="space-y-0.5 mb-2">
-                          <div><span className="text-slate-400">Seller:</span> @you <span className="text-slate-500">(3 deals, 4.5)</span></div>
-                          <div><span className="text-slate-400">Buyer:</span> @ivan <span className="text-slate-500">(0 deals)</span></div>
-                          <div><span className="text-slate-400">Amount:</span> 50 TON</div>
-                          <div><span className="text-slate-400">Description:</span> Logo design</div>
+                          <div><span className="text-slate-400">{t("landing.chat.seller")}</span> @you <span className="text-slate-500">(3 deals, 4.5)</span></div>
+                          <div><span className="text-slate-400">{t("landing.chat.buyer")}</span> @ivan <span className="text-slate-500">(0 deals)</span></div>
+                          <div><span className="text-slate-400">{t("landing.chat.amount")}</span> 50 TON</div>
+                          <div><span className="text-slate-400">{t("landing.chat.description")}</span> Logo design</div>
                         </div>
-                        <div className="text-slate-400">Is this correct?</div>
+                        <div className="text-slate-400">{t("landing.chat.correct")}</div>
                       </div>
                       <div className="px-2 pb-2 flex gap-1.5">
                         <div className="flex-1 py-1.5 text-[10px] font-semibold uppercase tracking-wider ton-gradient rounded-lg text-center text-white shadow-lg shadow-blue-500/20">
-                          Confirm
+                          {t("landing.chat.confirm")}
                         </div>
                         <div className="flex-1 py-1.5 text-[10px] font-semibold uppercase tracking-wider bg-white/5 border border-white/10 rounded-lg text-center text-slate-300">
-                          Cancel
+                          {t("landing.chat.cancel")}
                         </div>
                       </div>
                       <div className="px-3 pb-2">
                         <div className="flex items-center gap-1 text-[10px] text-emerald-400">
                           <iconify-icon icon="solar:shield-check-linear" width="11" />
-                          Trust Score: 87 — Low Risk
+                          {t("landing.chat.trustScore")}
                         </div>
                         <div className="text-[10px] text-slate-500 text-right">12:02</div>
                       </div>
@@ -177,7 +201,7 @@ export default function LandingPage() {
                 <div className="chat-header flex items-center gap-2 px-3 py-2 border-t border-white/5">
                   <iconify-icon icon="solar:smile-circle-linear" width="22" class="text-slate-500" />
                   <div className="flex-1 bg-white/5 rounded-full px-4 py-2 text-xs text-slate-500">
-                    Message...
+                    {t("landing.chat.message")}
                   </div>
                   <iconify-icon icon="solar:microphone-linear" width="22" class="text-slate-500" />
                 </div>
@@ -192,16 +216,16 @@ export default function LandingPage() {
           <section className="py-8 px-6">
             <div className="max-w-3xl mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-400">
               {stats.active_jobs > 0 && (
-                <span><span className="text-white font-semibold">{stats.active_jobs}</span> jobs parsed from <span className="text-white font-semibold">19</span> groups</span>
+                <span><span className="text-white font-semibold">{stats.active_jobs}</span> {t("landing.stats.jobs")} <span className="text-white font-semibold">19</span> {t("landing.stats.groups")}</span>
               )}
               {stats.total_users > 0 && (
-                <span><span className="text-white font-semibold">{stats.total_users}</span> users</span>
+                <span><span className="text-white font-semibold">{stats.total_users}</span> {t("landing.stats.users")}</span>
               )}
               {stats.github_verified > 0 && (
-                <span><span className="text-white font-semibold">{stats.github_verified}</span> GitHub verified</span>
+                <span><span className="text-white font-semibold">{stats.github_verified}</span> {t("landing.stats.github")}</span>
               )}
               {stats.total_deals > 0 && (
-                <span><span className="text-white font-semibold">{stats.total_deals}</span> deals completed</span>
+                <span><span className="text-white font-semibold">{stats.total_deals}</span> {t("landing.stats.deals")}</span>
               )}
             </div>
           </section>
@@ -210,19 +234,12 @@ export default function LandingPage() {
         {/* How It Works */}
         <section id="how-it-works" className="py-24 px-6 relative">
           <div className="max-w-7xl mx-auto text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">Simple Workflow</h2>
-            <p className="text-slate-400 font-light">From zero to protected in under 60 seconds.</p>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.workflow.title")}</h2>
+            <p className="text-slate-400 font-light">{t("landing.workflow.subtitle")}</p>
           </div>
 
           <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {[
-              { icon: "solar:chat-line-linear", title: "1. Describe", desc: "Describe your task in natural language — AI understands context." },
-              { icon: "solar:document-add-linear", title: "2. AI Spec", desc: "AI generates a structured spec with acceptance criteria." },
-              { icon: "solar:dollar-minimalistic-linear", title: "3. AI Price", desc: "AI estimates fair price range based on spec complexity." },
-              { icon: "solar:users-group-rounded-linear", title: "4. AI Match", desc: "AI finds the best executors and ranks them by fit." },
-              { icon: "solar:wallet-2-linear", title: "5. Escrow", desc: "Lock funds in a TON smart contract. Non-custodial." },
-              { icon: "solar:shield-check-linear", title: "6. AI Verify", desc: "AI checks delivery against spec criteria point by point." },
-            ].map((step) => (
+            {workflowSteps.map((step) => (
               <div key={step.title} className="glass-panel p-8 rounded-3xl group hover:-translate-y-2 transition-all">
                 <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:bg-blue-500/20 transition-colors">
                   <iconify-icon icon={step.icon} width="24" height="24" class="text-[#0098EA]" />
@@ -235,6 +252,7 @@ export default function LandingPage() {
         </section>
 
         {/* Features Bento Grid */}
+        {/* TODO: keys needed in en.ts — see comment at top of component */}
         <section id="features" className="py-24 px-6">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* AI Spec Generator — wide */}
@@ -377,10 +395,10 @@ export default function LandingPage() {
                 { icon: "simple-icons:telegram", label: "TON Connect", cls: "text-[#0088cc]" },
                 { icon: "solar:database-linear", label: "PostgreSQL", cls: "text-white" },
                 { icon: "solar:chart-2-linear", label: "tonapi.io", cls: "text-white" },
-              ].map((t) => (
-                <div key={t.label} className={`flex items-center gap-2 ${t.cls ?? ""}`}>
-                  <iconify-icon icon={t.icon} width="24" />
-                  <span className="text-sm font-medium">{t.label}</span>
+              ].map((techItem) => (
+                <div key={techItem.label} className={`flex items-center gap-2 ${techItem.cls ?? ""}`}>
+                  <iconify-icon icon={techItem.icon} width="24" />
+                  <span className="text-sm font-medium">{techItem.label}</span>
                 </div>
               ))}
             </div>
@@ -391,8 +409,8 @@ export default function LandingPage() {
         {talent && (
           <section className="py-24 px-6">
             <div className="max-w-7xl mx-auto text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">Available Talent</h2>
-              <p className="text-slate-400 font-light">GitHub-verified developers ready to work.</p>
+              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.talent.title")}</h2>
+              <p className="text-slate-400 font-light">{t("landing.talent.subtitle")}</p>
             </div>
             <div className="max-w-4xl mx-auto">
               <TalentGrid languages={talent.languages} categories={talent.categories} />
@@ -406,14 +424,14 @@ export default function LandingPage() {
             <div className="max-w-7xl mx-auto">
               <div className="flex items-center justify-between mb-12">
                 <div>
-                  <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-2">Live Offers</h2>
-                  <p className="text-slate-400 font-light">Browse and apply — no account needed to start.</p>
+                  <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-2">{t("landing.offers.title")}</h2>
+                  <p className="text-slate-400 font-light">{t("landing.offers.subtitle")}</p>
                 </div>
                 <button
                   onClick={() => navigate("/offers")}
                   className="text-[#0098EA] text-sm font-medium bg-transparent border-none cursor-pointer hover:underline"
                 >
-                  View All →
+                  {t("landing.offers.viewAll")}
                 </button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -436,7 +454,7 @@ export default function LandingPage() {
                       {offer.min_price ? (
                         <span>from {offer.min_price} {offer.currency}</span>
                       ) : (
-                        <span>Price negotiable</span>
+                        <span>{t("offers.price.negotiable")}</span>
                       )}
                       <span>{offer.application_count ?? 0} bids</span>
                     </div>
@@ -453,14 +471,14 @@ export default function LandingPage() {
             <div className="max-w-7xl mx-auto">
               <div className="flex items-center justify-between mb-12">
                 <div>
-                  <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-2">Top Groups</h2>
-                  <p className="text-slate-400 font-light">Most active Telegram communities.</p>
+                  <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-2">{t("landing.groups.title")}</h2>
+                  <p className="text-slate-400 font-light">{t("landing.groups.subtitle")}</p>
                 </div>
                 <button
                   onClick={() => navigate("/groups")}
                   className="text-[#0098EA] text-sm font-medium bg-transparent border-none cursor-pointer hover:underline"
                 >
-                  Full Leaderboard →
+                  {t("landing.groups.leaderboard")}
                 </button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -502,8 +520,8 @@ export default function LandingPage() {
         {/* Live Activity */}
         <section className="py-24 px-6">
           <div className="max-w-7xl mx-auto text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">Live Activity</h2>
-            <p className="text-slate-400 font-light">Recent deals on the platform — auto-refreshes every 30s.</p>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.activity.title")}</h2>
+            <p className="text-slate-400 font-light">{t("landing.activity.subtitle")}</p>
           </div>
           <div className="max-w-2xl mx-auto">
             <ActivityFeed />
@@ -513,8 +531,8 @@ export default function LandingPage() {
         {/* Roadmap */}
         <section className="py-24 px-6">
           <div className="max-w-7xl mx-auto text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">Roadmap</h2>
-            <p className="text-slate-400 font-light">Where we're headed next.</p>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.roadmap.title")}</h2>
+            <p className="text-slate-400 font-light">{t("landing.roadmap.subtitle")}</p>
           </div>
           <div className="max-w-5xl mx-auto">
             <Roadmap />
@@ -527,10 +545,10 @@ export default function LandingPage() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#0098EA]/10 rounded-full blur-[80px]" />
 
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6">
-              Ready for safer P2P?
+              {t("landing.cta.title")}
             </h2>
             <p className="text-lg text-slate-400 font-light mb-10">
-              Start your first escrow deal on TON today. Safe, fast, and intelligent.
+              {t("landing.cta.subtitle")}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -538,19 +556,19 @@ export default function LandingPage() {
                 href="https://t.me/izEscrowAIBot"
                 className="ton-gradient px-8 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:shadow-2xl transition-all"
               >
-                Join as Developer
+                {t("landing.cta.developer")}
               </a>
               <button
                 onClick={() => navigate("/offers")}
                 className="bg-white/5 border border-white/10 px-8 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/10 transition-all cursor-pointer text-white"
               >
-                Post a Job
+                {t("landing.cta.postJob")}
               </button>
               <button
                 onClick={() => navigate("/offers")}
                 className="bg-purple-500/10 border border-purple-500/20 px-8 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium text-purple-300 hover:bg-purple-500/20 transition-all cursor-pointer"
               >
-                I'm a Designer
+                {t("landing.cta.designer")}
               </button>
             </div>
           </div>
@@ -580,9 +598,9 @@ export default function LandingPage() {
 
             <div className="flex items-center gap-4">
               <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] text-blue-400 font-medium">
-                TON Hackathon 2026
+                {t("landing.footer.hackathon")}
               </span>
-              <p className="text-xs text-slate-600">Built for TON Ecosystem</p>
+              <p className="text-xs text-slate-600">{t("landing.footer.built")}</p>
             </div>
           </div>
         </footer>

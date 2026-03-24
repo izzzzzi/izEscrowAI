@@ -2,6 +2,7 @@
 // Copyright (c) 2026 izEscrowAI contributors
 
 import { Bot, InlineKeyboard, Context } from "grammy";
+import { getLang, t } from "../i18n/index.js";
 import { upsertUser, getUserByUsername, getUserWallet, getReputation, getDetailedReputation, incrementDeals, addRating, updateDealParty, createOffer, getOfferById, updateOfferInlineMessageId, addApplication, getApplicationById, getApplicationsByOffer, countApplicationsByOffer, acceptApplication, rejectAllApplications, closeOffer, upsertGroup, setGroupInactive, getGroupStatsById, getLeaderboard, linkDealToGroup, incrementGroupOffers, isUserBanned, getJobsForNewUser, getExpiredOffers, expireOffer, getOffersByUser, upsertUserProfile, getUserProfile, getUsersByCategories, createSpec, getSpecById, updateSpec, getSpecsByCreator, linkSpecToDeal, getSpecByDeal, getUserTrustScore, type Deal, type Offer, type Spec } from "../db/index.js";
 import { classifyAndParse, mediateDispute, parseOffer, generateOfferPreview, calcTrustScore, assessDealRisk, generateSpec, estimatePrice, evaluateSpecCompliance, specConversations, type ParsedDeal, type ParsedOffer, type GeneratedSpec, type PriceEstimate } from "../ai/index.js";
 import { processGroupMessage } from "../parser/index.js";
@@ -92,6 +93,7 @@ export function createBot(token: string): Bot {
 
   bot.command("start", async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     const payload = ctx.match; // deep link parameter after /start
 
     // Handle offer deep link: t.me/Bot?start=offer_<id>
@@ -100,22 +102,22 @@ export function createBot(token: string): Bot {
       const offer = await getOfferById(offerId);
 
       if (!offer || offer.status !== "open") {
-        await ctx.reply("This offer is no longer available.");
+        await ctx.reply(t(lang, "start.offer_unavailable"));
         return;
       }
 
       // Prevent self-application
       if (offer.creator_id === ctx.from.id) {
-        await ctx.reply("You can't apply to your own offer.");
+        await ctx.reply(t(lang, "start.offer_self_apply"));
         return;
       }
 
       const appCount = await countApplicationsByOffer(offerId);
+      const priceStr = offer.min_price
+        ? t(lang, "start.offer_price_from", { min_price: offer.min_price, currency: offer.currency })
+        : t(lang, "start.offer_price_negotiable");
       await ctx.reply(
-        `Offer: ${offer.description}\n` +
-        `Price: ${offer.min_price ? `from ${offer.min_price} ${offer.currency}` : "Negotiable"}\n` +
-        `Applications: ${appCount}\n\n` +
-        `Enter your price:`,
+        t(lang, "start.offer_details", { description: offer.description, price: priceStr, appCount }),
       );
 
       userStates.set(ctx.from.id, { type: "offer_bid", offerId, step: "price" });
@@ -128,15 +130,12 @@ export function createBot(token: string): Bot {
       const deal = await getDealById(dealId);
 
       if (!deal || deal.status === "cancelled") {
-        await ctx.reply("Deal not found or already cancelled.");
+        await ctx.reply(t(lang, "start.deal_not_found"));
         return;
       }
 
       if (deal.status !== "created") {
-        await ctx.reply(
-          `Deal #${deal.id} is already in status: ${deal.status}.\n` +
-            `Use /mydeals to view details.`,
-        );
+        await ctx.reply(t(lang, "start.deal_already_status", { dealId: deal.id, status: deal.status }));
         return;
       }
 
@@ -145,10 +144,7 @@ export function createBot(token: string): Bot {
         .text("Reject", `reject_deal:${dealId}`);
 
       await ctx.reply(
-        `You've been invited to deal #${deal.id}:\n\n` +
-          `Description: ${deal.description}\n` +
-          `Amount: ${formatAmount(deal)}\n\n` +
-          `Accept this deal?`,
+        t(lang, "start.deal_invite", { dealId: deal.id, description: deal.description, amount: formatAmount(deal) }),
         { reply_markup: keyboard },
       );
       return;
@@ -159,8 +155,7 @@ export function createBot(token: string): Bot {
     try {
       const myJobs = await getJobsForNewUser(ctx.from.id, ctx.from.username);
       if (myJobs.length > 0) {
-        jobsNotice = `\n\n📋 У вас ${myJobs.length} заказ(ов) из Telegram-групп! ` +
-          `Откройте профиль, чтобы увидеть откликнувшихся исполнителей.`;
+        jobsNotice = t(lang, "start.jobs_notice", { count: myJobs.length });
       }
     } catch { /* non-critical */ }
 
@@ -169,51 +164,33 @@ export function createBot(token: string): Bot {
       .url("Web Platform", "https://iz-escrow-ai.vercel.app");
 
     await ctx.reply(
-      `Welcome to izEscrowAI!\n\n` +
-        `I'm an AI-powered escrow agent for safe P2P deals in Telegram. ` +
-        `Funds are held by a smart contract on TON, not by the bot.\n\n` +
-        `How to create a deal:\n` +
-        `Just write something like:\n` +
-        `"Selling logo design to @ivan for 50 TON"\n\n` +
-        `Commands:\n` +
-        `/help — list of commands\n` +
-        `/wallet — connect wallet\n` +
-        `/mydeals — my deals` +
-        jobsNotice,
+      t(lang, "start.welcome") + jobsNotice,
       { reply_markup: startKeyboard },
     );
   });
 
   bot.command("help", async (ctx) => {
-    await ctx.reply(
-      `Available commands:\n\n` +
-        `/start — get started\n` +
-        `/help — this help\n` +
-        `/wallet — connect TON wallet via Mini App\n` +
-        `/mydeals — your deals list\n\n` +
-        `Create a deal:\n` +
-        `Write in natural language, for example:\n` +
-        `• "Selling website design to @buyer for 100 TON"\n` +
-        `• "Want to buy a logo from @designer for 50 TON"\n\n` +
-        `The bot will recognize participants, amount, and description, then ask you to confirm.`,
-    );
+    const lang = getLang(ctx.from?.language_code);
+    await ctx.reply(t(lang, "help"));
   });
 
   bot.command("wallet", async (ctx) => {
+    const lang = getLang(ctx.from?.language_code);
     const keyboard = new InlineKeyboard().webApp("Connect Wallet", `${MINI_APP_URL}/profile`);
-    await ctx.reply("Connect your TON wallet via Mini App:", { reply_markup: keyboard });
+    await ctx.reply(t(lang, "wallet.prompt"), { reply_markup: keyboard });
   });
 
   bot.command("mydeals", async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     const deals = await getDealsByUser(ctx.from.id);
     if (deals.length === 0) {
-      await ctx.reply("You have no deals yet. Create your first one!");
+      await ctx.reply(t(lang, "mydeals.empty"));
       return;
     }
 
     const lines = deals.slice(0, 10).map((d) => formatDealShort(d, ctx.from!.id));
-    await ctx.reply(`Your deals:\n\n${lines.join("\n\n")}`, { parse_mode: "HTML" });
+    await ctx.reply(`${t(lang, "mydeals.title")}\n\n${lines.join("\n\n")}`, { parse_mode: "HTML" });
   });
 
   // --- Natural language handler ---
@@ -227,6 +204,7 @@ export function createBot(token: string): Bot {
 
     // Check spec conversation state (2.6, 2.8)
     if (specConversations.has(ctx.from.id)) {
+      const lang = getLang(ctx.from.language_code);
       const conv = specConversations.get(ctx.from.id)!;
       conv.history.push({ role: "user", content: text });
       conv.lastActivity = Date.now();
@@ -234,18 +212,15 @@ export function createBot(token: string): Bot {
       // Check round limit
       if (conv.history.length > 10) {
         specConversations.delete(ctx.from.id);
-        await ctx.reply("Conversation limit reached. Please start over with /spec <description>");
+        await ctx.reply(t(lang, "spec.conversation_limit"));
         return;
       }
 
       try {
         const result = await generateSpec(text, conv.history);
         if (result.type === "questions") {
-          await ctx.reply(
-            "Follow-up questions:\n\n" +
-            result.questions.map((q, i) => `${i + 1}. ${q}`).join("\n") +
-            "\n\nPlease answer:",
-          );
+          const questions = result.questions.map((q, i) => `${i + 1}. ${q}`).join("\n");
+          await ctx.reply(t(lang, "spec.follow_up", { questions }));
           return;
         }
 
@@ -260,7 +235,7 @@ export function createBot(token: string): Bot {
 
         await ctx.reply(formatSpecPreview(result), { reply_markup: keyboard });
       } catch {
-        await ctx.reply("Error processing your input. Please try again or start over with /spec.");
+        await ctx.reply(t(lang, "spec.error_input"));
       }
       return;
     }
@@ -271,15 +246,16 @@ export function createBot(token: string): Bot {
     // Check conversation state (auction bid flow)
     const state = userStates.get(ctx.from.id);
     if (state?.type === "offer_bid") {
+      const lang = getLang(ctx.from.language_code);
       if (state.step === "price") {
         const price = parseFloat(text.replace(/[^0-9.]/g, ""));
         if (isNaN(price) || price <= 0) {
-          await ctx.reply("Please enter a valid price (number).");
+          await ctx.reply(t(lang, "bid.invalid_price"));
           return;
         }
         state.price = price;
         state.step = "message";
-        await ctx.reply("Got it! Add a message (or send /skip to submit without one):");
+        await ctx.reply(t(lang, "bid.enter_message"));
         return;
       }
 
@@ -291,7 +267,7 @@ export function createBot(token: string): Bot {
 
         const offer = await getOfferById(offerId);
         if (!offer || offer.status !== "open") {
-          await ctx.reply("This offer is no longer available.");
+          await ctx.reply(t(lang, "bid.offer_unavailable"));
           return;
         }
 
@@ -304,11 +280,9 @@ export function createBot(token: string): Bot {
           message: message ?? undefined,
         });
 
+        const msgLine = message ? t(lang, "bid.submitted_message", { message }) : "";
         await ctx.reply(
-          `Your application submitted!\n` +
-          `Price: ${price} ${offer.currency}\n` +
-          (message ? `Message: ${message}\n` : "") +
-          `\nThe offer creator will be notified.`,
+          t(lang, "bid.submitted", { price, currency: offer.currency, message: msgLine }),
         );
 
         // Notify creator
@@ -316,18 +290,21 @@ export function createBot(token: string): Bot {
           const appCount = await countApplicationsByOffer(offerId);
           const rep = await getDetailedReputation(ctx.from.id);
           const trust = calcTrustScore(rep);
-          const trustStr = trust !== null ? `Trust: ${trust}` : "New user";
+          const trustStr = trust !== null ? `Trust: ${trust}` : t(lang, "bid.trust_new_user");
 
           const creatorKeyboard = new InlineKeyboard()
             .text(`View All (${appCount})`, `all_apps:${offerId}`);
 
+          const msgPart = message ? t(lang, "bid.new_application_message", { message }) : "";
           await ctx.api.sendMessage(
             offer.creator_id,
-            `New application for your offer!\n\n` +
-            `Offer: ${offer.description}\n` +
-            `From: @${ctx.from.username || `id${ctx.from.id}`} (${trustStr})\n` +
-            `Price: ${price} ${offer.currency}\n` +
-            (message ? `Message: ${message}` : ""),
+            t(lang, "bid.new_application", {
+              description: offer.description,
+              username: ctx.from.username || `id${ctx.from.id}`,
+              trust: trustStr,
+              price,
+              currency: offer.currency,
+            }) + msgPart,
             { reply_markup: creatorKeyboard },
           );
         } catch {
@@ -378,24 +355,22 @@ export function createBot(token: string): Bot {
       const chatId = ctx.chat.id;
       if (!offPlatformWarnings.has(chatId)) {
         offPlatformWarnings.add(chatId);
-        await ctx.reply(
-          "⚠️ It looks like you're discussing off-platform payment. " +
-          "For your safety, we recommend using izEscrow's built-in escrow protection. " +
-          "Your funds are secured by a smart contract — the seller only gets paid when you confirm delivery.\n\n" +
-          "To create a safe deal, just describe it: 'Selling logo design to @username for 50 TON'",
-        );
+        const lang = getLang(ctx.from.language_code);
+        await ctx.reply("⚠️ " + t(lang, "off_platform_warning"));
       }
       return;
     }
 
     if (result.type === "deal_action") {
-      await ctx.reply(result.details || "Use the buttons in deal messages for actions.");
+      const lang = getLang(ctx.from.language_code);
+      await ctx.reply(result.details || t(lang, "deal_action.fallback"));
       return;
     }
 
     // Handle spec_creation intent (2.6, 9.4)
     if (result.type === "spec_creation") {
-      await ctx.reply("🤖 Generating specification...");
+      const lang = getLang(ctx.from.language_code);
+      await ctx.reply("🤖 " + t(lang, "spec.generating"));
       try {
         const specResult = await generateSpec(result.description);
         if (specResult.type === "questions") {
@@ -404,11 +379,8 @@ export function createBot(token: string): Bot {
             createdAt: Date.now(),
             lastActivity: Date.now(),
           });
-          await ctx.reply(
-            "I need some clarification:\n\n" +
-            specResult.questions.map((q, i) => `${i + 1}. ${q}`).join("\n") +
-            "\n\nPlease answer:",
-          );
+          const questions = specResult.questions.map((q, i) => `${i + 1}. ${q}`).join("\n");
+          await ctx.reply(t(lang, "spec.clarification", { questions }));
         } else {
           pendingSpecs.set(ctx.from.id, specResult);
           const keyboard = new InlineKeyboard()
@@ -419,14 +391,15 @@ export function createBot(token: string): Bot {
           await ctx.reply(formatSpecPreview(specResult), { reply_markup: keyboard });
         }
       } catch {
-        await ctx.reply("Error generating spec. Try /spec <description> instead.");
+        await ctx.reply(t(lang, "spec.error_generate"));
       }
       return;
     }
 
     // Handle pricing_request intent (4.6)
     if (result.type === "pricing_request") {
-      await ctx.reply("🤖 Estimating price...");
+      const lang = getLang(ctx.from.language_code);
+      await ctx.reply("🤖 " + t(lang, "pricing.estimating"));
       try {
         const estimate = await estimatePrice({
           title: result.description,
@@ -435,23 +408,17 @@ export function createBot(token: string): Bot {
           budget_currency: "USD",
         });
         await ctx.reply(
-          `💰 AI Price Estimate:\n\n${formatPriceEstimate(estimate)}\n\n` +
-          `⚠️ This is an AI estimate based on task complexity.\n` +
-          `For a detailed spec, use /spec <description>.`,
+          "💰 " + t(lang, "pricing.result", { estimate: formatPriceEstimate(estimate) }),
         );
       } catch {
-        await ctx.reply("Could not estimate price. Try /spec <description> for a full analysis.");
+        await ctx.reply(t(lang, "pricing.error"));
       }
       return;
     }
 
     if (result.type === "offer_creation") {
-      const offer = result.parsed;
-      await ctx.reply(
-        `This looks like a public offer. Use me in inline mode to post it:\n\n` +
-        `Type @${ctx.me.username} ${text}\n` +
-        `in any chat to create a public offer.`,
-      );
+      const lang = getLang(ctx.from.language_code);
+      await ctx.reply(t(lang, "offer.use_inline", { botUsername: ctx.me.username, text }));
       return;
     }
 
@@ -459,19 +426,16 @@ export function createBot(token: string): Bot {
     if (result.type !== "deal_creation") return;
     const parsed = result.parsed;
 
+    const lang = getLang(ctx.from.language_code);
+
     // Check for missing fields
     if (parsed.missing_fields.length > 0) {
-      await ctx.reply(
-        `Could not recognize all deal parameters.\n` +
-          `Missing: ${parsed.missing_fields.join(", ")}\n\n` +
-          `Try being more specific, e.g.:\n` +
-          `"Selling logo design to @ivan for 50 TON"`,
-      );
+      await ctx.reply(t(lang, "deal.missing_fields", { fields: parsed.missing_fields.join(", ") }));
       return;
     }
 
     if (!parsed.amount || !parsed.description) {
-      await ctx.reply("Could not determine the amount or description. Please try again.");
+      await ctx.reply(t(lang, "deal.missing_amount"));
       return;
     }
 
@@ -481,17 +445,20 @@ export function createBot(token: string): Bot {
       : { completed_deals: 0, avg_rating: 0 };
     const buyerRep = { completed_deals: 0, avg_rating: 0 };
 
-    const confirmText =
-      `Parsed deal:\n\n` +
-      `Seller: @${parsed.seller_username || "?"} (${sellerRep.completed_deals} deals, ${sellerRep.avg_rating.toFixed(1)})\n` +
-      `Buyer: @${parsed.buyer_username || "?"} (${buyerRep.completed_deals} deals)\n` +
-      `Amount: ${parsed.amount} ${parsed.currency}\n` +
-      `Description: ${parsed.description}\n\n` +
-      `Is this correct?`;
+    const confirmText = t(lang, "deal.confirm_prompt", {
+      seller: parsed.seller_username || "?",
+      sellerDeals: sellerRep.completed_deals,
+      sellerRating: sellerRep.avg_rating.toFixed(1),
+      buyer: parsed.buyer_username || "?",
+      buyerDeals: buyerRep.completed_deals,
+      amount: parsed.amount,
+      currency: parsed.currency,
+      description: parsed.description,
+    });
 
     // Check pending deal limit per user
     if (countPendingByUser(ctx.from.id) >= MAX_PENDING_PER_USER) {
-      await ctx.reply("You have too many pending deals. Please confirm or cancel existing ones first.");
+      await ctx.reply(t(lang, "deal.too_many_pending"));
       return;
     }
 
@@ -517,12 +484,13 @@ export function createBot(token: string): Bot {
   bot.callbackQuery(/^cd:/, async (ctx) => {
     if (!ctx.from || !ctx.callbackQuery.data) return;
     await ctx.answerCallbackQuery();
+    const lang = getLang(ctx.from.language_code);
 
     try {
       const pendingId = ctx.callbackQuery.data.replace("cd:", "");
       const parsed = pendingDeals.get(pendingId);
       if (!parsed) {
-        await ctx.editMessageText("Deal data expired. Please create the deal again.");
+        await ctx.editMessageText(t(lang, "deal.data_expired"));
         return;
       }
       pendingDeals.delete(pendingId);
@@ -559,10 +527,12 @@ export function createBot(token: string): Bot {
         try {
           await ctx.api.sendMessage(
             counterparty.telegram_id,
-            `New deal #${deal.id} from @${senderUsername}:\n\n` +
-              `Description: ${parsed.d}\n` +
-              `Amount: ${formatAmount(deal)}\n\n` +
-              `Accept?`,
+            t(lang, "deal.new_deal_notification", {
+              dealId: deal.id,
+              sender: senderUsername,
+              description: parsed.d,
+              amount: formatAmount(deal),
+            }),
             { reply_markup: keyboard },
           );
         } catch {
@@ -570,12 +540,14 @@ export function createBot(token: string): Bot {
         }
 
         await ctx.editMessageText(
-          `Deal #${deal.id} created!\n\n` +
-            `Seller: @${parsed.s}\n` +
-            `Buyer: @${parsed.b}\n` +
-            `Amount: ${formatAmount(deal)}\n` +
-            `Description: ${parsed.d}\n\n` +
-            `Notification sent to @${counterpartyUsername}.`,
+          t(lang, "deal.created_notified", {
+            dealId: deal.id,
+            seller: parsed.s,
+            buyer: parsed.b,
+            amount: formatAmount(deal),
+            description: parsed.d,
+            counterparty: counterpartyUsername,
+          }),
         );
       } else {
         // Counterparty not in the bot — generate deep link
@@ -583,33 +555,37 @@ export function createBot(token: string): Bot {
         const deepLink = `https://t.me/${botUsername}?start=deal_${deal.id}`;
 
         await ctx.editMessageText(
-          `Deal #${deal.id} created!\n\n` +
-            `Seller: @${parsed.s}\n` +
-            `Buyer: @${parsed.b}\n` +
-            `Amount: ${formatAmount(deal)}\n` +
-            `Description: ${parsed.d}\n\n` +
-            `@${counterpartyUsername} is not in the bot yet.\n` +
-            `Share this link:\n${deepLink}`,
+          t(lang, "deal.created_deep_link", {
+            dealId: deal.id,
+            seller: parsed.s,
+            buyer: parsed.b,
+            amount: formatAmount(deal),
+            description: parsed.d,
+            counterparty: counterpartyUsername,
+            deepLink,
+          }),
         );
       }
     } catch (e: any) {
       console.error("Deal creation error:", e);
       const msg = e?.message?.startsWith("Maximum deal amount")
         ? e.message
-        : "Error creating deal. Please try again.";
+        : t(lang, "deal.creation_error");
       await ctx.editMessageText(msg);
     }
   });
 
   bot.callbackQuery("cancel_create", async (ctx) => {
+    const lang = getLang(ctx.from?.language_code);
     await ctx.answerCallbackQuery("Cancelled");
-    await ctx.editMessageText("Deal creation cancelled.");
+    await ctx.editMessageText(t(lang, "deal.creation_cancelled"));
   });
 
   // Confirm deal by counterparty
   bot.callbackQuery(/^confirm_deal:/, async (ctx) => {
     if (!ctx.from) return;
     await ctx.answerCallbackQuery();
+    const lang = getLang(ctx.from.language_code);
 
     const dealId = ctx.callbackQuery.data?.replace("confirm_deal:", "");
     if (!dealId) return;
@@ -626,7 +602,7 @@ export function createBot(token: string): Bot {
 
     const deal = await confirmDealByCounterparty(dealId);
     if (!deal) {
-      await ctx.editMessageText("Could not confirm the deal.");
+      await ctx.editMessageText(t(lang, "deal.confirm_failed"));
       return;
     }
 
@@ -637,8 +613,7 @@ export function createBot(token: string): Bot {
     if (!buyerWallet || !sellerWallet) {
       const keyboard = new InlineKeyboard().webApp("Connect Wallet", `${MINI_APP_URL}/wallet`);
       await ctx.editMessageText(
-        `Deal #${dealId} confirmed!\n\n` +
-          `Both parties need to connect a TON wallet to proceed.`,
+        t(lang, "deal.confirmed_need_wallets", { dealId }),
         { reply_markup: keyboard },
       );
       return;
@@ -648,7 +623,7 @@ export function createBot(token: string): Bot {
     try {
       const result = await deployContractForDeal(dealId, buyerWallet, sellerWallet);
       if (!result) {
-        await ctx.editMessageText("Error deploying contract.");
+        await ctx.editMessageText(t(lang, "deal.deploy_error"));
         return;
       }
 
@@ -658,13 +633,11 @@ export function createBot(token: string): Bot {
       );
 
       await ctx.editMessageText(
-        `Deal #${dealId} confirmed!\n` +
-          `Contract: ${result.contractAddress}\n\n` +
-          `Buyer, please pay:`,
+        t(lang, "deal.confirmed_pay", { dealId, contractAddress: result.contractAddress }),
         { reply_markup: payKeyboard },
       );
     } catch {
-      await ctx.editMessageText("Error deploying contract. Please try later.");
+      await ctx.editMessageText(t(lang, "deal.deploy_error_retry"));
     }
   });
 
@@ -672,20 +645,22 @@ export function createBot(token: string): Bot {
   bot.callbackQuery(/^reject_deal:/, async (ctx) => {
     const dealId = ctx.callbackQuery.data?.replace("reject_deal:", "");
     if (!dealId) return;
+    const lang = getLang(ctx.from?.language_code);
     await ctx.answerCallbackQuery("Deal rejected");
     await cancelDeal(dealId);
-    await ctx.editMessageText(`Deal #${dealId} rejected.`);
+    await ctx.editMessageText(t(lang, "deal.rejected", { dealId }));
   });
 
   // Mark delivered
   bot.callbackQuery(/^delivered:/, async (ctx) => {
     const dealId = ctx.callbackQuery.data?.replace("delivered:", "");
     if (!dealId) return;
+    const lang = getLang(ctx.from?.language_code);
     await ctx.answerCallbackQuery();
 
     const deal = await markDelivered(dealId);
     if (!deal) {
-      await ctx.editMessageText("Could not mark as delivered.");
+      await ctx.editMessageText(t(lang, "delivery.mark_failed"));
       return;
     }
 
@@ -694,8 +669,7 @@ export function createBot(token: string): Bot {
       .text("Open Dispute", `dispute:${dealId}`);
 
     await ctx.editMessageText(
-      `Deal #${dealId}: seller marked as delivered.\n\n` +
-        `Buyer has 7 days to confirm or open a dispute.`,
+      t(lang, "delivery.marked", { dealId }),
       { reply_markup: keyboard },
     );
   });
@@ -704,12 +678,13 @@ export function createBot(token: string): Bot {
   bot.callbackQuery(/^confirm_delivery:/, async (ctx) => {
     const dealId = ctx.callbackQuery.data?.replace("confirm_delivery:", "");
     if (!dealId) return;
+    const lang = getLang(ctx.from?.language_code);
     await ctx.answerCallbackQuery();
 
     try {
       const deal = await completeDeal(dealId);
       if (!deal) {
-        await ctx.editMessageText("Could not complete the deal.");
+        await ctx.editMessageText(t(lang, "delivery.complete_failed"));
         return;
       }
 
@@ -725,13 +700,11 @@ export function createBot(token: string): Bot {
         .text("5", `rate:${dealId}:5`);
 
       await ctx.editMessageText(
-        `Deal #${dealId} completed!\n` +
-          `Funds sent to seller.\n\n` +
-          `Rate this deal:`,
+        t(lang, "delivery.completed", { dealId }),
         { reply_markup: ratingKeyboard },
       );
     } catch {
-      await ctx.editMessageText("Error completing the deal. Please try later.");
+      await ctx.editMessageText(t(lang, "delivery.complete_error"));
     }
   });
 
@@ -739,6 +712,7 @@ export function createBot(token: string): Bot {
   bot.callbackQuery(/^rate:/, async (ctx) => {
     const parts = ctx.callbackQuery.data?.split(":");
     if (!parts || parts.length !== 3) return;
+    const lang = getLang(ctx.from?.language_code);
     await ctx.answerCallbackQuery("Thanks for your rating!");
 
     const dealId = parts[1];
@@ -749,7 +723,7 @@ export function createBot(token: string): Bot {
     }
 
     await ctx.editMessageText(
-      `Deal #${dealId} completed! Rating: ${"⭐".repeat(rating)}`,
+      t(lang, "delivery.rated", { dealId, stars: "\u2B50".repeat(rating) }),
     );
   });
 
@@ -757,11 +731,12 @@ export function createBot(token: string): Bot {
   bot.callbackQuery(/^dispute:/, async (ctx) => {
     const dealId = ctx.callbackQuery.data?.replace("dispute:", "");
     if (!dealId) return;
+    const lang = getLang(ctx.from?.language_code);
     await ctx.answerCallbackQuery();
 
     const deal = await openDispute(dealId);
     if (!deal) {
-      await ctx.editMessageText("Could not open dispute.");
+      await ctx.editMessageText(t(lang, "dispute.open_failed"));
       return;
     }
 
@@ -773,19 +748,14 @@ export function createBot(token: string): Bot {
       disputeEvidence.set(dealId, {});
 
       await ctx.editMessageText(
-        `Deal #${dealId}: dispute opened.\n\n` +
-        `This deal has a linked spec with ${spec.requirements.length} requirements.\n` +
-        `AI will evaluate delivery against the spec criteria.\n\n` +
-        `Both parties need to submit evidence:`,
+        t(lang, "dispute.opened_spec", { dealId, reqCount: spec.requirements.length }),
       );
 
       // Ask both parties for evidence
-      const evidenceMsg = `Dispute opened for deal #${dealId}.\n\n` +
-        `Please describe your position and provide evidence of completion/non-completion.\n` +
-        `Send your evidence as a reply:`;
+      const evidenceMsg = t(lang, "dispute.evidence_request", { dealId });
 
-      try { await ctx.api.sendMessage(deal.seller_id, `📋 ${evidenceMsg}\n\n(You are the seller)`); } catch { /* blocked */ }
-      try { await ctx.api.sendMessage(deal.buyer_id, `📋 ${evidenceMsg}\n\n(You are the buyer)`); } catch { /* blocked */ }
+      try { await ctx.api.sendMessage(deal.seller_id, `📋 ${evidenceMsg}\n\n${t(lang, "dispute.evidence_seller")}`); } catch { /* blocked */ }
+      try { await ctx.api.sendMessage(deal.buyer_id, `📋 ${evidenceMsg}\n\n${t(lang, "dispute.evidence_buyer")}`); } catch { /* blocked */ }
 
       // Set timeout: trigger arbitration after 24h even if not all evidence submitted
       const timeout = setTimeout(async () => {
@@ -806,8 +776,7 @@ export function createBot(token: string): Bot {
 
     // Fallback: deals without specs use existing mediateDispute (3.8)
     await ctx.editMessageText(
-      `Deal #${dealId}: dispute opened.\n\n` +
-        `AI will analyze the situation and propose a resolution.`,
+      t(lang, "dispute.opened_no_spec", { dealId }),
     );
 
     try {
@@ -825,16 +794,19 @@ export function createBot(token: string): Bot {
         .text("Reject", `reject_resolution:${dealId}`);
 
       await ctx.reply(
-        `AI Mediation for deal #${dealId}:\n\n` +
-          `${resolution.explanation}\n\n` +
-          `Proposed split:\n` +
-          `Seller: ${resolution.seller_percent}% (${((deal.amount * resolution.seller_percent) / 100).toFixed(2)} ${deal.currency})\n` +
-          `Buyer: ${resolution.buyer_percent}% (${((deal.amount * resolution.buyer_percent) / 100).toFixed(2)} ${deal.currency})\n\n` +
-          `Both parties must accept the resolution.`,
+        t(lang, "dispute.mediation", {
+          dealId,
+          explanation: resolution.explanation,
+          sellerPercent: resolution.seller_percent,
+          sellerAmount: ((deal.amount * resolution.seller_percent) / 100).toFixed(2),
+          buyerPercent: resolution.buyer_percent,
+          buyerAmount: ((deal.amount * resolution.buyer_percent) / 100).toFixed(2),
+          currency: deal.currency,
+        }),
         { reply_markup: keyboard },
       );
     } catch {
-      await ctx.reply("AI mediation error. Please try later.");
+      await ctx.reply(t(lang, "dispute.mediation_error"));
     }
   });
 
@@ -842,6 +814,7 @@ export function createBot(token: string): Bot {
   bot.callbackQuery(/^accept_resolution:/, async (ctx) => {
     const parts = ctx.callbackQuery.data?.split(":");
     if (!parts || parts.length !== 3) return;
+    const lang = getLang(ctx.from?.language_code);
     await ctx.answerCallbackQuery("Resolution accepted");
 
     const dealId = parts[1];
@@ -855,33 +828,32 @@ export function createBot(token: string): Bot {
         await incrementDeals(deal.seller_id);
         await incrementDeals(deal.buyer_id);
         await ctx.editMessageText(
-          `Deal #${dealId} resolved.\n` +
-            `Funds split: ${sellerPercent}% to seller, ${100 - sellerPercent}% to buyer.`,
+          t(lang, "dispute.resolved", { dealId, sellerPercent, buyerPercent: 100 - sellerPercent }),
         );
       }
     } catch {
-      await ctx.editMessageText("Error executing resolution.");
+      await ctx.editMessageText(t(lang, "dispute.resolve_error"));
     }
   });
 
   bot.callbackQuery(/^reject_resolution:/, async (ctx) => {
+    const lang = getLang(ctx.from?.language_code);
     await ctx.answerCallbackQuery("Resolution rejected");
-    await ctx.editMessageText(
-      "AI resolution rejected. Contact the other party to discuss.",
-    );
+    await ctx.editMessageText(t(lang, "dispute.resolution_rejected"));
   });
 
   // View all applications for an offer
   bot.callbackQuery(/^all_apps:/, async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     await ctx.answerCallbackQuery();
     const offerId = ctx.callbackQuery.data!.replace("all_apps:", "");
     const offer = await getOfferById(offerId);
-    if (!offer) { await ctx.editMessageText("Offer not found."); return; }
-    if (offer.creator_id !== ctx.from.id) { await ctx.editMessageText("Only the offer creator can view applications."); return; }
+    if (!offer) { await ctx.editMessageText(t(lang, "apps.offer_not_found")); return; }
+    if (offer.creator_id !== ctx.from.id) { await ctx.editMessageText(t(lang, "apps.not_authorized")); return; }
 
     const apps = await getApplicationsByOffer(offerId);
-    if (apps.length === 0) { await ctx.editMessageText("No applications yet."); return; }
+    if (apps.length === 0) { await ctx.editMessageText(t(lang, "apps.no_apps")); return; }
 
     const lines: string[] = [];
     for (let i = 0; i < apps.length; i++) {
@@ -905,13 +877,14 @@ export function createBot(token: string): Bot {
   // Select applicant — show confirmation
   bot.callbackQuery(/^select_app:/, async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     await ctx.answerCallbackQuery();
     const appId = ctx.callbackQuery.data!.replace("select_app:", "");
     const application = await getApplicationById(appId);
-    if (!application) { await ctx.editMessageText("Application not found."); return; }
+    if (!application) { await ctx.editMessageText(t(lang, "apps.app_not_found")); return; }
 
     const offer = await getOfferById(application.offer_id);
-    if (!offer || offer.creator_id !== ctx.from.id) { await ctx.editMessageText("Not authorized."); return; }
+    if (!offer || offer.creator_id !== ctx.from.id) { await ctx.editMessageText(t(lang, "apps.not_authorized_short")); return; }
 
     const rep = await getDetailedReputation(application.user_id);
     const trust = calcTrustScore(rep);
@@ -920,13 +893,15 @@ export function createBot(token: string): Bot {
       .text("Confirm Selection", `confirm_select:${appId}`)
       .text("Back", `all_apps:${application.offer_id}`);
 
+    const msgPart = application.message ? t(lang, "apps.confirm_selection_message", { message: application.message }) : "";
     await ctx.editMessageText(
-      `Confirm selection?\n\n` +
-      `Price: ${application.price} ${offer.currency}\n` +
-      `Trust Score: ${trust !== null ? trust : "New user"}\n` +
-      `Deals: ${rep.completed_deals}\n` +
-      `Rating: ${rep.avg_rating.toFixed(1)}/5\n` +
-      (application.message ? `Message: ${application.message}` : ""),
+      t(lang, "apps.confirm_selection", {
+        price: application.price,
+        currency: offer.currency,
+        trust: trust !== null ? String(trust) : t(lang, "bid.trust_new_user"),
+        deals: rep.completed_deals,
+        rating: rep.avg_rating.toFixed(1),
+      }) + msgPart,
       { reply_markup: keyboard },
     );
   });
@@ -934,14 +909,15 @@ export function createBot(token: string): Bot {
   // Confirm selection — create deal from offer + application
   bot.callbackQuery(/^confirm_select:/, async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     await ctx.answerCallbackQuery();
     const appId = ctx.callbackQuery.data!.replace("confirm_select:", "");
 
     const application = await getApplicationById(appId);
-    if (!application) { await ctx.editMessageText("Application not found."); return; }
+    if (!application) { await ctx.editMessageText(t(lang, "apps.app_not_found")); return; }
 
     const offer = await getOfferById(application.offer_id);
-    if (!offer || offer.creator_id !== ctx.from.id) { await ctx.editMessageText("Not authorized."); return; }
+    if (!offer || offer.creator_id !== ctx.from.id) { await ctx.editMessageText(t(lang, "apps.not_authorized_short")); return; }
 
     try {
       // Determine roles: if offer creator is buyer → applicant is seller, vice versa
@@ -962,20 +938,24 @@ export function createBot(token: string): Bot {
       await closeOffer(offer.id, deal.id);
 
       await ctx.editMessageText(
-        `Deal #${deal.id} created from offer!\n\n` +
-        `${offer.description}\n` +
-        `Amount: ${application.price} ${offer.currency}\n\n` +
-        `Notification sent to the selected applicant.`,
+        t(lang, "apps.deal_from_offer", {
+          dealId: deal.id,
+          description: offer.description,
+          price: application.price,
+          currency: offer.currency,
+        }),
       );
 
       // Notify selected applicant
       try {
         const payKeyboard = new InlineKeyboard().webApp("Pay via Mini App", `${MINI_APP_URL}/pay/${deal.id}`);
         await ctx.api.sendMessage(application.user_id,
-          `You've been selected for a deal!\n\n` +
-          `${offer.description}\n` +
-          `Amount: ${application.price} ${offer.currency}\n` +
-          `Deal #${deal.id}`,
+          t(lang, "apps.selected_notification", {
+            description: offer.description,
+            price: application.price,
+            currency: offer.currency,
+            dealId: deal.id,
+          }),
           { reply_markup: payKeyboard },
         );
       } catch { /* applicant blocked bot */ }
@@ -985,7 +965,7 @@ export function createBot(token: string): Bot {
       for (const app of rejectedApps) {
         try {
           await ctx.api.sendMessage(app.user_id,
-            `The offer "${offer.description}" has been filled. Your application was not selected.`,
+            t(lang, "apps.offer_filled", { description: offer.description }),
           );
         } catch { /* user blocked bot */ }
       }
@@ -996,11 +976,17 @@ export function createBot(token: string): Bot {
         if (risk) {
           const levelEmoji = (l: string) => l === "low" ? "🟢" : l === "medium" ? "🟡" : "🔴";
           const riskMsg =
-            `🔍 AI Risk Assessment — Deal #${deal.id}\n\n` +
-            `Buyer: ${levelEmoji(risk.buyer_risk.level)} ${risk.buyer_risk.level} (score: ${risk.buyer_risk.score})\n` +
-            `Seller: ${levelEmoji(risk.seller_risk.level)} ${risk.seller_risk.level} (score: ${risk.seller_risk.score})\n` +
+            "🔍 " + t(lang, "risk.assessment", {
+              dealId: deal.id,
+              buyerEmoji: levelEmoji(risk.buyer_risk.level),
+              buyerLevel: risk.buyer_risk.level,
+              buyerScore: risk.buyer_risk.score,
+              sellerEmoji: levelEmoji(risk.seller_risk.level),
+              sellerLevel: risk.seller_risk.level,
+              sellerScore: risk.seller_risk.score,
+            }) +
             (risk.deal_recommendations.length
-              ? `\nRecommendations:\n${risk.deal_recommendations.map(r => `• ${r}`).join("\n")}`
+              ? t(lang, "risk.recommendations", { recommendations: risk.deal_recommendations.map(r => `• ${r}`).join("\n") })
               : "");
           try { await ctx.api.sendMessage(buyerId, riskMsg); } catch { /* blocked */ }
           try { await ctx.api.sendMessage(sellerId, riskMsg); } catch { /* blocked */ }
@@ -1011,14 +997,14 @@ export function createBot(token: string): Bot {
       if (offer.inline_message_id) {
         try {
           await ctx.api.editMessageTextInline(offer.inline_message_id,
-            `CLOSED: ${offer.description}\n\nDeal created — ${application.price} ${offer.currency}\n\nPowered by izEscrowAI`,
+            t(lang, "inline.closed", { description: offer.description, price: application.price, currency: offer.currency }),
             { reply_markup: { inline_keyboard: [[{ text: "Open izEscrowAI", url: `https://t.me/${ctx.me.username}` }]] } },
           );
         } catch { /* can't edit */ }
       }
     } catch (e: any) {
       console.error("Deal from offer error:", e);
-      await ctx.editMessageText("Error creating deal. Please try again.");
+      await ctx.editMessageText(t(lang, "apps.deal_error"));
     }
   });
 
@@ -1084,37 +1070,36 @@ export function createBot(token: string): Bot {
 
   // 3.1 /stats command in groups
   bot.command("stats", async (ctx) => {
+    const lang = getLang(ctx.from?.language_code);
     const chat = ctx.chat;
     if (chat.type !== "group" && chat.type !== "supergroup") {
-      await ctx.reply("This command works only in groups.");
+      await ctx.reply(t(lang, "stats.groups_only"));
       return;
     }
 
     const stats = await getGroupStatsById(chat.id);
     if (!stats || stats.completed_deals === 0) {
-      await ctx.reply(
-        `No escrow activity in this group yet.\n\n` +
-        `Use @${ctx.me.username} in inline mode to post offers!`,
-      );
+      await ctx.reply(t(lang, "stats.no_activity", { botUsername: ctx.me.username }));
       return;
     }
 
     await ctx.reply(
-      `Group Escrow Stats\n\n` +
-      `Offers posted: ${stats.total_offers}\n` +
-      `Deals completed: ${stats.completed_deals}\n` +
-      `Total volume: ${stats.total_volume.toFixed(2)} TON\n` +
-      `Avg check: ${stats.avg_check?.toFixed(2) ?? "—"} TON\n` +
-      `Conversion: ${stats.conversion_rate ? (stats.conversion_rate * 100).toFixed(0) + "%" : "—"}\n\n` +
-      `Powered by izEscrowAI`,
+      t(lang, "stats.report", {
+        offers: stats.total_offers,
+        deals: stats.completed_deals,
+        volume: stats.total_volume.toFixed(2),
+        avgCheck: stats.avg_check?.toFixed(2) ?? "\u2014",
+        conversion: stats.conversion_rate ? (stats.conversion_rate * 100).toFixed(0) + "%" : "\u2014",
+      }),
     );
   });
 
   // 3.2 /leaderboard command
   bot.command("leaderboard", async (ctx) => {
+    const lang = getLang(ctx.from?.language_code);
     const top = await getLeaderboard("completed_deals", 5);
     if (top.length === 0) {
-      await ctx.reply("No groups with escrow activity yet.");
+      await ctx.reply(t(lang, "leaderboard.empty"));
       return;
     }
 
@@ -1136,23 +1121,24 @@ export function createBot(token: string): Bot {
 
   bot.command("spec", async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     const description = ctx.match?.trim();
 
     // View existing spec: /spec <id>
     if (description && description.startsWith("spec_")) {
       const spec = await getSpecById(description);
-      if (!spec) { await ctx.reply("Spec not found."); return; }
+      if (!spec) { await ctx.reply(t(lang, "spec.not_found")); return; }
       await ctx.reply(formatSpecMessage(spec));
       return;
     }
 
     // Generate new spec
     if (!description) {
-      await ctx.reply("Usage: /spec <task description>\n\nExample: /spec Design a logo for my coffee shop");
+      await ctx.reply(t(lang, "spec.usage"));
       return;
     }
 
-    await ctx.reply("🤖 Generating specification...");
+    await ctx.reply("🤖 " + t(lang, "spec.generating"));
 
     try {
       const result = await generateSpec(description);
@@ -1164,11 +1150,8 @@ export function createBot(token: string): Bot {
           createdAt: Date.now(),
           lastActivity: Date.now(),
         });
-        await ctx.reply(
-          "I need some clarification:\n\n" +
-          result.questions.map((q, i) => `${i + 1}. ${q}`).join("\n") +
-          "\n\nPlease answer these questions:",
-        );
+        const questions = result.questions.map((q, i) => `${i + 1}. ${q}`).join("\n");
+        await ctx.reply(t(lang, "spec.clarification_command", { questions }));
         return;
       }
 
@@ -1183,7 +1166,7 @@ export function createBot(token: string): Bot {
       await ctx.reply(formatSpecPreview(result), { reply_markup: keyboard });
     } catch (e: any) {
       console.error("Spec generation error:", e);
-      await ctx.reply("Error generating spec. Please try again.");
+      await ctx.reply(t(lang, "spec.generation_error"));
     }
   });
 
@@ -1191,9 +1174,10 @@ export function createBot(token: string): Bot {
 
   bot.callbackQuery("spec_confirm", async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     await ctx.answerCallbackQuery("Spec confirmed!");
     const spec = pendingSpecs.get(ctx.from.id);
-    if (!spec) { await ctx.editMessageText("Spec expired. Please generate again."); return; }
+    if (!spec) { await ctx.editMessageText(t(lang, "spec.expired")); return; }
     pendingSpecs.delete(ctx.from.id);
 
     const specId = `spec_${Date.now()}_${ctx.from.id}`;
@@ -1228,7 +1212,7 @@ export function createBot(token: string): Bot {
         budget_max: priceEstimate.max,
         budget_currency: priceEstimate.currency,
       });
-      priceMsg = `\n\n💰 AI Price Estimate:\n${formatPriceEstimate(priceEstimate)}`;
+      priceMsg = "\n\n💰 " + t(lang, "spec.price_estimate", { estimate: formatPriceEstimate(priceEstimate) }).replace(/^\n\n/, "");
     } catch { /* pricing failed, non-critical */ }
 
     const keyboard = new InlineKeyboard()
@@ -1236,8 +1220,7 @@ export function createBot(token: string): Bot {
       .text("📢 Post as Offer", `post_offer:${specId}`);
 
     await ctx.editMessageText(
-      `✅ Spec published! ID: ${specId}\n\n` +
-      `Title: ${spec.title}\nCategory: ${spec.category}` +
+      "✅ " + t(lang, "spec.published", { specId, title: spec.title, category: spec.category }) +
       priceMsg,
       { reply_markup: keyboard },
     );
@@ -1245,10 +1228,9 @@ export function createBot(token: string): Bot {
 
   bot.callbackQuery("spec_edit", async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     await ctx.answerCallbackQuery();
-    await ctx.editMessageText(
-      "Send your corrections (e.g., 'Add mobile responsive design requirement' or 'Change category to Design'):",
-    );
+    await ctx.editMessageText(t(lang, "spec.edit_prompt"));
     // The message handler will pick up the next message as a spec edit
     specConversations.set(ctx.from.id, {
       history: [],
@@ -1259,9 +1241,10 @@ export function createBot(token: string): Bot {
 
   bot.callbackQuery("spec_price", async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     await ctx.answerCallbackQuery("Estimating price...");
     const spec = pendingSpecs.get(ctx.from.id);
-    if (!spec) { await ctx.reply("Spec not found."); return; }
+    if (!spec) { await ctx.reply(t(lang, "spec.not_found")); return; }
 
     try {
       const estimate = await estimatePrice({
@@ -1270,19 +1253,20 @@ export function createBot(token: string): Bot {
         requirements: spec.requirements,
         budget_currency: spec.budget_range?.currency ?? "USD",
       });
-      await ctx.reply(`💰 AI Price Estimate for "${spec.title}":\n\n${formatPriceEstimate(estimate)}\n\n⚠️ This is an AI estimate, not a market price.`);
+      await ctx.reply("💰 " + t(lang, "spec.price_for_title", { title: spec.title, estimate: formatPriceEstimate(estimate) }));
     } catch {
-      await ctx.reply("Could not estimate price. Please try again.");
+      await ctx.reply(t(lang, "spec.price_error"));
     }
   });
 
   // Find executors for a spec (7.5, 7.6, 7.7)
   bot.callbackQuery(/^find_exec:/, async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     await ctx.answerCallbackQuery("Searching...");
     const specId = ctx.callbackQuery.data!.replace("find_exec:", "");
     const spec = await getSpecById(specId);
-    if (!spec) { await ctx.reply("Spec not found."); return; }
+    if (!spec) { await ctx.reply(t(lang, "spec.not_found")); return; }
 
     const matches = await findMatchingExecutors(spec);
     const text = formatMatchResults(matches, spec.budget_currency ?? "USD");
@@ -1298,16 +1282,13 @@ export function createBot(token: string): Bot {
   // Post spec as offer
   bot.callbackQuery(/^post_offer:/, async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     await ctx.answerCallbackQuery();
     const specId = ctx.callbackQuery.data!.replace("post_offer:", "");
     const spec = await getSpecById(specId);
-    if (!spec) { await ctx.reply("Spec not found."); return; }
+    if (!spec) { await ctx.reply(t(lang, "spec.not_found")); return; }
 
-    await ctx.reply(
-      `To post as a public offer, use inline mode:\n\n` +
-      `Type @${ctx.me.username} ${spec.title}\n\n` +
-      `in any chat to create a public offer.`,
-    );
+    await ctx.reply(t(lang, "spec.post_as_offer", { botUsername: ctx.me.username, title: spec.title }));
   });
 
   // --- /profile command (7.1, 7.2) ---
@@ -1316,6 +1297,7 @@ export function createBot(token: string): Bot {
 
   bot.command("profile", async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     const existing = await getUserProfile(ctx.from.id);
     const currentCats = existing?.categories?.join(", ") || "none";
 
@@ -1327,8 +1309,7 @@ export function createBot(token: string): Bot {
     keyboard.row().text("Done", "profile_done");
 
     await ctx.reply(
-      `Your profile categories: ${currentCats}\n\n` +
-      `Select your professional categories:`,
+      t(lang, "profile.categories", { categories: currentCats }),
       { reply_markup: keyboard },
     );
   });
@@ -1361,27 +1342,30 @@ export function createBot(token: string): Bot {
     }
     keyboard.row().text("Done", "profile_done");
 
+    const lang = getLang(ctx.from.language_code);
     await ctx.editMessageText(
-      `Selected: ${[...selected].join(", ") || "none"}\n\nSelect your professional categories:`,
+      t(lang, "profile.selected", { categories: [...selected].join(", ") || "none" }),
       { reply_markup: keyboard },
     );
   });
 
   bot.callbackQuery("profile_done", async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     await ctx.answerCallbackQuery("Profile saved!");
     const selected = pendingProfileCats.get(ctx.from.id);
     const categories = selected ? [...selected] : [];
     pendingProfileCats.delete(ctx.from.id);
 
     await upsertUserProfile({ user_id: ctx.from.id, categories });
-    await ctx.editMessageText(`Profile updated! Categories: ${categories.join(", ") || "none"}`);
+    await ctx.editMessageText(t(lang, "profile.updated", { categories: categories.join(", ") || "none" }));
   });
 
   // --- /score command (5.7) ---
 
   bot.command("score", async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     const rep = await getDetailedReputation(ctx.from.id);
     const wallet = await getUserWallet(ctx.from.id);
     const trustScore = await getUserTrustScore(ctx.from.id);
@@ -1393,13 +1377,13 @@ export function createBot(token: string): Bot {
       : `🔴 ${trustScore}`;
 
     await ctx.reply(
-      `Your Trust Score: ${badge}\n\n` +
-      `Breakdown:\n` +
-      `• Completed deals: ${rep.completed_deals}\n` +
-      `• Avg rating: ${avgRating.toFixed(1)}/5\n` +
-      `• Wallet: ${wallet ? "Connected ✓" : "Not connected"}\n` +
-      `• Disputes lost: ${rep.disputes_lost}\n\n` +
-      `Complete more deals and maintain good ratings to increase your score!`,
+      t(lang, "score.report", {
+        badge,
+        deals: rep.completed_deals,
+        rating: avgRating.toFixed(1),
+        wallet: wallet ? t(lang, "score.wallet_connected") + " \u2713" : t(lang, "score.wallet_not_connected"),
+        disputes: rep.disputes_lost,
+      }),
     );
   });
 
@@ -1407,9 +1391,10 @@ export function createBot(token: string): Bot {
 
   bot.command("myoffers", async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     const offers = await getOffersByUser(ctx.from.id);
     if (offers.length === 0) {
-      await ctx.reply("You have no offers. Create one via inline mode: @" + ctx.me.username + " <description>");
+      await ctx.reply(t(lang, "myoffers.empty", { botUsername: ctx.me.username }));
       return;
     }
 
@@ -1423,17 +1408,18 @@ export function createBot(token: string): Bot {
       keyboard.text(`Cancel #${i + 1}`, `cancel_offer:${o.id}`);
     });
 
-    await ctx.reply(`Your offers:\n\n${lines.join("\n\n")}`, { reply_markup: keyboard.row() });
+    await ctx.reply(`${t(lang, "myoffers.title")}\n\n${lines.join("\n\n")}`, { reply_markup: keyboard.row() });
   });
 
   bot.callbackQuery(/^cancel_offer:/, async (ctx) => {
     if (!ctx.from) return;
+    const lang = getLang(ctx.from.language_code);
     await ctx.answerCallbackQuery("Offer cancelled");
     const offerId = ctx.callbackQuery.data!.replace("cancel_offer:", "");
     const offer = await getOfferById(offerId);
     if (offer && offer.creator_id === ctx.from.id) {
       await expireOffer(offerId);
-      await ctx.editMessageText("Offer cancelled.");
+      await ctx.editMessageText(t(lang, "myoffers.cancelled"));
     }
   });
 
@@ -1665,6 +1651,8 @@ async function runSpecArbitration(
   buyerEvidence: string,
   ctx: Context,
 ) {
+  // Use English as default for async arbitration (no user context available)
+  const lang = "en" as const;
   try {
     const specForAI = {
       title: spec.title,
@@ -1684,12 +1672,15 @@ async function runSpecArbitration(
       .text("Accept", `accept_resolution:${dealId}:${sellerPercent}`)
       .text("Reject", `reject_resolution:${dealId}`);
 
-    const reportMsg =
-      `⚖️ AI Spec-Based Arbitration — Deal #${dealId}\n\n` +
-      `${result.report}\n\n` +
-      `Proposed split:\n` +
-      `Seller: ${sellerPercent}% (${((deal.amount * sellerPercent) / 100).toFixed(2)} ${deal.currency})\n` +
-      `Buyer: ${buyerPercent}% (${((deal.amount * buyerPercent) / 100).toFixed(2)} ${deal.currency})`;
+    const reportMsg = "\u2696\uFE0F " + t(lang, "dispute.spec_arbitration", {
+      dealId,
+      report: result.report,
+      sellerPercent,
+      sellerAmount: ((deal.amount * sellerPercent) / 100).toFixed(2),
+      buyerPercent,
+      buyerAmount: ((deal.amount * buyerPercent) / 100).toFixed(2),
+      currency: deal.currency,
+    });
 
     try { await ctx.api.sendMessage(deal.seller_id, reportMsg, { reply_markup: keyboard }); } catch { /* blocked */ }
     try { await ctx.api.sendMessage(deal.buyer_id, reportMsg, { reply_markup: keyboard }); } catch { /* blocked */ }
@@ -1700,7 +1691,12 @@ async function runSpecArbitration(
       const keyboard = new InlineKeyboard()
         .text("Accept", `accept_resolution:${dealId}:${resolution.seller_percent}`)
         .text("Reject", `reject_resolution:${dealId}`);
-      const msg = `AI Mediation for deal #${dealId}:\n\n${resolution.explanation}\n\nSplit: ${resolution.seller_percent}% / ${resolution.buyer_percent}%`;
+      const msg = t(lang, "dispute.spec_mediation_fallback", {
+        dealId,
+        explanation: resolution.explanation,
+        sellerPercent: resolution.seller_percent,
+        buyerPercent: resolution.buyer_percent,
+      });
       try { await ctx.api.sendMessage(deal.seller_id, msg, { reply_markup: keyboard }); } catch { /* blocked */ }
       try { await ctx.api.sendMessage(deal.buyer_id, msg, { reply_markup: keyboard }); } catch { /* blocked */ }
     } catch { /* complete failure */ }
