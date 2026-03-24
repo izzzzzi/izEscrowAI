@@ -7,18 +7,21 @@ import {
   updateAdminJobStatus,
   type AdminJob,
 } from "../../lib/api";
+import { useT } from "../../i18n/context";
+import type { TranslationKey } from "../../i18n/en";
 
-const STATUS_TABS = [
-  { key: "all", label: "All" },
-  { key: "new", label: "New" },
-  { key: "verified", label: "Verified" },
-  { key: "spam", label: "Spam" },
-  { key: "expired", label: "Expired" },
-] as const;
+const STATUS_TAB_KEYS: { key: string; labelKey: TranslationKey }[] = [
+  { key: "all", labelKey: "admin.jobs.all" },
+  { key: "new", labelKey: "admin.jobs.new" },
+  { key: "verified", labelKey: "admin.jobs.verified" },
+  { key: "spam", labelKey: "admin.jobs.spam" },
+  { key: "expired", labelKey: "admin.jobs.expired" },
+];
 
 const PAGE_LIMIT = 20;
 
 export default function AdminJobs() {
+  const t = useT();
   const [jobs, setJobs] = useState<AdminJob[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -64,7 +67,7 @@ export default function AdminJobs() {
   const columns: Column<AdminJob>[] = [
     {
       key: "title",
-      label: "Title",
+      label: t("admin.jobs.colTitle"),
       sortable: true,
       render: (row) => (
         <span className="max-w-[200px] truncate block" title={row.title}>
@@ -74,12 +77,12 @@ export default function AdminJobs() {
     },
     {
       key: "status",
-      label: "Status",
+      label: t("admin.jobs.colStatus"),
       render: (row) => <StatusBadge status={row.status} />,
     },
     {
       key: "budget",
-      label: "Budget",
+      label: t("admin.jobs.colBudget"),
       render: (row) => {
         if (row.budget_min == null && row.budget_max == null) return "—";
         const min = row.budget_min != null ? row.budget_min : "?";
@@ -94,7 +97,7 @@ export default function AdminJobs() {
     },
     {
       key: "required_skills",
-      label: "Skills",
+      label: t("admin.jobs.colSkills"),
       render: (row) =>
         row.required_skills && row.required_skills.length > 0 ? (
           <div className="flex flex-wrap gap-1 max-w-[200px]">
@@ -118,7 +121,7 @@ export default function AdminJobs() {
     },
     {
       key: "created_at",
-      label: "Created",
+      label: t("admin.jobs.colCreated"),
       sortable: true,
       render: (row) => new Date(row.created_at).toLocaleDateString("en-US"),
     },
@@ -127,11 +130,11 @@ export default function AdminJobs() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <h1 className="text-xl font-semibold tracking-tight">Jobs</h1>
+        <h1 className="text-xl font-semibold tracking-tight">{t("admin.jobs.title")}</h1>
 
         {/* Status filter tabs */}
         <div className="flex gap-1 flex-wrap bg-white/[0.03] p-1 rounded-xl border border-white/5">
-          {STATUS_TABS.map((tab) => (
+          {STATUS_TAB_KEYS.map((tab) => (
             <button
               key={tab.key}
               onClick={() => handleTabChange(tab.key)}
@@ -141,7 +144,7 @@ export default function AdminJobs() {
                   : "bg-transparent text-slate-500 hover:text-slate-300"
               }`}
             >
-              {tab.label}
+              {t(tab.labelKey)}
             </button>
           ))}
         </div>
@@ -154,7 +157,7 @@ export default function AdminJobs() {
 
         {loading ? (
           <div className="flex items-center justify-center py-20 text-slate-500 text-sm">
-            Loading...
+            {t("admin.common.loading")}
           </div>
         ) : (
           <DataTable<AdminJob>
@@ -171,7 +174,7 @@ export default function AdminJobs() {
                     onClick={() => handleStatusChange(row, "verified")}
                     className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 transition-colors cursor-pointer"
                   >
-                    Verify
+                    {t("admin.jobs.verify")}
                   </button>
                 )}
                 {row.status !== "spam" && (
@@ -179,7 +182,7 @@ export default function AdminJobs() {
                     onClick={() => handleStatusChange(row, "spam")}
                     className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors cursor-pointer"
                   >
-                    Spam
+                    {t("admin.jobs.markSpam")}
                   </button>
                 )}
               </>

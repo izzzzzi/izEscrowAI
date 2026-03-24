@@ -6,6 +6,7 @@ import {
   resolveDispute,
   type AdminDispute,
 } from "../../lib/api";
+import { useT } from "../../i18n/context";
 
 type ResolutionAction = {
   disputeId: string;
@@ -13,6 +14,7 @@ type ResolutionAction = {
 };
 
 export default function AdminDisputes() {
+  const t = useT();
   const [disputes, setDisputes] = useState<AdminDispute[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,13 +56,13 @@ export default function AdminDisputes() {
 
   const confirmLabel =
     confirmAction?.type === "refund_buyer"
-      ? "Refund Buyer"
-      : "Pay Seller";
+      ? t("admin.disputes.refundBuyer")
+      : t("admin.disputes.paySeller");
 
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <h1 className="text-xl font-semibold tracking-tight">Disputes</h1>
+        <h1 className="text-xl font-semibold tracking-tight">{t("admin.disputes.title")}</h1>
 
         {error && (
           <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4 text-sm text-red-400">
@@ -70,7 +72,7 @@ export default function AdminDisputes() {
 
         {loading ? (
           <div className="flex items-center justify-center py-20 text-slate-500 text-sm">
-            Loading...
+            {t("admin.common.loading")}
           </div>
         ) : disputes.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -79,7 +81,7 @@ export default function AdminDisputes() {
               width="64"
               class="text-slate-700 mb-4"
             />
-            <p className="text-sm text-slate-500">No active disputes</p>
+            <p className="text-sm text-slate-500">{t("admin.disputes.noActive")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -116,11 +118,11 @@ export default function AdminDisputes() {
                 <div className="flex gap-4 text-xs text-slate-400">
                   <div className="flex items-center gap-1.5">
                     <iconify-icon icon="solar:user-linear" width="14" />
-                    <span>Buyer: <span className="text-slate-300">{dispute.buyer_id}</span></span>
+                    <span>{t("admin.disputes.buyer")} <span className="text-slate-300">{dispute.buyer_id}</span></span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <iconify-icon icon="solar:user-check-linear" width="14" />
-                    <span>Seller: <span className="text-slate-300">{dispute.seller_id}</span></span>
+                    <span>{t("admin.disputes.seller")} <span className="text-slate-300">{dispute.seller_id}</span></span>
                   </div>
                 </div>
 
@@ -132,10 +134,10 @@ export default function AdminDisputes() {
                 {/* Dates */}
                 <div className="flex gap-4 text-[0.65rem] text-slate-500">
                   <span>
-                    Created: {new Date(dispute.created_at).toLocaleDateString("en-US")}
+                    {t("admin.disputes.created")} {new Date(dispute.created_at).toLocaleDateString("en-US")}
                   </span>
                   <span>
-                    Updated: {new Date(dispute.updated_at).toLocaleDateString("en-US")}
+                    {t("admin.disputes.updated")} {new Date(dispute.updated_at).toLocaleDateString("en-US")}
                   </span>
                 </div>
 
@@ -143,7 +145,7 @@ export default function AdminDisputes() {
                 {dispute.status !== "resolved" && (
                   <>
                     <textarea
-                      placeholder="Resolution note..."
+                      placeholder={t("admin.disputes.resolutionNote")}
                       value={resolutionNotes[dispute.id] || ""}
                       onChange={(e) =>
                         setResolutionNotes((prev) => ({
@@ -163,7 +165,7 @@ export default function AdminDisputes() {
                         }
                         className="flex-1 py-2 rounded-lg text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition-colors cursor-pointer"
                       >
-                        Refund Buyer
+                        {t("admin.disputes.refundBuyer")}
                       </button>
                       <button
                         onClick={() =>
@@ -174,7 +176,7 @@ export default function AdminDisputes() {
                         }
                         className="flex-1 py-2 rounded-lg text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 transition-colors cursor-pointer"
                       >
-                        Pay Seller
+                        {t("admin.disputes.paySeller")}
                       </button>
                     </div>
                   </>
@@ -189,9 +191,9 @@ export default function AdminDisputes() {
         isOpen={!!confirmAction}
         onClose={() => setConfirmAction(null)}
         onConfirm={handleResolve}
-        title="Confirm Resolution"
-        message={`Are you sure you want to "${confirmLabel}"? This action cannot be undone.`}
-        confirmText={resolving ? "Processing..." : confirmLabel}
+        title={t("admin.disputes.confirmTitle")}
+        message={t("admin.disputes.confirmMessage").replace("{action}", confirmLabel)}
+        confirmText={resolving ? t("admin.disputes.processing") : confirmLabel}
         variant="danger"
       />
     </AdminLayout>

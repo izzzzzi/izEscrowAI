@@ -1,48 +1,51 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "../../components/AdminLayout";
 import { fetchAdminSettings, updateAdminSettings } from "../../lib/api";
+import { useT } from "../../i18n/context";
+import type { TranslationKey } from "../../i18n/en";
 
 interface SettingsGroup {
-  title: string;
+  titleKey: TranslationKey;
   icon: string;
   fields: SettingsField[];
 }
 
 interface SettingsField {
   key: string;
-  label: string;
+  labelKey: TranslationKey;
   type: "number" | "text" | "boolean" | "json";
-  description?: string;
+  descriptionKey?: TranslationKey;
 }
 
 const GROUPS: SettingsGroup[] = [
   {
-    title: "Finance",
+    titleKey: "admin.settings.finance",
     icon: "solar:wallet-money-linear",
     fields: [
-      { key: "commission_rate", label: "Commission (%)", type: "number", description: "Commission rate per deal" },
-      { key: "max_deal_amount", label: "Max Deal Amount", type: "number", description: "Maximum amount for a single deal" },
-      { key: "min_deal_amount", label: "Min Deal Amount", type: "number", description: "Minimum amount for a single deal" },
+      { key: "commission_rate", labelKey: "admin.settings.commissionRate", type: "number", descriptionKey: "admin.settings.commissionDesc" },
+      { key: "max_deal_amount", labelKey: "admin.settings.maxDeal", type: "number", descriptionKey: "admin.settings.maxDealDesc" },
+      { key: "min_deal_amount", labelKey: "admin.settings.minDeal", type: "number", descriptionKey: "admin.settings.minDealDesc" },
     ],
   },
   {
-    title: "Limits",
+    titleKey: "admin.settings.limits",
     icon: "solar:tuning-square-2-linear",
     fields: [
-      { key: "notification_limits", label: "Notification Limits", type: "json", description: "JSON notification limits config" },
+      { key: "notification_limits", labelKey: "admin.settings.notificationLimits", type: "json", descriptionKey: "admin.settings.notificationLimitsDesc" },
     ],
   },
   {
-    title: "Features",
+    titleKey: "admin.settings.features",
     icon: "solar:settings-linear",
     fields: [
-      { key: "feature_flags", label: "Feature Flags", type: "json", description: "JSON feature flags object" },
-      { key: "maintenance_mode", label: "Maintenance Mode", type: "boolean", description: "Temporarily disable platform access" },
+      { key: "feature_flags", labelKey: "admin.settings.featureFlags", type: "json", descriptionKey: "admin.settings.featureFlagsDesc" },
+      { key: "maintenance_mode", labelKey: "admin.settings.maintenanceMode", type: "boolean", descriptionKey: "admin.settings.maintenanceModeDesc" },
     ],
   },
 ];
 
 export default function AdminSettings() {
+  const t = useT();
   const [settings, setSettings] = useState<Record<string, unknown>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -141,13 +144,13 @@ export default function AdminSettings() {
     <AdminLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold tracking-tight">Settings</h1>
+          <h1 className="text-xl font-semibold tracking-tight">{t("admin.settings.title")}</h1>
           <button
             onClick={handleSave}
             disabled={saving || loading}
             className="flex items-center gap-2 px-5 py-2 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30 text-sm font-medium hover:bg-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
-            {saving ? "Saving..." : "Save"}
+            {saving ? t("admin.settings.saving") : t("admin.settings.save")}
           </button>
         </div>
 
@@ -159,23 +162,23 @@ export default function AdminSettings() {
 
         {success && (
           <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4 text-sm text-green-400">
-            Settings saved successfully
+            {t("admin.settings.savedSuccess")}
           </div>
         )}
 
         {loading ? (
           <div className="flex items-center justify-center py-20 text-slate-500 text-sm">
-            Loading...
+            {t("admin.common.loading")}
           </div>
         ) : (
           <div className="space-y-8">
             {GROUPS.map((group) => (
-              <div key={group.title} className="space-y-4">
+              <div key={group.titleKey} className="space-y-4">
                 {/* Group header */}
                 <div className="flex items-center gap-2 text-slate-300">
                   <iconify-icon icon={group.icon} width="20" height="20" />
                   <h2 className="text-sm font-semibold uppercase tracking-wider">
-                    {group.title}
+                    {t(group.titleKey)}
                   </h2>
                 </div>
 
@@ -188,11 +191,11 @@ export default function AdminSettings() {
                     >
                       <div className="flex flex-col gap-0.5">
                         <label className="text-sm font-medium text-slate-200">
-                          {field.label}
+                          {t(field.labelKey)}
                         </label>
-                        {field.description && (
+                        {field.descriptionKey && (
                           <span className="text-xs text-slate-500">
-                            {field.description}
+                            {t(field.descriptionKey)}
                           </span>
                         )}
                       </div>

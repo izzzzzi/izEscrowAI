@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "../../components/AdminLayout";
 import { fetchAdminDashboard } from "../../lib/api";
+import { useT } from "../../i18n/context";
 
 interface DashboardStats {
   total_users: number;
@@ -14,21 +15,23 @@ interface DashboardStats {
   github_verified_count: number;
 }
 
-const metricCards: {
+type MetricCard = {
   key: keyof DashboardStats;
-  label: string;
+  labelKey: "admin.dashboard.totalUsers" | "admin.dashboard.activeUsers7d" | "admin.dashboard.totalDeals" | "admin.dashboard.activeDeals" | "admin.dashboard.totalVolume" | "admin.dashboard.activeDisputes" | "admin.dashboard.totalSources" | "admin.dashboard.activeSources" | "admin.dashboard.githubVerified";
   icon: string;
   format?: "currency";
-}[] = [
-  { key: "total_users", label: "Total Users", icon: "solar:users-group-rounded-linear" },
-  { key: "active_users_7d", label: "Active (7 days)", icon: "solar:user-check-linear" },
-  { key: "total_deals", label: "Total Deals", icon: "solar:document-text-linear" },
-  { key: "active_deals", label: "Active Deals", icon: "solar:clipboard-check-linear" },
-  { key: "total_volume", label: "Total Volume", icon: "solar:wallet-money-linear", format: "currency" },
-  { key: "active_disputes", label: "Active Disputes", icon: "solar:shield-warning-linear" },
-  { key: "total_sources", label: "Total Sources", icon: "solar:database-linear" },
-  { key: "active_sources", label: "Active Sources", icon: "solar:server-linear" },
-  { key: "github_verified_count", label: "GitHub Verified", icon: "mdi:github" },
+};
+
+const metricCards: MetricCard[] = [
+  { key: "total_users", labelKey: "admin.dashboard.totalUsers", icon: "solar:users-group-rounded-linear" },
+  { key: "active_users_7d", labelKey: "admin.dashboard.activeUsers7d", icon: "solar:user-check-linear" },
+  { key: "total_deals", labelKey: "admin.dashboard.totalDeals", icon: "solar:document-text-linear" },
+  { key: "active_deals", labelKey: "admin.dashboard.activeDeals", icon: "solar:clipboard-check-linear" },
+  { key: "total_volume", labelKey: "admin.dashboard.totalVolume", icon: "solar:wallet-money-linear", format: "currency" },
+  { key: "active_disputes", labelKey: "admin.dashboard.activeDisputes", icon: "solar:shield-warning-linear" },
+  { key: "total_sources", labelKey: "admin.dashboard.totalSources", icon: "solar:database-linear" },
+  { key: "active_sources", labelKey: "admin.dashboard.activeSources", icon: "solar:server-linear" },
+  { key: "github_verified_count", labelKey: "admin.dashboard.githubVerified", icon: "mdi:github" },
 ];
 
 function formatCurrency(value: number): string {
@@ -45,6 +48,7 @@ function formatNumber(value: number): string {
 }
 
 export default function AdminDashboard() {
+  const t = useT();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +64,7 @@ export default function AdminDashboard() {
     <AdminLayout>
       <div className="space-y-6">
         <h1 className="text-xl font-semibold tracking-tight">
-          Dashboard
+          {t("admin.dashboard.title")}
         </h1>
 
         {loading && (
@@ -94,7 +98,7 @@ export default function AdminDashboard() {
                 >
                   <div className="flex items-center gap-2 text-slate-400">
                     <iconify-icon icon={card.icon} width="18" height="18" />
-                    <span className="text-xs font-medium">{card.label}</span>
+                    <span className="text-xs font-medium">{t(card.labelKey)}</span>
                   </div>
                   <span className="text-2xl font-bold tracking-tight text-white">
                     {card.format === "currency"
