@@ -1,7 +1,8 @@
-import { useEffect, lazy, Suspense, Component, type ReactNode, type ErrorInfo } from "react";
+import { useState, useEffect, lazy, Suspense, Component, type ReactNode, type ErrorInfo } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import TabNav from "./components/TabNav";
 import WebNavbar from "./components/WebNavbar";
+import OnboardingSlides from "./components/OnboardingSlides";
 import AnimatedPage from "./components/AnimatedPage";
 import { useAuth } from "./contexts/AuthContext";
 import { setTelegramAuthData } from "./lib/api";
@@ -108,6 +109,14 @@ function WebApp() {
 
 function MiniApp() {
   const navigate = useNavigate();
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    try { return !localStorage.getItem("onboarding-seen"); } catch { return false; }
+  });
+
+  const completeOnboarding = () => {
+    setShowOnboarding(false);
+    try { localStorage.setItem("onboarding-seen", "1"); } catch { /* ignore */ }
+  };
 
   useEffect(() => {
     try {
@@ -134,6 +143,10 @@ function MiniApp() {
       // not running inside Telegram
     }
   }, [navigate]);
+
+  if (showOnboarding) {
+    return <OnboardingSlides onComplete={completeOnboarding} />;
+  }
 
   return (
     <div className="app" style={{ paddingBottom: "56px" }}>
