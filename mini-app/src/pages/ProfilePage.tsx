@@ -8,6 +8,25 @@ import AppHeader from "../components/AppHeader";
 import GitHubCard from "../components/GitHubCard";
 import MyJobCard from "../components/MyJobCard";
 
+function ProfileSkeleton() {
+  return (
+    <div className="space-y-4 animate-pulse">
+      <div className="glass-card rounded-2xl p-6 flex flex-col items-center gap-3">
+        <div className="w-16 h-16 rounded-full bg-white/5" />
+        <div className="h-8 w-16 bg-white/5 rounded" />
+        <div className="h-4 w-32 bg-white/5 rounded" />
+        <div className="h-2 w-full bg-white/5 rounded-full" />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="glass-card rounded-xl p-4 h-20" />
+        ))}
+      </div>
+      <div className="glass-card rounded-2xl p-5 h-32" />
+    </div>
+  );
+}
+
 export default function ProfilePage() {
   const { userId } = useParams<{ userId?: string }>();
   const navigate = useNavigate();
@@ -22,7 +41,6 @@ export default function ProfilePage() {
   const wallet = useTonWallet();
   const walletAddress = useTonAddress();
 
-  // Sync wallet address to backend
   useEffect(() => {
     if (walletAddress && isOwnProfile) {
       fetch(`${API_URL}/api/wallet`, {
@@ -53,28 +71,42 @@ export default function ProfilePage() {
     return { text: t("profile.trust.low"), color: "text-red-400" };
   };
 
+  const trustColor = (score: number | null) => {
+    if (score === null) return "from-slate-500 to-slate-600";
+    if (score >= 80) return "from-green-500 to-emerald-400";
+    if (score >= 60) return "from-blue-500 to-cyan-400";
+    if (score >= 40) return "from-amber-500 to-yellow-400";
+    return "from-red-500 to-rose-400";
+  };
+
   return (
     <div className="mini-page">
       <AppHeader />
-      <main className="px-5 pb-32 space-y-6">
+      <main className="px-5 pb-32 space-y-4">
         <h2 className="text-sm font-medium text-slate-400 uppercase tracking-widest pl-1">
           {isOwnProfile ? t("profile.myProfile") : t("profile.userProfile")}
         </h2>
 
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <span className="text-sm text-slate-500">{t("profile.loading")}</span>
-          </div>
+          <ProfileSkeleton />
         ) : error ? (
-          <div className="flex items-center justify-center py-20">
-            <span className="text-sm text-red-400">{error}</span>
+          <div className="glass-card rounded-2xl p-8 text-center space-y-3">
+            <iconify-icon icon="solar:danger-triangle-linear" width="32" class="text-red-400" />
+            <p className="text-sm text-red-400">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="text-xs text-slate-400 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
+            >
+              {t("common.retry")}
+            </button>
           </div>
         ) : profile ? (
           <div className="space-y-4">
             {/* Trust Score Card */}
             <div className="glass-card rounded-2xl p-6 text-center space-y-3">
-              <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto">
-                <iconify-icon icon="solar:shield-check-linear" width="32" class="text-[#0098EA]" />
+              <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${trustColor(profile.trust_score)} bg-opacity-10 flex items-center justify-center mx-auto`} style={{ background: undefined }}>
+                <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${trustColor(profile.trust_score)} opacity-10 absolute`} />
+                <iconify-icon icon="solar:shield-check-linear" width="32" class="text-[#0098EA] relative z-10" />
               </div>
               <div>
                 <div className="text-3xl font-bold tracking-tight">
@@ -85,9 +117,9 @@ export default function ProfilePage() {
                 </div>
               </div>
               {profile.trust_score !== null && (
-                <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-white/5 rounded-full h-2 overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all"
+                    className={`h-full rounded-full bg-gradient-to-r ${trustColor(profile.trust_score)} transition-all`}
                     style={{ width: `${profile.trust_score}%` }}
                   />
                 </div>
@@ -95,17 +127,15 @@ export default function ProfilePage() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 gap-3">
-              <StatCard label={t("profile.stat.deals")} value={profile.reputation.completed_deals} icon="solar:clipboard-check-linear" />
-              <StatCard label={t("profile.stat.avgDays")} value={profile.reputation.avg_completion_days?.toFixed(1) ?? "—"} icon="solar:clock-circle-linear" />
-              <StatCard label={t("profile.stat.cancelled")} value={profile.reputation.cancelled_deals} icon="solar:close-circle-linear" />
-              <StatCard label={t("profile.stat.disputes")} value={profile.reputation.disputes_opened} icon="solar:danger-triangle-linear" />
-              <StatCard label={t("profile.stat.repeatClients")} value={profile.reputation.repeat_clients} icon="solar:users-group-rounded-linear" />
-              <StatCard
-                label={t("profile.stat.rating")}
-                value={profile.reputation.rating > 0 ? `${profile.reputation.rating.toFixed(1)}/5` : "—"}
-                icon="solar:star-linear"
-              />
+            <div className="grid grid-cols-3 gap-3">
+              <StatCard label={t("profile.stat.deals")} value={profile.reputation.completed_deals} icon="solar:clipboard-check-linear" color="text-blue-400" />
+              <StatCard label={t("profile.stat.rating")} value={profile.reputation.rating > 0 ? `${profile.reputation.rating.toFixed(1)}` : "—"} icon="solar:star-linear" color="text-amber-400" />
+              <StatCard label={t("profile.stat.repeatClients")} value={profile.reputation.repeat_clients} icon="solar:users-group-rounded-linear" color="text-purple-400" />
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <StatCard label={t("profile.stat.avgDays")} value={profile.reputation.avg_completion_days?.toFixed(1) ?? "—"} icon="solar:clock-circle-linear" color="text-cyan-400" />
+              <StatCard label={t("profile.stat.cancelled")} value={profile.reputation.cancelled_deals} icon="solar:close-circle-linear" color="text-slate-400" />
+              <StatCard label={t("profile.stat.disputes")} value={profile.reputation.disputes_opened} icon="solar:danger-triangle-linear" color="text-red-400" />
             </div>
 
             {/* Trust Score Breakdown */}
@@ -123,7 +153,7 @@ export default function ProfilePage() {
                       <span className="text-slate-400">{c.label} ({c.weight})</span>
                       <span className="text-white font-medium">{c.value}</span>
                     </div>
-                    <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                       <div className={`h-full rounded-full ${c.color} transition-all`} style={{ width: `${c.value}%` }} />
                     </div>
                   </div>
@@ -143,16 +173,16 @@ export default function ProfilePage() {
                         {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
                       </code>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
                       <button
                         onClick={() => navigator.clipboard.writeText(walletAddress)}
-                        className="text-xs text-slate-400 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
+                        className="px-3 py-1.5 text-xs text-slate-400 hover:text-white transition-colors bg-white/5 rounded-lg border-none cursor-pointer"
                       >
                         {t("profile.wallet.copy")}
                       </button>
                       <button
                         onClick={() => tonConnectUI.disconnect()}
-                        className="text-xs text-red-400 hover:text-red-300 transition-colors bg-transparent border-none cursor-pointer"
+                        className="px-3 py-1.5 text-xs text-red-400 hover:text-red-300 transition-colors bg-red-500/5 rounded-lg border-none cursor-pointer"
                       >
                         {t("profile.wallet.disconnect")}
                       </button>
@@ -181,22 +211,20 @@ export default function ProfilePage() {
                       await fetchGithubUnlink();
                       setProfile((p) => p ? { ...p, github: null } : p);
                     }}
-                    className="w-full py-2 text-xs text-red-400 bg-red-500/5 border border-red-500/10 rounded-xl cursor-pointer hover:bg-red-500/10 transition-colors"
+                    className="w-full py-2.5 text-xs text-red-400 bg-red-500/5 border border-red-500/10 rounded-xl cursor-pointer hover:bg-red-500/10 transition-colors"
                   >
                     {t("profile.github.unlink")}
                   </button>
                 )}
               </div>
             ) : isOwnProfile ? (
-              <a
-                href={`${API_URL}/api/github/auth?userId=${profile.user_id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full py-3 text-center text-sm font-medium glass-card rounded-2xl hover:bg-white/5 transition-colors"
+              <button
+                onClick={() => window.open(`${API_URL}/api/github/auth?userId=${profile.user_id}`, "_blank")}
+                className="w-full py-3 text-center text-sm font-medium glass-card rounded-2xl hover:bg-white/5 transition-colors flex items-center justify-center gap-2 cursor-pointer border-none text-white"
               >
-                <iconify-icon icon="logos:github-icon" width="18" style={{ verticalAlign: "middle" }} />{" "}
+                <iconify-icon icon="logos:github-icon" width="18" />
                 {t("profile.github.link")}
-              </a>
+              </button>
             ) : null}
 
             {/* Red/Green Flags */}
@@ -246,12 +274,6 @@ export default function ProfilePage() {
                 </div>
               </div>
             )}
-
-            {isOwnProfile && profile.deal_count !== undefined && (
-              <div className="text-center text-xs text-slate-500 pt-2">
-                {t("profile.totalDeals")} {profile.deal_count}
-              </div>
-            )}
           </div>
         ) : null}
       </main>
@@ -259,12 +281,12 @@ export default function ProfilePage() {
   );
 }
 
-function StatCard({ label, value, icon }: { label: string; value: string | number; icon: string }) {
+function StatCard({ label, value, icon, color = "text-slate-500" }: { label: string; value: string | number; icon: string; color?: string }) {
   return (
-    <div className="glass-card rounded-xl p-4 flex flex-col items-center gap-2">
-      <iconify-icon icon={icon} width="20" class="text-slate-500" />
-      <div className="text-lg font-semibold tracking-tight">{value}</div>
-      <div className="text-[0.6rem] text-slate-500 uppercase tracking-wider font-medium">{label}</div>
+    <div className="glass-card rounded-xl p-3 flex flex-col items-center gap-1.5">
+      <iconify-icon icon={icon} width="18" class={color} />
+      <div className="text-base font-semibold tracking-tight">{value}</div>
+      <div className="text-[0.55rem] text-slate-500 uppercase tracking-wider font-medium text-center leading-tight">{label}</div>
     </div>
   );
 }
