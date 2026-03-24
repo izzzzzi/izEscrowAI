@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { fetchStats, fetchPublicOffers, type PlatformStats, type PublicOffer } from "../lib/api";
+import { fetchStats, fetchPublicOffers, fetchTalent, type PlatformStats, type PublicOffer, type TalentData } from "../lib/api";
+import TalentGrid from "../components/TalentGrid";
 import Roadmap from "../components/Roadmap";
 import { useT } from "../i18n/context";
 
@@ -10,6 +11,7 @@ export default function LandingPage() {
   const t = useT();
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [recentOffers, setRecentOffers] = useState<PublicOffer[]>([]);
+  const [talent, setTalent] = useState<TalentData | null>(null);
 
   const mainRef = useRef<HTMLElement>(null);
 
@@ -37,6 +39,7 @@ export default function LandingPage() {
   useEffect(() => {
     fetchStats().then(setStats).catch(() => {});
     fetchPublicOffers().then((offers) => setRecentOffers(offers.slice(0, 6))).catch(() => {});
+    fetchTalent().then(setTalent).catch(() => {});
   }, []);
 
   // Scroll-reveal animation (CSS-class based, defaults to visible)
@@ -49,7 +52,7 @@ export default function LandingPage() {
     );
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [stats, recentOffers]);
+  }, [stats, recentOffers, talent]);
 
   const workflowSteps = [
     { icon: "solar:chat-line-linear", title: t("landing.workflow.step1"), desc: t("landing.workflow.step1.desc") },
@@ -354,6 +357,19 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+
+        {/* Available Talent */}
+        {talent && (
+          <section className="py-24 px-6 reveal">
+            <div className="max-w-7xl mx-auto text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.talent.title")}</h2>
+              <p className="text-slate-400 font-light">{t("landing.talent.subtitle")}</p>
+            </div>
+            <div className="max-w-4xl mx-auto">
+              <TalentGrid languages={talent.languages} categories={talent.categories} />
+            </div>
+          </section>
+        )}
 
         {/* Recent Offers Feed */}
         {recentOffers.length > 0 && (
