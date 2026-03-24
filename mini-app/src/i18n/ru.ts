@@ -656,6 +656,17 @@ const ru: Record<TranslationKey, string> = {
   "legal.privacy.contact.title": "7. Контакт",
   "legal.privacy.contact.text": "Вопросы по конфиденциальности: @izEscrowAIBot в Telegram или github.com/izzzzzi/izEscrowAI",
 
+  // WebProfilePage
+  "webProfile.title": "Ваш профиль",
+  "webProfile.loginPrompt": "Войдите через Telegram, чтобы просмотреть профиль",
+  "webProfile.notFound": "Профиль не найден",
+  "webProfile.github.hint": "Подтвердите навыки и повысьте Trust Score",
+  "webProfile.wallet.connected": "TON-кошелёк подключён",
+  "webProfile.wallet.connect": "Подключить TON-кошелёк",
+  "webProfile.wallet.hint": "Защитите сделки и повысьте Trust Score",
+  "webProfile.yourOffers": "Ваши офферы",
+  "webProfile.user": "Пользователь #{id}",
+
   // Footer legal links
   "legal.footer.terms": "Условия",
   "legal.footer.privacy": "Конфиденциальность",

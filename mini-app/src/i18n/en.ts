@@ -621,6 +621,17 @@ const en = {
   "legal.privacy.contact.title": "7. Contact",
   "legal.privacy.contact.text": "For privacy questions: @izEscrowAIBot on Telegram or github.com/izzzzzi/izEscrowAI",
 
+  // WebProfilePage
+  "webProfile.title": "Your Profile",
+  "webProfile.loginPrompt": "Login with Telegram to view your profile",
+  "webProfile.notFound": "Profile not found",
+  "webProfile.github.hint": "Verify your skills and boost your Trust Score",
+  "webProfile.wallet.connected": "TON Wallet Connected",
+  "webProfile.wallet.connect": "Connect TON Wallet",
+  "webProfile.wallet.hint": "Secure your deals and boost your Trust Score",
+  "webProfile.yourOffers": "Your Offers",
+  "webProfile.user": "User #{id}",
+
   // Footer legal links
   "legal.footer.terms": "Terms",
   "legal.footer.privacy": "Privacy",

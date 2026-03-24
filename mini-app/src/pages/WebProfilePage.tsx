@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
 import { fetchProfile, fetchUserProfile, fetchOffers, fetchMyJobs, fetchGithubUnlink, registerWallet, type ProfileWithGithub, type Offer, type MyJob, API_URL } from "../lib/api";
 import { useAuth } from "../contexts/AuthContext";
+import { useT } from "../i18n/context";
 import LoginGate from "../components/LoginGate";
 import GitHubCard from "../components/GitHubCard";
 import MyJobCard from "../components/MyJobCard";
@@ -10,6 +11,7 @@ import MyJobCard from "../components/MyJobCard";
 export default function WebProfilePage() {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
+  const t = useT();
   const { isAuthenticated, user, hasWallet, setWallet } = useAuth();
   const [tonConnectUI] = useTonConnectUI();
   const tonAddress = useTonAddress(false);
@@ -56,8 +58,8 @@ export default function WebProfilePage() {
       <div className="min-h-screen page-shell pt-28 pb-16 px-6 text-center">
         <div className="max-w-md mx-auto mt-20">
           <iconify-icon icon="solar:user-linear" width="48" class="text-slate-600 mb-4" />
-          <h2 className="text-xl font-medium mb-4">Your Profile</h2>
-          <LoginGate fallbackText="Login with Telegram to view your profile" />
+          <h2 className="text-xl font-medium mb-4">{t("webProfile.title")}</h2>
+          <LoginGate fallbackText={t("webProfile.loginPrompt")} />
         </div>
       </div>
     );
@@ -76,7 +78,7 @@ export default function WebProfilePage() {
   if (!profile) {
     return (
       <div className="min-h-screen page-shell pt-28 pb-16 px-6 text-center">
-        <p className="text-slate-400 mt-20">Profile not found</p>
+        <p className="text-slate-400 mt-20">{t("webProfile.notFound")}</p>
       </div>
     );
   }
@@ -84,7 +86,7 @@ export default function WebProfilePage() {
   const rep = profile.reputation;
   const displayName = isOwnProfile && user
     ? `${user.first_name || ""}${user.last_name ? " " + user.last_name : ""}`
-    : `User #${profile.user_id}`;
+    : t("webProfile.user").replace("{id}", String(profile.user_id));
 
   return (
     <div className="min-h-screen page-shell pt-28 pb-16 px-6">
@@ -126,9 +128,9 @@ export default function WebProfilePage() {
                 </span>
               </div>
               <div>
-                <div className="text-sm font-medium">Trust Score</div>
+                <div className="text-sm font-medium">{t("profile.trustScore")}</div>
                 <div className="text-xs text-slate-400">
-                  {profile.trust_score === null ? "New user" : profile.trust_score >= 70 ? "Excellent" : profile.trust_score >= 40 ? "Good" : "Low"}
+                  {profile.trust_score === null ? t("profile.trust.notRated") : profile.trust_score >= 70 ? t("profile.trust.excellent") : profile.trust_score >= 40 ? t("profile.trust.good") : t("profile.trust.low")}
                 </div>
               </div>
             </div>
@@ -138,10 +140,10 @@ export default function WebProfilePage() {
           {/* Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: "Deals", value: rep.completed_deals },
-              { label: "Avg Rating", value: rep.completed_deals > 0 ? `${(rep.rating || 0).toFixed(1)}/5` : "N/A" },
-              { label: "Cancelled", value: rep.cancelled_deals },
-              { label: "Disputes", value: rep.disputes_opened },
+              { label: t("profile.stat.deals"), value: rep.completed_deals },
+              { label: t("profile.stat.rating"), value: rep.completed_deals > 0 ? `${(rep.rating || 0).toFixed(1)}/5` : "N/A" },
+              { label: t("profile.stat.cancelled"), value: rep.cancelled_deals },
+              { label: t("profile.stat.disputes"), value: rep.disputes_opened },
             ].map((s) => (
               <div key={s.label} className="bg-white/5 rounded-xl p-4 text-center">
                 <div className="text-lg font-semibold">{s.value}</div>
@@ -154,13 +156,13 @@ export default function WebProfilePage() {
         {/* Trust Score Breakdown */}
         {profile.trust_breakdown && (
           <div className="glass-card rounded-2xl p-6 mb-6">
-            <h3 className="text-sm font-medium text-slate-400 mb-4">Trust Score Breakdown</h3>
+            <h3 className="text-sm font-medium text-slate-400 mb-4">{t("profile.breakdown.title")}</h3>
             <div className="grid grid-cols-4 gap-4">
               {[
-                { label: "Platform", value: profile.trust_breakdown.platform, weight: "40%", color: "bg-blue-500" },
-                { label: "GitHub", value: profile.trust_breakdown.github, weight: "30%", color: "bg-green-500" },
-                { label: "Wallet", value: profile.trust_breakdown.wallet, weight: "20%", color: "bg-purple-500" },
-                { label: "Verification", value: profile.trust_breakdown.verification, weight: "10%", color: "bg-cyan-500" },
+                { label: t("profile.breakdown.platform"), value: profile.trust_breakdown.platform, weight: "40%", color: "bg-blue-500" },
+                { label: t("profile.breakdown.github"), value: profile.trust_breakdown.github, weight: "30%", color: "bg-green-500" },
+                { label: t("profile.breakdown.wallet"), value: profile.trust_breakdown.wallet, weight: "20%", color: "bg-purple-500" },
+                { label: t("profile.breakdown.verification"), value: profile.trust_breakdown.verification, weight: "10%", color: "bg-cyan-500" },
               ].map((c) => (
                 <div key={c.label} className="text-center">
                   <div className="text-lg font-semibold">{c.value}</div>
@@ -181,13 +183,13 @@ export default function WebProfilePage() {
             {isOwnProfile && (
               <button
                 onClick={async () => {
-                  if (!confirm("Unlink your GitHub account?")) return;
+                  if (!confirm(t("profile.github.unlinkConfirm"))) return;
                   await fetchGithubUnlink();
                   setProfile((p) => p ? { ...p, github: null } : p);
                 }}
                 className="text-xs text-red-400 bg-red-500/5 border border-red-500/10 rounded-lg px-4 py-2 cursor-pointer hover:bg-red-500/10 transition-colors"
               >
-                Unlink GitHub
+                {t("profile.github.unlink")}
               </button>
             )}
           </div>
@@ -199,8 +201,8 @@ export default function WebProfilePage() {
             className="block glass-card rounded-2xl p-6 mb-6 text-center hover:bg-white/5 transition-colors"
           >
             <iconify-icon icon="logos:github-icon" width="32" class="mb-3" />
-            <div className="text-sm font-medium">Link GitHub Account</div>
-            <div className="text-xs text-slate-400 mt-1">Verify your skills and boost your Trust Score</div>
+            <div className="text-sm font-medium">{t("profile.github.link")}</div>
+            <div className="text-xs text-slate-400 mt-1">{t("webProfile.github.hint")}</div>
           </a>
         ) : null}
 
@@ -212,7 +214,7 @@ export default function WebProfilePage() {
                 <iconify-icon icon="solar:wallet-2-bold" width="22" class="text-purple-400" />
               </div>
               <div>
-                <div className="text-sm font-medium">TON Wallet Connected</div>
+                <div className="text-sm font-medium">{t("webProfile.wallet.connected")}</div>
                 <div className="text-xs text-slate-400 font-mono">
                   {tonAddress.slice(0, 6)}...{tonAddress.slice(-4)}
                 </div>
@@ -222,7 +224,7 @@ export default function WebProfilePage() {
               onClick={() => tonConnectUI.disconnect()}
               className="text-xs text-red-400 bg-red-500/5 border border-red-500/10 rounded-lg px-4 py-2 cursor-pointer hover:bg-red-500/10 transition-colors"
             >
-              Disconnect Wallet
+              {t("profile.wallet.disconnect")}
             </button>
           </div>
         ) : (
@@ -231,15 +233,15 @@ export default function WebProfilePage() {
             className="block w-full glass-card rounded-2xl p-6 mb-6 text-center hover:bg-white/5 transition-colors cursor-pointer bg-transparent border-none text-white"
           >
             <iconify-icon icon="solar:wallet-2-bold" width="32" class="text-purple-400 mb-3" />
-            <div className="text-sm font-medium">Connect TON Wallet</div>
-            <div className="text-xs text-slate-400 mt-1">Secure your deals and boost your Trust Score</div>
+            <div className="text-sm font-medium">{t("webProfile.wallet.connect")}</div>
+            <div className="text-xs text-slate-400 mt-1">{t("webProfile.wallet.hint")}</div>
           </button>
         ))}
 
         {/* My Jobs from Groups */}
         {isOwnProfile && myJobs.length > 0 && (
           <div className="glass-card rounded-2xl p-6 mb-6">
-            <h3 className="text-lg font-medium mb-4">My Jobs from Groups</h3>
+            <h3 className="text-lg font-medium mb-4">{t("profile.myJobs")}</h3>
             <div className="space-y-3">
               {myJobs.map((job) => (
                 <MyJobCard
@@ -255,7 +257,7 @@ export default function WebProfilePage() {
         {/* User's Offers */}
         {isOwnProfile && offers.length > 0 && (
           <div className="glass-card rounded-2xl p-6">
-            <h3 className="text-lg font-medium mb-4">Your Offers</h3>
+            <h3 className="text-lg font-medium mb-4">{t("webProfile.yourOffers")}</h3>
             <div className="space-y-3">
               {offers.map((o) => (
                 <div
@@ -273,7 +275,7 @@ export default function WebProfilePage() {
                   </div>
                   {o.min_price && (
                     <span className="text-xs text-slate-400 mt-1 block">
-                      from {o.min_price} {o.currency}
+                      {t("common.from")} {o.min_price} {o.currency}
                     </span>
                   )}
                 </div>

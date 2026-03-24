@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { useT } from "../i18n/context";
+import { useT, useLang, useSetLang, type Lang } from "../i18n/context";
 import TelegramLogin from "./TelegramLogin";
 
 export default function WebNavbar() {
@@ -65,6 +65,7 @@ export default function WebNavbar() {
         </div>
 
         <div className="flex items-center gap-3">
+          <LangToggle />
           {isAuthenticated && user ? (
             <div className="relative" ref={menuRef}>
               <button
@@ -127,5 +128,29 @@ export default function WebNavbar() {
         </div>
       </nav>
     </header>
+  );
+}
+
+function LangToggle() {
+  const lang = useLang();
+  const setLang = useSetLang();
+  const langs: Lang[] = ["en", "ru"];
+
+  return (
+    <div className="flex bg-white/5 rounded-lg p-0.5 gap-0.5">
+      {langs.map((l) => (
+        <button
+          key={l}
+          onClick={() => setLang(l)}
+          className={`px-2.5 py-1 rounded-md text-[11px] font-semibold uppercase tracking-wider border-none cursor-pointer transition-colors ${
+            lang === l
+              ? "bg-[#0098EA]/20 text-[#0098EA]"
+              : "bg-transparent text-slate-500 hover:text-slate-300"
+          }`}
+        >
+          {l}
+        </button>
+      ))}
+    </div>
   );
 }
