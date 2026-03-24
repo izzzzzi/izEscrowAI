@@ -353,10 +353,33 @@ export default function LandingPage() {
             <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between group">
               <div>
                 <iconify-icon icon="solar:verified-check-linear" width="40" height="40" class="text-emerald-400 mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">Non-Custodial Escrow</h3>
+                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.escrow.title")}</h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
-                Funds stay in a TON smart contract. No middlemen hold your money.
+                {t("landing.feature.escrow.desc")}
+              </p>
+            </div>
+
+            {/* Job Parser — wide */}
+            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
+              <div className="relative z-10">
+                <iconify-icon icon="solar:radar-2-linear" width="40" height="40" class="text-cyan-400 mb-6" />
+                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.parser.title")}</h3>
+                <p className="text-slate-400 font-light max-w-md">
+                  {t("landing.feature.parser.desc")}
+                </p>
+              </div>
+              <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-cyan-500/5 rounded-full blur-[60px] group-hover:bg-cyan-500/10 transition-colors" />
+            </div>
+
+            {/* Smart Proposals */}
+            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between group">
+              <div>
+                <iconify-icon icon="solar:pen-new-round-linear" width="40" height="40" class="text-pink-400 mb-6" />
+                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.proposals.title")}</h3>
+              </div>
+              <p className="text-sm text-slate-500 leading-relaxed font-light">
+                {t("landing.feature.proposals.desc")}
               </p>
             </div>
           </div>

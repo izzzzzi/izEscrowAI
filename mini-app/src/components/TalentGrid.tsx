@@ -42,7 +42,7 @@ export default function TalentGrid({ languages, categories }: TalentGridProps) {
   const t = useT();
   const topLanguages = languages.slice(0, 8);
   const maxCount = Math.max(...topLanguages.map((l) => l.count), 1);
-  const totalDevs = categories.reduce((sum, c) => sum + c.count, 0);
+  const totalDevs = categories.reduce((sum, c) => sum + (c.count || 0), 0) || languages.reduce((sum, l) => sum + (l.count || 0), 0);
 
   return (
     <div className="space-y-6">

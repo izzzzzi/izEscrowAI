@@ -12,6 +12,16 @@ const statusConfig: Record<string, { icon: string; color: string }> = {
 
 const defaultStatus = { icon: "solar:clipboard-list-bold", color: "text-slate-500" };
 
+// Demo activity shown when no real activity exists
+const demoActivity = [
+  { description: "Logo design for @ivan", amount: 50, currency: "TON", status: "completed", created_at: new Date(Date.now() - 120000).toISOString() },
+  { description: "Telegram bot development", amount: 180, currency: "TON", status: "funded", created_at: new Date(Date.now() - 300000).toISOString() },
+  { description: "React landing page", amount: 85, currency: "TON", status: "completed", created_at: new Date(Date.now() - 600000).toISOString() },
+  { description: "Smart contract audit", amount: 95, currency: "TON", status: "delivered", created_at: new Date(Date.now() - 900000).toISOString() },
+  { description: "Mobile app MVP", amount: 200, currency: "TON", status: "funded", created_at: new Date(Date.now() - 1200000).toISOString() },
+  { description: "CI/CD pipeline setup", amount: 150, currency: "TON", status: "completed", created_at: new Date(Date.now() - 1800000).toISOString() },
+];
+
 function getStatus(status: string) {
   return statusConfig[status] ?? defaultStatus;
 }
@@ -82,12 +92,8 @@ export default function ActivityFeed() {
       <div className="divide-y divide-white/5 max-h-72 overflow-y-auto">
         {loading ? (
           <SkeletonRows />
-        ) : items.length === 0 ? (
-          <div className="px-4 py-6 text-center text-sm text-slate-500">
-            {t("landing.activity.empty")}
-          </div>
         ) : (
-          items.map((item, idx) => (
+          (items.length > 0 ? items : demoActivity).map((item, idx) => (
             <div
               key={idx}
               className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.02] transition-colors"

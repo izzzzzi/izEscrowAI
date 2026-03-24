@@ -510,6 +510,12 @@ const en = {
   "landing.feature.risk.desc": "Composite Trust Score: Platform (40%) + GitHub (30%) + Wallet (20%) + Verification (10%). Red/green flags detect fake accounts before you commit.",
   "landing.feature.analytics.title": "Group Analytics",
   "landing.feature.analytics.desc": "Track which Telegram groups generate the most deals. Leaderboard, stats, and conversion metrics built in.",
+  "landing.feature.escrow.title": "Non-Custodial Escrow",
+  "landing.feature.escrow.desc": "Funds stay in a TON smart contract. No middlemen hold your money.",
+  "landing.feature.parser.title": "Job Parser",
+  "landing.feature.parser.desc": "Monitors 19 Telegram groups and auto-detects job postings. Extracts budget, skills, and deadline — zero manual input.",
+  "landing.feature.proposals.title": "Smart Proposals",
+  "landing.feature.proposals.desc": "One-click personalized proposals generated from your GitHub profile matched against job requirements.",
   "landing.tech.poweredBy": "Powered by modern crypto stack",
 
   // SpecWizardPage
