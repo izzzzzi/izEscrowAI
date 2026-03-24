@@ -69,7 +69,7 @@ export default function Roadmap() {
     status === "done" ? "text-green-400" : status === "in-progress" ? "text-[#6AB3F3]" : "text-slate-600";
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
+    <div className="w-full">
       {roadmapData.map((q, qi) => {
         const progress = getQuarterProgress(q);
         const isDone = q.items.every((i) => i.status === "done");

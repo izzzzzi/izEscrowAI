@@ -446,8 +446,7 @@ export default function LandingPage() {
 
         {/* CTA Section */}
         <section className="py-32 px-6 text-center reveal">
-          <div className="max-w-7xl mx-auto">
-          <div className="max-w-3xl mx-auto glass-panel p-12 md:p-20 rounded-[3rem] border-white/10 glow-blue relative overflow-hidden">
+          <div className="max-w-7xl mx-auto glass-panel p-12 md:p-20 rounded-[3rem] border-white/10 glow-blue relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#0098EA]/10 rounded-full blur-[80px]" />
 
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6">
@@ -477,7 +476,6 @@ export default function LandingPage() {
                 {t("landing.cta.designer")}
               </button>
             </div>
-          </div>
           </div>
         </section>
 
