@@ -49,6 +49,8 @@ const AdminJobs = lazy(() => import("./pages/admin/AdminJobs"));
 const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
 const AdminDisputes = lazy(() => import("./pages/admin/AdminDisputes"));
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
+const TermsPage = lazy(() => import("./pages/TermsPage"));
+const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 function App() {
@@ -111,6 +113,8 @@ function WebApp() {
             <Route path="/admin/settings" element={<AdminSettings />} />
           </>
         )}
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/wallet" element={<Navigate to="/profile" replace />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

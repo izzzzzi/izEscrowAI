@@ -523,6 +523,12 @@ export default function LandingPage() {
               <a href="https://iz-escrow-ai.vercel.app" className="hover:text-[#0098EA] transition-colors">
                 Web App
               </a>
+              <a href="/terms" className="hover:text-[#0098EA] transition-colors">
+                {t("legal.footer.terms" as any)}
+              </a>
+              <a href="/privacy" className="hover:text-[#0098EA] transition-colors">
+                {t("legal.footer.privacy" as any)}
+              </a>
             </div>
 
             <div className="flex items-center gap-4">
