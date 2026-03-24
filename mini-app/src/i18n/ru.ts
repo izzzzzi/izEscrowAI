@@ -284,7 +284,7 @@ const ru: Record<TranslationKey, string> = {
   "landing.hero.rotate3": "копирайтеров",
   "landing.hero.rotate4": "маркетологов",
   "landing.hero.subtitle":
-    "Находите разработчиков, проверяйте навыки через GitHub и блокируйте оплату в смарт-контракте. AI парсит сделки из обычного текста — без посредников, с полным доверием.",
+    "Находите разработчиков, проверяйте навыки через GitHub и блокируйте оплату в смарт-контракте. Описывайте сделки обычным текстом — без посредников, с полным доверием.",
   "landing.hero.openBot": "Открыть Telegram-бота",
   "landing.hero.browseOffers": "Смотреть офферы",
   "landing.stats.jobs": "Активных заказов",
@@ -299,22 +299,22 @@ const ru: Record<TranslationKey, string> = {
   "landing.workflow.subtitle": "От нуля до защиты за 60 секунд.",
   "landing.workflow.step1": "1. Опишите",
   "landing.workflow.step1.desc":
-    "Опишите задачу обычным языком — AI поймёт контекст.",
-  "landing.workflow.step2": "2. AI-спека",
+    "Опишите задачу обычным языком — контекст распознаётся автоматически.",
+  "landing.workflow.step2": "2. Спека",
   "landing.workflow.step2.desc":
-    "AI создаёт структурированную спецификацию с критериями приёмки.",
-  "landing.workflow.step3": "3. AI-цена",
+    "Структурированная спецификация с критериями приёмки создаётся мгновенно.",
+  "landing.workflow.step3": "3. Цена",
   "landing.workflow.step3.desc":
-    "AI оценивает справедливый диапазон цен по сложности спеки.",
-  "landing.workflow.step4": "4. AI-подбор",
+    "Справедливый диапазон цен рассчитывается по сложности спеки.",
+  "landing.workflow.step4": "4. Подбор",
   "landing.workflow.step4.desc":
-    "AI находит лучших исполнителей и ранжирует по соответствию.",
+    "Лучшие исполнители найдены и ранжированы по навыкам и доверию.",
   "landing.workflow.step5": "5. Эскроу",
   "landing.workflow.step5.desc":
     "Средства в смарт-контракте TON. Без хранения у третьих лиц.",
-  "landing.workflow.step6": "6. AI-проверка",
+  "landing.workflow.step6": "6. Проверка",
   "landing.workflow.step6.desc":
-    "AI сверяет результат с критериями спеки пункт за пунктом.",
+    "Результат сверяется с критериями спеки пункт за пунктом.",
   "landing.talent.title": "Доступные специалисты",
   "landing.talent.subtitle":
     "Разработчики с верификацией через GitHub.",
@@ -524,20 +524,20 @@ const ru: Record<TranslationKey, string> = {
 
   // Landing Features Bento
   "landing.feature.spec.title": "AI-генератор спецификаций",
-  "landing.feature.spec.desc": "Опишите задачу обычным языком. AI создаст структурированную спецификацию с критериями приёмки, задаст уточняющие вопросы и сформирует проверяемый контракт.",
+  "landing.feature.spec.desc": "Опишите задачу обычным языком. Получите структурированную спецификацию с критериями приёмки, уточняющими вопросами и проверяемым контрактом.",
   "landing.feature.pricing.title": "AI-оценка цены",
-  "landing.feature.pricing.desc": "AI оценивает справедливый диапазон цен по сложности спеки. Минимум, медиана, максимум с рекомендуемой ценой и обоснованием.",
+  "landing.feature.pricing.desc": "Справедливый диапазон цен по сложности спеки. Минимум, медиана, максимум с рекомендацией и обоснованием.",
   "landing.feature.matching.title": "AI-подбор исполнителей",
-  "landing.feature.matching.desc": "AI находит лучших исполнителей на платформе. Ранжирование по репутации, навыкам, доверию и соответствию цены.",
+  "landing.feature.matching.desc": "Лучшие исполнители найдены и ранжированы по репутации, навыкам, доверию и цене.",
   "landing.feature.arbitration.title": "AI-арбитраж",
-  "landing.feature.arbitration.desc": "Споры решаются объективно: AI сверяет результат с каждым критерием спеки, оценивает соответствие и предлагает справедливое разделение. Прозрачно и проверяемо.",
+  "landing.feature.arbitration.desc": "Споры решаются объективно: результат сверяется с каждым критерием спеки, соответствие оценивается, справедливое разделение предлагается. Прозрачно и проверяемо.",
   "landing.feature.arbitration.compliance": "Соответствие",
   "landing.feature.inline.title": "Inline-офферы",
   "landing.feature.inline.desc": "Размещайте офферы прямо в любом чате Telegram через inline-режим. Любой может откликнуться — не нужно вступать в канал.",
   "landing.feature.auction.title": "Аукцион и ставки",
   "landing.feature.auction.desc": "Создавайте публичные офферы, собирайте ставки, оценивайте Trust Score и выбирайте лучшего. Полноценный P2P-маркетплейс внутри Telegram.",
   "landing.feature.github.title": "Верификация навыков через GitHub",
-  "landing.feature.github.desc": "Привяжите GitHub, чтобы доказать навыки. Языки, репозитории и история вклада анализируются для создания проверяемого профиля. AI автоматически сопоставляет ваш стек с требованиями заказа.",
+  "landing.feature.github.desc": "Привяжите GitHub, чтобы доказать навыки. Языки, репозитории и история вклада анализируются для создания проверяемого профиля. Ваш стек автоматически сопоставляется с требованиями заказа.",
   "landing.feature.github.trustScore": "Trust Score",
   "landing.feature.github.established": "Опытный",
   "landing.feature.github.orgMember": "Член организации",
