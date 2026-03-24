@@ -82,10 +82,15 @@ button:active {
 
 /* Page wrapper — replaces inline style={{ background: "#0f0f1a", color: "#fff" }} */
 .page-shell {
+  --cursor-x: 50%;
+  --cursor-y: 50%;
   background: #0f0f1a;
   color: #fff;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image:
+    radial-gradient(600px circle at var(--cursor-x) var(--cursor-y), rgba(0, 152, 234, 0.04), transparent 40%),
+    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 24px 24px;
+  background-attachment: fixed, fixed;
 }
 
 /* Mini App: override pt-28 (web navbar offset) — no top navbar in Telegram */

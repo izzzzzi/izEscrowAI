@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense, Component, type ReactNode, type ErrorInfo } from "react";
+import { useState, useEffect, useRef, lazy, Suspense, Component, type ReactNode, type ErrorInfo } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import TabNav from "./components/TabNav";
 import WebNavbar from "./components/WebNavbar";
@@ -64,14 +64,27 @@ function App() {
 
 function WebApp() {
   const { authData, isAdmin } = useAuth();
+  const shellRef = useRef<HTMLDivElement>(null);
 
   // Sync auth data to API client
   useEffect(() => {
     setTelegramAuthData(authData);
   }, [authData]);
 
+  // Cursor glow — update CSS custom properties on mousemove
+  useEffect(() => {
+    const el = shellRef.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const onMove = (e: MouseEvent) => {
+      el.style.setProperty("--cursor-x", e.clientX + "px");
+      el.style.setProperty("--cursor-y", (e.clientY + window.scrollY) + "px");
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
   return (
-    <div className="overflow-x-hidden page-shell" style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div ref={shellRef} className="overflow-x-hidden page-shell" style={{ fontFamily: "'Inter', sans-serif" }}>
       <WebNavbar />
       <PageErrorBoundary>
       <Suspense fallback={<div className="min-h-screen" />}>
