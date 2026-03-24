@@ -413,16 +413,58 @@ a {
 
 /* Staggered entrance animation for hero elements */
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-up {
-  animation: fade-up 0.6s ease-out both;
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
 .delay-400 { animation-delay: 400ms; }
+
+/* Scroll reveal — elements start invisible, revealed by IntersectionObserver */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 100ms; }
+.reveal-delay-2 { transition-delay: 200ms; }
+.reveal-delay-3 { transition-delay: 300ms; }
+
+/* Glow pulse for accent elements */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 152, 234, 0.1); }
+  50% { box-shadow: 0 0 40px rgba(0, 152, 234, 0.25); }
+}
+.glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+/* Gradient border shimmer */
+@keyframes border-shimmer {
+  0% { border-color: rgba(0, 152, 234, 0.15); }
+  50% { border-color: rgba(0, 209, 255, 0.3); }
+  100% { border-color: rgba(0, 152, 234, 0.15); }
+}
+.shimmer-border {
+  animation: border-shimmer 4s ease-in-out infinite;
+}
+
+/* Hover lift for cards */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
 
 /* Pipeline line shimmer */
 .pipeline-line {
@@ -447,12 +489,22 @@ a {
   .animate-fade-up,
   .animate-float,
   .pipeline-line,
+  .glow-pulse,
+  .shimmer-border,
   .chat-step,
   .chat-step-1, .chat-step-2, .chat-step-3,
   .chat-step-4, .chat-step-5, .chat-step-6,
   .typing-bubble span {
     animation: none !important;
     opacity: 1 !important;
+    transform: none !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .hover-lift:hover {
     transform: none !important;
   }
 }

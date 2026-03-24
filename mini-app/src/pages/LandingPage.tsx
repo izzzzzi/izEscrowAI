@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { fetchStats, fetchPublicOffers, fetchTalent, fetchTopGroups, type PlatformStats, type PublicOffer, type TalentData, type GroupStat } from "../lib/api";
@@ -15,12 +15,26 @@ export default function LandingPage() {
   const [talent, setTalent] = useState<TalentData | null>(null);
   const [topGroups, setTopGroups] = useState<GroupStat[]>([]);
 
+  const mainRef = useRef<HTMLElement>(null);
+
   useEffect(() => {
     fetchStats().then(setStats).catch(() => {});
     fetchPublicOffers().then((offers) => setRecentOffers(offers.slice(0, 6))).catch(() => {});
     fetchTalent().then(setTalent).catch(() => {});
     fetchTopGroups(5).then(setTopGroups).catch(() => {});
   }, []);
+
+  // Scroll-reveal animation (CSS-class based, defaults to visible)
+  useEffect(() => {
+    const els = mainRef.current?.querySelectorAll(".reveal");
+    if (!els || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("revealed"); }),
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" },
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [stats, talent, recentOffers, topGroups]);
 
   const workflowSteps = [
     { icon: "solar:chat-line-linear", title: t("landing.workflow.step1"), desc: t("landing.workflow.step1.desc") },
@@ -38,7 +52,7 @@ export default function LandingPage() {
       <Helmet>
         <title>izEscrowAI — AI-Powered P2P Escrow on TON</title>
       </Helmet>
-      <main className="relative">
+      <main ref={mainRef} className="relative">
         {/* Background Orbs */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none -z-10">
           <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-[#0098EA]/10 rounded-full blur-[120px]" />
@@ -63,7 +77,7 @@ export default function LandingPage() {
               <div className="animate-fade-up delay-300 flex flex-col sm:flex-row gap-4">
                 <a
                   href="https://t.me/izEscrowAIBot"
-                  className="ton-gradient px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium transition-transform hover:-translate-y-0.5"
+                  className="ton-gradient px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/20 glow-pulse"
                 >
                   <iconify-icon icon="solar:paper-plane-linear" width="20" height="20" />
                   {t("landing.hero.openBot")}
@@ -80,7 +94,7 @@ export default function LandingPage() {
 
             {/* Telegram Chat Mockup — iPhone frame */}
             <div className="relative animate-float">
-              <div className="mockup-phone mx-auto">
+              <div className="mockup-phone mx-auto shimmer-border">
                 <div className="mockup-phone-camera"></div>
                 <div className="mockup-phone-display">
                 {/* Chat header */}
@@ -231,7 +245,7 @@ export default function LandingPage() {
         </section>
 
         {/* How It Works */}
-        <section id="how-it-works" className="py-24 px-6 relative">
+        <section id="how-it-works" className="py-24 px-6 relative reveal">
           <div className="max-w-7xl mx-auto text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.workflow.title")}</h2>
             <p className="text-slate-400 font-light">{t("landing.workflow.subtitle")}</p>
@@ -239,7 +253,7 @@ export default function LandingPage() {
 
           <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {workflowSteps.map((step) => (
-              <div key={step.title} className="glass-panel p-8 rounded-3xl group hover:-translate-y-2 transition-all">
+              <div key={step.title} className="glass-panel p-8 rounded-3xl group hover-lift">
                 <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:bg-blue-500/20 transition-colors">
                   <iconify-icon icon={step.icon} width="24" height="24" class="text-[#0098EA]" />
                 </div>
@@ -251,10 +265,10 @@ export default function LandingPage() {
         </section>
 
         {/* Features Bento Grid */}
-        <section id="features" className="py-24 px-6">
+        <section id="features" className="py-24 px-6 reveal">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* AI Spec Generator — wide */}
-            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] relative overflow-hidden group">
+            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
                 <iconify-icon icon="solar:document-add-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
                 <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.spec.title")}</h3>
@@ -266,7 +280,7 @@ export default function LandingPage() {
             </div>
 
             {/* AI Pricing */}
-            <div className="glass-panel p-10 rounded-[2.5rem] flex flex-col justify-between">
+            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <iconify-icon icon="solar:tag-price-linear" width="40" height="40" class="text-emerald-400 mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.pricing.title")}</h3>
@@ -277,7 +291,7 @@ export default function LandingPage() {
             </div>
 
             {/* AI Matching */}
-            <div className="glass-panel p-10 rounded-[2.5rem] flex flex-col justify-between">
+            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <iconify-icon icon="solar:users-group-rounded-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.matching.title")}</h3>
@@ -288,7 +302,7 @@ export default function LandingPage() {
             </div>
 
             {/* Non-Custodial + AI Arbitration — wide */}
-            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-10">
+            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col md:flex-row items-center gap-10">
               <div className="flex-1">
                 <iconify-icon icon="solar:scale-linear" width="40" height="40" class="text-purple-400 mb-6" />
                 <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.arbitration.title")}</h3>
@@ -305,7 +319,7 @@ export default function LandingPage() {
             </div>
 
             {/* Inline Offers */}
-            <div className="glass-panel p-10 rounded-[2.5rem] flex flex-col justify-between group">
+            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between group">
               <div>
                 <iconify-icon icon="solar:chat-square-arrow-linear" width="40" height="40" class="text-cyan-400 mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.inline.title")}</h3>
@@ -316,7 +330,7 @@ export default function LandingPage() {
             </div>
 
             {/* Auction & Bidding — wide */}
-            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] relative overflow-hidden group">
+            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
                 <iconify-icon icon="solar:sort-by-time-linear" width="40" height="40" class="text-amber-400 mb-6" />
                 <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.auction.title")}</h3>
@@ -328,7 +342,7 @@ export default function LandingPage() {
             </div>
 
             {/* GitHub Skill Verification — full width */}
-            <div className="md:col-span-3 glass-panel p-10 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-10">
+            <div className="md:col-span-3 glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col md:flex-row items-center gap-10">
               <div className="flex-1">
                 <iconify-icon icon="logos:github-icon" width="40" height="40" class="mb-6" />
                 <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.github.title")}</h3>
@@ -349,7 +363,7 @@ export default function LandingPage() {
             </div>
 
             {/* AI Risk Score */}
-            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] relative overflow-hidden group">
+            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
                 <iconify-icon icon="solar:shield-check-linear" width="40" height="40" class="text-green-400 mb-6" />
                 <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.risk.title")}</h3>
@@ -361,7 +375,7 @@ export default function LandingPage() {
             </div>
 
             {/* Group Analytics */}
-            <div className="glass-panel p-10 rounded-[2.5rem] flex flex-col justify-between">
+            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <iconify-icon icon="solar:users-group-rounded-linear" width="40" height="40" class="text-violet-400 mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.analytics.title")}</h3>
@@ -531,7 +545,7 @@ export default function LandingPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-32 px-6 text-center">
+        <section className="py-32 px-6 text-center reveal">
           <div className="max-w-3xl mx-auto glass-panel p-12 md:p-20 rounded-[3rem] border-white/10 glow-blue relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#0098EA]/10 rounded-full blur-[80px]" />
 
