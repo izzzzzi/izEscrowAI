@@ -127,10 +127,14 @@ button:active {
   border-color: rgba(0, 152, 234, 0.4);
 }
 
-/* Chat bubble colors (Telegram-style) */
+/* Chat colors — matches Telegram dark theme */
 .chat-bubble-user { background: #2B5278; }
-.chat-bubble-bot { background: rgba(30, 41, 59, 0.8); }
-.chat-header { background: rgba(23, 33, 48, 0.9); }
+.chat-bubble-bot { background: #182533; }
+.chat-header { background: #17212B; }
+.chat-bg { background: #0E1621; }
+.chat-time { color: #6D7883; }
+.chat-link { color: #6AB3F3; }
+.chat-online { color: #6AB3F3; }
 
 .glass-card {
   background: rgba(30, 41, 59, 0.5);

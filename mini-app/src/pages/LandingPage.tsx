@@ -123,27 +123,27 @@ export default function LandingPage() {
             <div className="relative animate-float">
               <div className="mockup-phone mx-auto shimmer-border">
                 <div className="mockup-phone-camera"></div>
-                <div className="mockup-phone-display">
+                <div className="mockup-phone-display chat-bg">
                 {/* Chat header */}
-                <div className="chat-header flex items-center gap-3 px-4 py-3 border-b border-white/5">
-                  <div className="w-9 h-9 rounded-full ton-gradient flex items-center justify-center">
-                    <iconify-icon icon="solar:shield-check-linear" width="18" height="18" class="text-white" />
+                <div className="chat-header flex items-center gap-3 px-4 py-3">
+                  <div className="w-10 h-10 rounded-full ton-gradient flex items-center justify-center">
+                    <iconify-icon icon="solar:shield-check-linear" width="20" height="20" class="text-white" />
                   </div>
                   <div className="flex-1">
-                    <div className="text-sm font-medium">{t("landing.chat.botName")}</div>
-                    <div className="text-[10px] text-[#0098EA]">{t("landing.chat.online")}</div>
+                    <div className="text-[15px] font-medium">{t("landing.chat.botName")}</div>
+                    <div className="text-[12px] chat-online">{t("landing.chat.online")}</div>
                   </div>
-                  <iconify-icon icon="solar:phone-linear" width="18" class="text-slate-500" />
-                  <iconify-icon icon="solar:menu-dots-bold" width="18" class="text-slate-500" />
+                  <iconify-icon icon="solar:phone-linear" width="20" class="text-[#6D7883]" />
+                  <iconify-icon icon="solar:menu-dots-bold" width="20" class="text-[#6D7883]" />
                 </div>
 
                 {/* Chat messages */}
                 <div className="px-3 py-4 space-y-3 min-h-[380px]">
                   {/* Step 1: User sends /start */}
                   <div className="flex justify-end chat-step chat-step-1">
-                    <div className="chat-bubble-user max-w-[80%] px-3 py-2 rounded-2xl rounded-br-md text-sm">
+                    <div className="chat-bubble-user max-w-[80%] px-3 py-2 rounded-[18px] rounded-br-[6px] text-sm">
                       /start
-                      <div className="text-[10px] text-slate-400 text-right mt-1">12:01</div>
+                      <div className="text-[11px] chat-time text-right mt-1">12:01</div>
                     </div>
                   </div>
 
@@ -152,27 +152,27 @@ export default function LandingPage() {
                     <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
                       <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
                     </div>
-                    <div className="chat-bubble-bot max-w-[85%] px-3 py-2 rounded-2xl rounded-bl-md text-[13px] leading-relaxed">
+                    <div className="chat-bubble-bot max-w-[85%] px-3 py-2 rounded-[18px] rounded-bl-[6px] text-[13px] leading-relaxed">
                       <div className="font-medium mb-1">{t("landing.chat.welcome")}</div>
                       <div className="text-slate-400 mb-2">{t("landing.chat.welcomeText")}</div>
                       <div className="text-slate-400">{t("landing.chat.prompt")}</div>
-                      <div className="text-[#0098EA]">{t("landing.chat.example")}</div>
-                      <div className="text-[10px] text-slate-500 text-right mt-1">12:01</div>
+                      <div className="chat-link">{t("landing.chat.example")}</div>
+                      <div className="text-[11px] chat-time text-right mt-1">12:01</div>
                     </div>
                   </div>
 
                   {/* Step 3: User typing */}
                   <div className="flex justify-end chat-step chat-step-3">
-                    <div className="chat-bubble-user px-3 py-2 rounded-2xl rounded-br-md text-xs text-slate-400">
+                    <div className="chat-bubble-user px-3 py-2 rounded-[18px] rounded-br-[6px] text-xs text-slate-400">
                       <span className="typing-bubble"><span /><span /><span /></span>
                     </div>
                   </div>
 
                   {/* Step 4: User sends deal message */}
                   <div className="flex justify-end chat-step chat-step-4">
-                    <div className="chat-bubble-user max-w-[80%] px-3 py-2 rounded-2xl rounded-br-md text-sm">
+                    <div className="chat-bubble-user max-w-[80%] px-3 py-2 rounded-[18px] rounded-br-[6px] text-sm">
                       {t("landing.chat.dealExample")}
-                      <div className="text-[10px] text-slate-400 text-right mt-1">12:02</div>
+                      <div className="text-[11px] chat-time text-right mt-1">12:02</div>
                     </div>
                   </div>
 
@@ -181,7 +181,7 @@ export default function LandingPage() {
                     <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
                       <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
                     </div>
-                    <div className="chat-bubble-bot px-3 py-2 rounded-2xl rounded-bl-md text-xs text-slate-400 flex items-center gap-1.5">
+                    <div className="chat-bubble-bot px-3 py-2 rounded-[18px] rounded-bl-[6px] text-xs text-slate-400 flex items-center gap-1.5">
                       <iconify-icon icon="solar:cpu-linear" width="14" class="text-[#0098EA] animate-spin-slow" />
                       <span className="typing-dots">{t("landing.chat.parsing")}</span>
                     </div>
@@ -192,7 +192,7 @@ export default function LandingPage() {
                     <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
                       <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
                     </div>
-                    <div className="chat-bubble-bot max-w-[85%] rounded-2xl rounded-bl-md overflow-hidden">
+                    <div className="chat-bubble-bot max-w-[85%] rounded-[18px] rounded-bl-[6px] overflow-hidden">
                       <div className="px-3 pt-2 pb-1 text-[13px] leading-relaxed">
                         <div className="font-medium mb-1.5">{t("landing.chat.parsed")}</div>
                         <div className="space-y-0.5 mb-2">
@@ -216,19 +216,19 @@ export default function LandingPage() {
                           <iconify-icon icon="solar:shield-check-linear" width="11" />
                           {t("landing.chat.trustScore")}
                         </div>
-                        <div className="text-[10px] text-slate-500 text-right">12:02</div>
+                        <div className="text-[11px] chat-time text-right">12:02</div>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Chat input bar */}
-                <div className="chat-header flex items-center gap-2 px-3 py-2 border-t border-white/5">
-                  <iconify-icon icon="solar:smile-circle-linear" width="22" class="text-slate-500" />
-                  <div className="flex-1 bg-white/5 rounded-full px-4 py-2 text-xs text-slate-500">
+                <div className="chat-header flex items-center gap-2 px-3 py-2.5">
+                  <iconify-icon icon="solar:smile-circle-linear" width="24" class="text-[#6D7883]" />
+                  <div className="flex-1 bg-[#0E1621] rounded-full px-4 py-2 text-xs text-[#6D7883] border border-white/5">
                     {t("landing.chat.message")}
                   </div>
-                  <iconify-icon icon="solar:microphone-linear" width="22" class="text-slate-500" />
+                  <iconify-icon icon="solar:microphone-linear" width="24" class="text-[#6D7883]" />
                 </div>
                 </div>{/* /mockup-phone-display */}
               </div>{/* /mockup-phone */}
