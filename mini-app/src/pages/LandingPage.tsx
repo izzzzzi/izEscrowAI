@@ -143,7 +143,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Chat messages */}
-                <div className="px-3 py-4 space-y-3 min-h-[320px]">
+                <div className="px-3 py-4 space-y-3 min-h-[280px]">
                   {/* Step 1: User sends /start */}
                   <div className="flex justify-end chat-step chat-step-1">
                     <div className="chat-bubble-user max-w-[80%] px-3 py-2 rounded-[18px] rounded-br-[6px] text-sm">

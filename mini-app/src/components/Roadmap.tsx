@@ -64,8 +64,8 @@ export default function Roadmap() {
     : status === "in-progress" ? t("roadmap.inProgress")
     : t("roadmap.planned");
 
-  const statusIcon = (status: string) =>
-    status === "done" ? "✓" : status === "in-progress" ? "→" : "·";
+  const statusIconName = (status: string) =>
+    status === "done" ? "solar:check-read-linear" : status === "in-progress" ? "solar:arrow-right-linear" : "solar:minus-circle-linear";
 
   const statusColor = (status: string) =>
     status === "done" ? "text-green-400" : status === "in-progress" ? "text-[#6AB3F3]" : "text-slate-600";
@@ -161,7 +161,7 @@ export default function Roadmap() {
                     <ul className="space-y-1">
                       {item.featureKeys.map((fk) => (
                         <li key={fk} className="text-xs text-slate-400 flex items-center gap-2">
-                          <span className={`flex-shrink-0 ${statusColor(item.status)}`}>{statusIcon(item.status)}</span>
+                          <iconify-icon icon={statusIconName(item.status)} width="14" class={`flex-shrink-0 ${statusColor(item.status)}`} />
                           {t(fk as any)}
                         </li>
                       ))}

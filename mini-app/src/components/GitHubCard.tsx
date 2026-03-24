@@ -5,15 +5,22 @@ interface GitHubCardProps {
   flags?: { green: string[]; red: string[] } | null;
 }
 
-const FLAG_LABELS: Record<string, string> = {
-  established: "Established \u2705",
-  starred_repos: "Popular repos \u2B50",
-  external_prs: "Open source contributor \uD83D\uDD00",
-  org_member: "Org member \uD83C\uDFE2",
-  new_account: "New account \u26A0\uFE0F",
-  all_forks: "All repos forked \u26A0\uFE0F",
-  empty_activity: "No activity \u26A0\uFE0F",
-  burst_activity: "Sudden activity \u26A0\uFE0F",
+const FLAG_CONFIG: Record<string, { label: string; icon: string }> = {
+  established: { label: "Established", icon: "solar:verified-check-bold" },
+  starredRepos: { label: "Popular repos", icon: "solar:star-bold" },
+  starred_repos: { label: "Popular repos", icon: "solar:star-bold" },
+  external_prs: { label: "Open source", icon: "solar:code-scan-linear" },
+  externalPrs: { label: "Open source", icon: "solar:code-scan-linear" },
+  org_member: { label: "Org member", icon: "solar:buildings-linear" },
+  orgMember: { label: "Org member", icon: "solar:buildings-linear" },
+  new_account: { label: "New account", icon: "solar:danger-triangle-linear" },
+  newAccount: { label: "New account", icon: "solar:danger-triangle-linear" },
+  all_forks: { label: "All forks", icon: "solar:danger-triangle-linear" },
+  allForks: { label: "All forks", icon: "solar:danger-triangle-linear" },
+  empty_activity: { label: "No activity", icon: "solar:danger-triangle-linear" },
+  emptyActivity: { label: "No activity", icon: "solar:danger-triangle-linear" },
+  burst_activity: { label: "Sudden activity", icon: "solar:danger-triangle-linear" },
+  burstActivity: { label: "Sudden activity", icon: "solar:danger-triangle-linear" },
 };
 
 const LANG_COLORS: Record<string, string> = {
@@ -227,22 +234,24 @@ export default function GitHubCard({ profile, flags }: GitHubCardProps) {
       {/* Flags */}
       {mergedFlags && (mergedFlags.green.length > 0 || mergedFlags.red.length > 0) && (
         <div className="flex flex-wrap gap-1.5">
-          {mergedFlags.green.map((f) => (
-            <span
-              key={f}
-              className="text-[0.6rem] font-medium px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/20"
-            >
-              {FLAG_LABELS[f] ?? f}
-            </span>
-          ))}
-          {mergedFlags.red.map((f) => (
-            <span
-              key={f}
-              className="text-[0.6rem] font-medium px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/20"
-            >
-              {FLAG_LABELS[f] ?? f}
-            </span>
-          ))}
+          {mergedFlags.green.map((f) => {
+            const cfg = FLAG_CONFIG[f];
+            return (
+              <span key={f} className="text-[0.6rem] font-medium px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/20 flex items-center gap-1">
+                <iconify-icon icon={cfg?.icon ?? "solar:check-circle-linear"} width="12" />
+                {cfg?.label ?? f}
+              </span>
+            );
+          })}
+          {mergedFlags.red.map((f) => {
+            const cfg = FLAG_CONFIG[f];
+            return (
+              <span key={f} className="text-[0.6rem] font-medium px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/20 flex items-center gap-1">
+                <iconify-icon icon={cfg?.icon ?? "solar:danger-triangle-linear"} width="12" />
+                {cfg?.label ?? f}
+              </span>
+            );
+          })}
         </div>
       )}
     </div>
