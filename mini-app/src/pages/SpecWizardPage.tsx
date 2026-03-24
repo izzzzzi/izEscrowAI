@@ -4,6 +4,7 @@ import { createSpec, generateSpecAI } from "../lib/api";
 import AppHeader from "../components/AppHeader";
 import PriceRange from "../components/PriceRange";
 import SpecChecklist from "../components/SpecChecklist";
+import { useT } from "../i18n/context";
 
 interface Requirement {
   description: string;
@@ -21,6 +22,7 @@ const CURRENCIES = ["USD", "EUR", "TON", "USDT", "RUB"];
 
 export default function SpecWizardPage() {
   const navigate = useNavigate();
+  const t = useT();
   const [step, setStep] = useState(1);
 
   // Step 1
@@ -71,7 +73,7 @@ export default function SpecWizardPage() {
         setStep(2);
       }
     } catch (e: any) {
-      setError(e.message || "Failed to generate spec");
+      setError(e.message || t("spec.error.generateFailed"));
     } finally {
       setLoading(false);
     }
@@ -141,20 +143,20 @@ export default function SpecWizardPage() {
       });
       navigate(`/spec/${spec.id}`, { replace: true });
     } catch (e: any) {
-      setError(e.message || "Failed to create spec");
+      setError(e.message || t("spec.error.createFailed"));
     } finally {
       setSubmitting(false);
     }
   };
 
-  const stepLabels = ["Describe", "Requirements", "Budget", "Review"];
+  const stepLabels = [t("spec.step.describe"), t("spec.step.requirements"), t("spec.step.budget"), t("spec.step.review")];
 
   return (
     <div className="mini-page">
       <AppHeader />
       <main className="px-5 pb-32 space-y-6">
         <h2 className="text-sm font-medium text-slate-400 uppercase tracking-widest pl-1">
-          New Specification
+          {t("spec.pageTitle")}
         </h2>
 
         {/* Step indicator */}
@@ -205,16 +207,16 @@ export default function SpecWizardPage() {
         {step === 1 && (
           <div className="glass-card rounded-2xl p-6 space-y-4">
             <div>
-              <h3 className="text-lg font-medium mb-1">Describe your project</h3>
+              <h3 className="text-lg font-medium mb-1">{t("spec.describe.title")}</h3>
               <p className="text-xs text-slate-400">
-                Tell us what you need. Be as detailed as possible and AI will generate structured requirements.
+                {t("spec.describe.subtitle")}
               </p>
             </div>
 
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="e.g. I need a Telegram bot that tracks crypto prices and sends alerts when price crosses thresholds..."
+              placeholder={t("spec.describe.placeholder")}
               rows={6}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#0098EA]/50 resize-none placeholder:text-slate-600"
             />
@@ -224,7 +226,7 @@ export default function SpecWizardPage() {
               <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 space-y-2">
                 <p className="text-xs font-medium text-amber-400">
                   <iconify-icon icon="solar:chat-round-dots-linear" width="14" style={{ verticalAlign: "middle" }} />{" "}
-                  AI needs more details:
+                  {t("spec.describe.aiQuestions")}
                 </p>
                 <ul className="space-y-1.5">
                   {questions.map((q, i) => (
@@ -235,7 +237,7 @@ export default function SpecWizardPage() {
                   ))}
                 </ul>
                 <p className="text-[10px] text-slate-500">
-                  Update your description above and try again.
+                  {t("spec.describe.updateHint")}
                 </p>
               </div>
             )}
@@ -248,12 +250,12 @@ export default function SpecWizardPage() {
               {loading ? (
                 <>
                   <iconify-icon icon="solar:refresh-linear" width="16" class="animate-spin" />
-                  Generating...
+                  {t("spec.describe.generating")}
                 </>
               ) : (
                 <>
                   <iconify-icon icon="solar:magic-stick-3-linear" width="16" />
-                  Generate with AI
+                  {t("spec.describe.generateBtn")}
                 </>
               )}
             </button>
@@ -265,7 +267,7 @@ export default function SpecWizardPage() {
           <div className="space-y-4">
             <div className="glass-card rounded-2xl p-6 space-y-4">
               <div>
-                <label className="text-xs text-slate-400 mb-1 block">Project Title</label>
+                <label className="text-xs text-slate-400 mb-1 block">{t("spec.req.projectTitle")}</label>
                 <input
                   type="text"
                   value={title}
@@ -275,7 +277,7 @@ export default function SpecWizardPage() {
               </div>
 
               <div>
-                <label className="text-xs text-slate-400 mb-1 block">Category</label>
+                <label className="text-xs text-slate-400 mb-1 block">{t("spec.req.category")}</label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
@@ -283,7 +285,7 @@ export default function SpecWizardPage() {
                 >
                   {["frontend", "backend", "mobile", "blockchain", "devops", "data", "design", "ai", "fullstack", "other"].map(
                     (c) => (
-                      <option key={c} value={c} className="bg-[#0f172a]">
+                      <option key={c} value={c} className="bg-[#0f172a] text-white">
                         {c.charAt(0).toUpperCase() + c.slice(1)}
                       </option>
                     ),
@@ -294,13 +296,13 @@ export default function SpecWizardPage() {
 
             <div className="glass-card rounded-2xl p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-medium text-slate-300">Requirements</h3>
+                <h3 className="text-sm font-medium text-slate-300">{t("spec.req.requirements")}</h3>
                 <button
                   onClick={addRequirement}
                   className="text-xs text-[#0098EA] bg-transparent border-none cursor-pointer flex items-center gap-1"
                 >
                   <iconify-icon icon="solar:add-circle-linear" width="14" />
-                  Add
+                  {t("spec.req.add")}
                 </button>
               </div>
 
@@ -312,7 +314,7 @@ export default function SpecWizardPage() {
                       type="text"
                       value={req.description}
                       onChange={(e) => updateRequirement(i, "description", e.target.value)}
-                      placeholder="Requirement description"
+                      placeholder={t("spec.req.placeholder")}
                       className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-[#0098EA]/50"
                     />
                     <button
@@ -332,7 +334,7 @@ export default function SpecWizardPage() {
                           type="text"
                           value={c}
                           onChange={(e) => updateCriterion(i, j, e.target.value)}
-                          placeholder="Acceptance criterion"
+                          placeholder={t("spec.req.criterionPlaceholder")}
                           className="flex-1 bg-transparent border-b border-white/5 px-1 py-1 text-xs text-slate-300 outline-none focus:border-[#0098EA]/30"
                         />
                         <button
@@ -348,7 +350,7 @@ export default function SpecWizardPage() {
                       className="text-[10px] text-slate-500 hover:text-slate-300 bg-transparent border-none cursor-pointer flex items-center gap-1"
                     >
                       <iconify-icon icon="solar:add-circle-linear" width="12" />
-                      Add criterion
+                      {t("spec.req.addCriterion")}
                     </button>
                   </div>
                 </div>
@@ -360,14 +362,14 @@ export default function SpecWizardPage() {
                 onClick={() => setStep(1)}
                 className="flex-1 py-3 rounded-xl text-sm font-medium cursor-pointer border border-white/10 text-slate-300 bg-transparent"
               >
-                Back
+                {t("spec.btn.back")}
               </button>
               <button
                 onClick={() => setStep(3)}
                 disabled={!title.trim() || requirements.length === 0}
                 className="flex-1 ton-gradient py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white disabled:opacity-50"
               >
-                Next
+                {t("spec.btn.next")}
               </button>
             </div>
           </div>
@@ -377,33 +379,33 @@ export default function SpecWizardPage() {
         {step === 3 && (
           <div className="space-y-4">
             <div className="glass-card rounded-2xl p-6 space-y-4">
-              <h3 className="text-lg font-medium">Budget & Deadline</h3>
+              <h3 className="text-lg font-medium">{t("spec.budget.title")}</h3>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-slate-400 mb-1 block">Min Budget</label>
+                  <label className="text-xs text-slate-400 mb-1 block">{t("spec.budget.min")}</label>
                   <input
                     type="number"
                     value={budgetMin}
                     onChange={(e) => setBudgetMin(e.target.value)}
-                    placeholder="e.g. 100"
+                    placeholder={t("spec.budget.minPlaceholder")}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#0098EA]/50"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400 mb-1 block">Max Budget</label>
+                  <label className="text-xs text-slate-400 mb-1 block">{t("spec.budget.max")}</label>
                   <input
                     type="number"
                     value={budgetMax}
                     onChange={(e) => setBudgetMax(e.target.value)}
-                    placeholder="e.g. 500"
+                    placeholder={t("spec.budget.maxPlaceholder")}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#0098EA]/50"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs text-slate-400 mb-1 block">Currency</label>
+                <label className="text-xs text-slate-400 mb-1 block">{t("spec.budget.currency")}</label>
                 <div className="flex gap-2 flex-wrap">
                   {CURRENCIES.map((c) => (
                     <button
@@ -434,7 +436,7 @@ export default function SpecWizardPage() {
               )}
 
               <div>
-                <label className="text-xs text-slate-400 mb-1 block">Deadline</label>
+                <label className="text-xs text-slate-400 mb-1 block">{t("spec.budget.deadline")}</label>
                 <input
                   type="date"
                   value={deadline}
@@ -449,13 +451,13 @@ export default function SpecWizardPage() {
                 onClick={() => setStep(2)}
                 className="flex-1 py-3 rounded-xl text-sm font-medium cursor-pointer border border-white/10 text-slate-300 bg-transparent"
               >
-                Back
+                {t("spec.btn.back")}
               </button>
               <button
                 onClick={() => setStep(4)}
                 className="flex-1 ton-gradient py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white"
               >
-                Review
+                {t("spec.btn.review")}
               </button>
             </div>
           </div>
@@ -472,7 +474,7 @@ export default function SpecWizardPage() {
 
               <div>
                 <p className="text-xs text-slate-400 uppercase tracking-wider font-medium mb-2">
-                  Requirements
+                  {t("spec.review.requirements")}
                 </p>
                 <SpecChecklist requirements={requirements} />
               </div>
@@ -480,7 +482,7 @@ export default function SpecWizardPage() {
               {(budgetMin || budgetMax) && (
                 <div>
                   <p className="text-xs text-slate-400 uppercase tracking-wider font-medium mb-2">
-                    Budget
+                    {t("spec.review.budget")}
                   </p>
                   {budgetMin && budgetMax ? (
                     <PriceRange
@@ -500,7 +502,7 @@ export default function SpecWizardPage() {
               {deadline && (
                 <div>
                   <p className="text-xs text-slate-400 uppercase tracking-wider font-medium mb-1">
-                    Deadline
+                    {t("spec.review.deadline")}
                   </p>
                   <p className="text-sm text-white">{deadline}</p>
                 </div>
@@ -512,7 +514,7 @@ export default function SpecWizardPage() {
                 onClick={() => setStep(3)}
                 className="flex-1 py-3 rounded-xl text-sm font-medium cursor-pointer border border-white/10 text-slate-300 bg-transparent"
               >
-                Back
+                {t("spec.btn.back")}
               </button>
               <button
                 onClick={handleSubmit}
@@ -522,12 +524,12 @@ export default function SpecWizardPage() {
                 {submitting ? (
                   <>
                     <iconify-icon icon="solar:refresh-linear" width="16" class="animate-spin" />
-                    Creating...
+                    {t("spec.btn.creating")}
                   </>
                 ) : (
                   <>
                     <iconify-icon icon="solar:check-read-linear" width="16" />
-                    Create Spec
+                    {t("spec.btn.createSpec")}
                   </>
                 )}
               </button>

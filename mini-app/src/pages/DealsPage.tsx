@@ -212,9 +212,9 @@ export default function DealsPage() {
                         onChange={(e) => setNewOffer((p) => ({ ...p, currency: e.target.value }))}
                         className="bg-slate-800/50 border border-slate-700 rounded-xl px-3 text-sm text-white outline-none"
                       >
-                        <option value="TON">TON</option>
-                        <option value="USD">USD</option>
-                        <option value="RUB">RUB</option>
+                        <option value="TON" className="bg-[#0f172a] text-white">TON</option>
+                        <option value="USD" className="bg-[#0f172a] text-white">USD</option>
+                        <option value="RUB" className="bg-[#0f172a] text-white">RUB</option>
                       </select>
                     </div>
                     <div className="flex gap-2">

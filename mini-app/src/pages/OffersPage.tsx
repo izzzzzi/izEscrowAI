@@ -161,10 +161,10 @@ export default function OffersPage() {
                   onChange={(e) => setNewOffer({ ...newOffer, currency: e.target.value })}
                   className="rounded-xl bg-white/5 border border-white/10 text-white text-sm p-3 focus:outline-none"
                 >
-                  <option value="TON">TON</option>
-                  <option value="USD">USD</option>
-                  <option value="EUR">EUR</option>
-                  <option value="RUB">RUB</option>
+                  <option value="TON" className="bg-[#0f172a] text-white">TON</option>
+                  <option value="USD" className="bg-[#0f172a] text-white">USD</option>
+                  <option value="EUR" className="bg-[#0f172a] text-white">EUR</option>
+                  <option value="RUB" className="bg-[#0f172a] text-white">RUB</option>
                 </select>
               </div>
 
