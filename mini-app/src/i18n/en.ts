@@ -261,7 +261,7 @@ const en = {
   "landing.hero.rotate2": "Designers",
   "landing.hero.rotate3": "Copywriters",
   "landing.hero.rotate4": "Marketers",
-  "landing.hero.subtitle": "Find developers, verify skills via GitHub, and lock payments in a smart contract. Describe deals in plain text — no middlemen, total trust.",
+  "landing.hero.subtitle": "Find talent, verify skills via GitHub, and lock payments in a smart contract. Describe deals in plain text — no middlemen, total trust.",
   "landing.hero.openBot": "Open Telegram Bot",
   "landing.hero.browseOffers": "Browse Offers",
   "landing.stats.jobs": "Active Jobs",

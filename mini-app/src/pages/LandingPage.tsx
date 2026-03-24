@@ -87,14 +87,17 @@ export default function LandingPage() {
               </div>
               <h1 className="animate-fade-up delay-100 text-5xl md:text-6xl font-semibold tracking-tight leading-[1.1] mb-6">
                 {t("landing.hero.title1")} <br />
-                <span
-                  className={`text-[#0098EA] inline-block transition-all duration-300 ${
-                    rotateAnim === "in"
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-4"
-                  }`}
-                >
-                  {rotateWords[rotateIdx]}
+                <span className="inline-grid">
+                  <span className="col-start-1 row-start-1 invisible">{rotateWords.reduce((a, b) => a.length > b.length ? a : b, "")}</span>
+                  <span
+                    className={`col-start-1 row-start-1 text-[#0098EA] transition-all duration-300 ${
+                      rotateAnim === "in"
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 translate-y-4"
+                    }`}
+                  >
+                    {rotateWords[rotateIdx]}
+                  </span>
                 </span>{" "}
                 {t("landing.hero.title3")}
               </h1>
