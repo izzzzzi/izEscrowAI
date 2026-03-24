@@ -43,7 +43,7 @@
   border-radius: 42px;
   overflow: hidden;
   background: #0E1621;
-  max-width: 380px;
+  max-width: 320px;
 }
 /* Home indicator */
 .mockup-phone-display::after {
