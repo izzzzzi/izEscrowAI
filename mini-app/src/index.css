@@ -165,9 +165,8 @@ button:active {
   font-size: 12px;
   font-weight: 400;
   line-height: 1.4;
-  white-space: nowrap;
-  max-width: 280px;
-  white-space: normal;
+  width: max-content;
+  max-width: 420px;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s, transform 0.2s;
