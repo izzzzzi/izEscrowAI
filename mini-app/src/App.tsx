@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, lazy, Suspense, Component, type ReactNode,
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import TabNav from "./components/TabNav";
 import WebNavbar from "./components/WebNavbar";
+import WebFooter from "./components/WebFooter";
 import OnboardingSlides from "./components/OnboardingSlides";
 import AnimatedPage from "./components/AnimatedPage";
 import { useAuth } from "./contexts/AuthContext";
@@ -120,6 +121,7 @@ function WebApp() {
       </Routes>
       </Suspense>
       </PageErrorBoundary>
+      <WebFooter />
     </div>
   );
 }

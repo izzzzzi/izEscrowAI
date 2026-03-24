@@ -503,45 +503,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="py-12 border-t border-white/5">
-          <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 ton-gradient rounded-md flex items-center justify-center">
-                <iconify-icon icon="solar:shield-check-linear" width="14" height="14" class="text-white" />
-              </div>
-              <span className="text-sm font-medium tracking-tight">izEscrowAI</span>
-            </div>
-
-            <div className="flex gap-8 text-xs font-medium text-slate-500 uppercase tracking-widest">
-              <a href="https://github.com/izzzzzi/izEscrowAI" className="hover:text-[#0098EA] transition-colors">
-                GitHub
-              </a>
-              <a href="https://t.me/izEscrowAIBot" className="hover:text-[#0098EA] transition-colors">
-                Bot
-              </a>
-              <a href="https://iz-escrow-ai.vercel.app" className="hover:text-[#0098EA] transition-colors">
-                Web App
-              </a>
-              <a href="/terms" className="hover:text-[#0098EA] transition-colors">
-                {t("legal.footer.terms" as any)}
-              </a>
-              <a href="/privacy" className="hover:text-[#0098EA] transition-colors">
-                {t("legal.footer.privacy" as any)}
-              </a>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <a href="https://ton.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/15 transition-colors no-underline">
-                <iconify-icon icon="simple-icons:ton" width="14" height="14" class="text-[#0098EA]" />
-                <span className="text-[10px] text-blue-400 font-medium">{t("landing.footer.built")}</span>
-              </a>
-              <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] text-slate-500 font-medium">
-                {t("landing.footer.hackathon")}
-              </span>
-            </div>
-          </div>
-        </footer>
       </main>
     </div>
   );
