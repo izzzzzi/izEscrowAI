@@ -12,6 +12,16 @@ const manifestUrl =
   import.meta.env.VITE_TON_CONNECT_MANIFEST_URL ||
   `${window.location.origin}/tonconnect-manifest.json`;
 
+// Easter egg for devs who open the console
+console.log(
+  "%c🛡 izEscrowAI",
+  "font-size:24px;font-weight:700;color:#0098EA",
+);
+console.log(
+  "%cAI-powered P2P escrow on TON. Non-custodial. 12 AI capabilities.\nhttps://github.com/izzzzzi/izEscrowAI",
+  "font-size:12px;color:#94a3b8",
+);
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>

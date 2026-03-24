@@ -92,7 +92,7 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
           {loading && (
             <div className="flex flex-col items-center justify-center py-12 gap-3">
               <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-              <p className="text-xs text-slate-500">Generating proposal...</p>
+              <p className="text-xs text-slate-500">Analyzing your GitHub profile against job requirements...</p>
             </div>
           )}
 

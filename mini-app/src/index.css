@@ -391,6 +391,16 @@ a {
   border-radius: 4px;
 }
 
+/* Success pulse — for confirmations and completions */
+@keyframes success-pulse {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-success {
+  animation: success-pulse 0.4s ease-out both;
+}
+
 /* Staggered entrance animation for hero elements */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(20px); }
@@ -405,6 +415,7 @@ a {
 .delay-400 { animation-delay: 400ms; }
 
 @media (prefers-reduced-motion: reduce) {
+  .animate-success,
   .animate-fade-up,
   .animate-float,
   .chat-step,
