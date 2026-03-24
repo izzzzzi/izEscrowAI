@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchActivity, type ActivityItem } from "../lib/api";
+import { useT } from "../i18n/context";
 
 const statusIcon: Record<string, string> = {
   completed: "\u2705",
@@ -18,11 +19,11 @@ function relativeTime(iso: string): string {
   const seconds = Math.floor(diff / 1000);
   if (seconds < 60) return "just now";
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
+  if (minutes < 60) return `${minutes}m`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return `${hours}h`;
   const days = Math.floor(hours / 24);
-  return `${days}d ago`;
+  return `${days}d`;
 }
 
 function SkeletonRows() {
@@ -41,6 +42,7 @@ function SkeletonRows() {
 }
 
 export default function ActivityFeed() {
+  const t = useT();
   const [items, setItems] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -71,8 +73,8 @@ export default function ActivityFeed() {
   return (
     <div className="glass-card rounded-2xl overflow-hidden">
       <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
-        <h2 className="text-sm font-semibold tracking-tight">Recent Activity</h2>
-        <span className="text-[0.6rem] text-slate-500 uppercase tracking-wider">Live</span>
+        <h2 className="text-sm font-semibold tracking-tight">{t("landing.activity.recent")}</h2>
+        <span className="text-[0.6rem] text-slate-500 uppercase tracking-wider">{t("landing.activity.live")}</span>
       </div>
 
       <div className="divide-y divide-white/5 max-h-72 overflow-y-auto">
@@ -80,7 +82,7 @@ export default function ActivityFeed() {
           <SkeletonRows />
         ) : items.length === 0 ? (
           <div className="px-4 py-6 text-center text-sm text-slate-500">
-            No recent activity
+            {t("landing.activity.empty")}
           </div>
         ) : (
           items.map((item, idx) => (

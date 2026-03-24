@@ -324,6 +324,9 @@ const ru: Record<TranslationKey, string> = {
   "landing.activity.title": "Активность",
   "landing.activity.subtitle":
     "Последние сделки — обновляется каждые 30 сек.",
+  "landing.activity.recent": "Последняя активность",
+  "landing.activity.live": "Live",
+  "landing.activity.empty": "Пока нет активности",
   "landing.roadmap.title": "Дорожная карта",
   "landing.roadmap.subtitle": "Что дальше.",
   "landing.cta.title": "Готовы к безопасному P2P?",
