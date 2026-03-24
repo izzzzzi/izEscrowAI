@@ -84,6 +84,8 @@ button:active {
 .page-shell {
   background: #0f0f1a;
   color: #fff;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 /* Mini App: override pt-28 (web navbar offset) — no top navbar in Telegram */
