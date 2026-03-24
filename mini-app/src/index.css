@@ -109,6 +109,24 @@ button:active {
   font-weight: 600 !important;
 }
 
+/* Form input — shared across modals and filters */
+.form-input {
+  width: 100%;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 0.875rem;
+  padding: 0.75rem;
+}
+.form-input::placeholder {
+  color: #64748b;
+}
+.form-input:focus {
+  outline: none;
+  border-color: rgba(0, 152, 234, 0.4);
+}
+
 /* Chat bubble colors (Telegram-style) */
 .chat-bubble-user { background: #2B5278; }
 .chat-bubble-bot { background: rgba(30, 41, 59, 0.8); }
@@ -373,7 +391,21 @@ a {
   border-radius: 4px;
 }
 
+/* Staggered entrance animation for hero elements */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out both;
+}
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+
 @media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
   .animate-float,
   .chat-step,
   .chat-step-1, .chat-step-2, .chat-step-3,

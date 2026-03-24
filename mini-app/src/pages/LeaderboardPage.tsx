@@ -34,7 +34,7 @@ export default function LeaderboardPage() {
       {isMini && <AppHeader />}
       <div className={isMini ? "px-5 space-y-6" : "max-w-3xl mx-auto space-y-6"}>
         <div>
-          <h1 className="text-2xl font-bold text-white">Group Leaderboard</h1>
+          <h1 className="text-2xl font-semibold text-white">Group Leaderboard</h1>
           <p className="text-sm text-slate-400 mt-1">Telegram groups ranked by escrow activity</p>
         </div>
 

@@ -22,7 +22,7 @@ export default function TabNav() {
               key={tab.path}
               onClick={() => navigate(tab.path)}
               aria-current={active ? "page" : undefined}
-              className={`flex flex-col items-center gap-1 transition-colors bg-transparent border-none cursor-pointer ${
+              className={`flex flex-col items-center gap-1 transition-colors bg-transparent border-none cursor-pointer px-2 py-1 min-w-[44px] min-h-[44px] justify-center ${
                 active ? "tab-active" : "text-slate-500"
               }`}
             >

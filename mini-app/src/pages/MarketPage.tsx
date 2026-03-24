@@ -64,7 +64,7 @@ export default function MarketPage() {
       <div className={isMini ? "px-5" : "max-w-4xl mx-auto"}>
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold">Job Marketplace</h1>
+            <h1 className="text-2xl font-semibold">Job Marketplace</h1>
             <p className="text-sm text-slate-400 mt-1">
               {total > 0 ? `${total} active jobs` : "Jobs from Telegram groups"}
             </p>

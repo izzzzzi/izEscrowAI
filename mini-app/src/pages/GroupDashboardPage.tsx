@@ -57,7 +57,7 @@ export default function GroupDashboardPage() {
           <iconify-icon icon="solar:arrow-left-linear" width="24" />
         </button>
         <div>
-          <h1 className="text-lg font-bold text-white">{group.title || `Group ${group.group_id}`}</h1>
+          <h1 className="text-lg font-semibold text-white">{group.title || `Group ${group.group_id}`}</h1>
           {group.username && <p className="text-xs text-slate-400">@{group.username}</p>}
         </div>
       </div>

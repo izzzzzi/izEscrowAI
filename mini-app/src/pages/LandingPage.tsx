@@ -40,19 +40,19 @@ export default function LandingPage() {
         <section className="pt-40 pb-20 px-6">
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-medium tracking-widest uppercase text-[#0098EA] mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#0098EA] animate-pulse" />
+              <div className="animate-fade-up inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-medium tracking-widest uppercase text-[#0098EA] mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0098EA]" />
                 Live on TON
               </div>
-              <h1 className="text-5xl md:text-6xl font-semibold tracking-tight leading-[1.1] mb-6">
+              <h1 className="animate-fade-up delay-100 text-5xl md:text-6xl font-semibold tracking-tight leading-[1.1] mb-6">
                 Dev Freelance <br />
                 <span className="text-[#0098EA]">Exchange</span> on TON.
               </h1>
-              <p className="text-lg text-slate-400 font-light leading-relaxed max-w-xl mb-10">
+              <p className="animate-fade-up delay-200 text-lg text-slate-400 font-light leading-relaxed max-w-xl mb-10">
                 Find developers, verify skills via GitHub, and lock payments in a smart contract.
                 AI parses deals from natural language — no middlemen, total trust.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="animate-fade-up delay-300 flex flex-col sm:flex-row gap-4">
                 <a
                   href="https://t.me/izEscrowAIBot"
                   className="ton-gradient px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium transition-transform hover:-translate-y-0.5"

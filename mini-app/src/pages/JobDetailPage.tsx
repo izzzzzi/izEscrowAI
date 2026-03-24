@@ -158,7 +158,7 @@ export default function JobDetailPage() {
         {/* 2.1 — Header */}
         <div>
           <div className="flex items-start justify-between gap-3">
-            <h1 className="text-xl md:text-2xl font-bold text-white">{job.title}</h1>
+            <h1 className="text-xl md:text-2xl font-semibold text-white">{job.title}</h1>
             <span className="text-xs text-slate-500 whitespace-nowrap mt-1">
               {timeAgo(job.created_at)}
             </span>
