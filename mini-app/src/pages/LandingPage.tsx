@@ -242,7 +242,7 @@ export default function LandingPage() {
 
         {/* Live Stats */}
         <section className="py-16 px-6 border-y border-white/5">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 { value: stats?.active_jobs ?? 0, label: t("landing.stats.jobs"), icon: "solar:document-text-linear", gradient: "from-blue-500/20 to-cyan-500/20", border: "border-blue-500/20", glow: "shadow-blue-500/5" },
@@ -369,7 +369,7 @@ export default function LandingPage() {
               <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.talent.title")}</h2>
               <p className="text-slate-400 font-light">{t("landing.talent.subtitle")}</p>
             </div>
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-7xl mx-auto">
               <TalentGrid languages={talent.languages} categories={talent.categories} />
             </div>
           </section>
@@ -428,7 +428,7 @@ export default function LandingPage() {
             <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.activity.title")}</h2>
             <p className="text-slate-400 font-light">{t("landing.activity.subtitle")}</p>
           </div>
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <ActivityFeed />
           </div>
         </section>
@@ -439,13 +439,14 @@ export default function LandingPage() {
             <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.roadmap.title")}</h2>
             <p className="text-slate-400 font-light">{t("landing.roadmap.subtitle")}</p>
           </div>
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <Roadmap />
           </div>
         </section>
 
         {/* CTA Section */}
         <section className="py-32 px-6 text-center reveal">
+          <div className="max-w-7xl mx-auto">
           <div className="max-w-3xl mx-auto glass-panel p-12 md:p-20 rounded-[3rem] border-white/10 glow-blue relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#0098EA]/10 rounded-full blur-[80px]" />
 
@@ -476,6 +477,7 @@ export default function LandingPage() {
                 {t("landing.cta.designer")}
               </button>
             </div>
+          </div>
           </div>
         </section>
 
