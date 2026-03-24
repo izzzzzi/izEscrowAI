@@ -13,4 +13,15 @@ export default defineConfig({
       globals: { Buffer: true },
     }),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ton-vendor': ['@tonconnect/ui-react', '@ton/core'],
+          'helmet': ['react-helmet-async'],
+        },
+      },
+    },
+  },
 })
