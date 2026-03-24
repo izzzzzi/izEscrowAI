@@ -336,9 +336,8 @@ const ru: Record<TranslationKey, string> = {
   "landing.cta.title": "Готовы к безопасному P2P?",
   "landing.cta.subtitle":
     "Создайте первую эскроу-сделку на TON. Безопасно, быстро и с AI.",
-  "landing.cta.developer": "Я разработчик",
-  "landing.cta.postJob": "Разместить заказ",
-  "landing.cta.designer": "Я дизайнер",
+  "landing.cta.hire": "Найти исполнителя",
+  "landing.cta.work": "Найти заказ",
   "landing.footer.hackathon": "TON Hackathon 2026",
   "landing.footer.built": "Для экосистемы TON",
   "landing.chat.botName": "izEscrowAI Bot",

@@ -481,24 +481,20 @@ export default function LandingPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => navigate("/offers")}
+                className="ton-gradient px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:shadow-2xl hover:shadow-blue-500/20 transition-all cursor-pointer text-white border-none"
+              >
+                <iconify-icon icon="solar:users-group-rounded-linear" width="20" />
+                {t("landing.cta.hire" as any)}
+              </button>
               <a
                 href="https://t.me/izEscrowAIBot"
-                className="ton-gradient px-8 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:shadow-2xl transition-all"
+                className="bg-white/5 border border-white/10 px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/10 transition-all no-underline text-white"
               >
-                {t("landing.cta.developer")}
+                <iconify-icon icon="solar:bag-4-linear" width="20" />
+                {t("landing.cta.work" as any)}
               </a>
-              <button
-                onClick={() => navigate("/offers")}
-                className="bg-white/5 border border-white/10 px-8 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/10 transition-all cursor-pointer text-white"
-              >
-                {t("landing.cta.postJob")}
-              </button>
-              <button
-                onClick={() => navigate("/offers")}
-                className="bg-purple-500/10 border border-purple-500/20 px-8 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium text-purple-300 hover:bg-purple-500/20 transition-all cursor-pointer"
-              >
-                {t("landing.cta.designer")}
-              </button>
             </div>
           </div>
         </section>
