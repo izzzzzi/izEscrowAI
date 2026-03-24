@@ -99,7 +99,7 @@ button:active {
   height: 100%;
   pointer-events: none;
   z-index: 0;
-  background: radial-gradient(600px circle at var(--cursor-x) var(--cursor-y), rgba(0, 152, 234, 0.10), transparent 40%);
+  background: radial-gradient(900px circle at var(--cursor-x) var(--cursor-y), rgba(0, 152, 234, 0.10), transparent 40%);
   transition: background 0.15s ease;
 }
 
