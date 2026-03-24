@@ -6,6 +6,7 @@ import TalentGrid from "../components/TalentGrid";
 import ActivityFeed from "../components/ActivityFeed";
 import Roadmap from "../components/Roadmap";
 import { useT } from "../i18n/context";
+import Term from "../components/Term";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -100,7 +101,7 @@ export default function LandingPage() {
                     {rotateWords[rotateIdx]}
                   </span>
                 </span>{" "}
-                {t("landing.hero.title3")}
+                <Term hintKey="term.ton">{t("landing.hero.title3")}</Term>
               </h1>
               <p className="animate-fade-up delay-200 text-lg text-slate-400 font-light leading-relaxed max-w-xl mb-10">
                 {t("landing.hero.subtitle")}
@@ -302,7 +303,7 @@ export default function LandingPage() {
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
                 <iconify-icon icon="solar:document-add-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.spec.title")}</h3>
+                <h3 className="text-2xl font-medium tracking-tight mb-4"><Term hintKey="term.spec">{t("landing.feature.spec.title")}</Term></h3>
                 <p className="text-slate-400 font-light max-w-md">
                   {t("landing.feature.spec.desc")}
                 </p>
@@ -325,7 +326,7 @@ export default function LandingPage() {
             <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <iconify-icon icon="solar:users-group-rounded-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.matching.title")}</h3>
+                <h3 className="text-xl font-medium tracking-tight mb-4"><Term hintKey="term.trustScore">{t("landing.feature.matching.title")}</Term></h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
                 {t("landing.feature.matching.desc")}
@@ -336,7 +337,7 @@ export default function LandingPage() {
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col md:flex-row items-center gap-10">
               <div className="flex-1">
                 <iconify-icon icon="solar:scale-linear" width="40" height="40" class="text-purple-400 mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.arbitration.title")}</h3>
+                <h3 className="text-2xl font-medium tracking-tight mb-4"><Term hintKey="term.arbitration">{t("landing.feature.arbitration.title")}</Term></h3>
                 <p className="text-slate-400 font-light">
                   {t("landing.feature.arbitration.desc")}
                 </p>
@@ -353,7 +354,7 @@ export default function LandingPage() {
             <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between group">
               <div>
                 <iconify-icon icon="solar:verified-check-linear" width="40" height="40" class="text-emerald-400 mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.escrow.title")}</h3>
+                <h3 className="text-xl font-medium tracking-tight mb-4"><Term hintKey="term.escrow">{t("landing.feature.escrow.title")}</Term></h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
                 {t("landing.feature.escrow.desc")}
