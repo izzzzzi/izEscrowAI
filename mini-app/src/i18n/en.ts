@@ -329,6 +329,31 @@ const en = {
   "common.from": "from",
   "common.to": "to",
   "common.ton": "TON",
+
+  // Landing Features Bento
+  "landing.feature.spec.title": "AI Spec Generator",
+  "landing.feature.spec.desc": "Describe your task in natural language. AI generates a structured specification with acceptance criteria, asks clarifying questions, and creates a verifiable contract.",
+  "landing.feature.pricing.title": "AI Pricing",
+  "landing.feature.pricing.desc": "AI estimates fair price range based on spec complexity. Min, median, max with a recommended price and reasoning.",
+  "landing.feature.matching.title": "AI Matching",
+  "landing.feature.matching.desc": "AI finds the best executors from the platform. Ranked by reputation, skills, trust, and price fit.",
+  "landing.feature.arbitration.title": "AI Arbitration",
+  "landing.feature.arbitration.desc": "Disputes are resolved objectively: AI checks delivery against each spec criterion, scores compliance, and proposes a fair split. Transparent and auditable.",
+  "landing.feature.arbitration.compliance": "Compliance",
+  "landing.feature.inline.title": "Inline Offers",
+  "landing.feature.inline.desc": "Post offers directly into any Telegram chat via inline mode. Anyone can bid — no need to join a channel.",
+  "landing.feature.auction.title": "Auction & Bidding",
+  "landing.feature.auction.desc": "Create public offers, collect bids from multiple applicants, review Trust Scores, and select the best deal. Full P2P marketplace built into Telegram.",
+  "landing.feature.github.title": "GitHub Skill Verification",
+  "landing.feature.github.desc": "Link your GitHub to prove your skills. Languages, repos, and contribution history are analyzed to build a verifiable developer profile. AI matches your stack to job requirements automatically.",
+  "landing.feature.github.trustScore": "Trust Score",
+  "landing.feature.github.established": "Established",
+  "landing.feature.github.orgMember": "Org Member",
+  "landing.feature.risk.title": "AI Risk Score",
+  "landing.feature.risk.desc": "Composite Trust Score: Platform (40%) + GitHub (30%) + Wallet (20%) + Verification (10%). Red/green flags detect fake accounts before you commit.",
+  "landing.feature.analytics.title": "Group Analytics",
+  "landing.feature.analytics.desc": "Track which Telegram groups generate the most deals. Leaderboard, stats, and conversion metrics built in.",
+  "landing.tech.poweredBy": "Powered by modern crypto stack",
 } as const;
 
 export default en;

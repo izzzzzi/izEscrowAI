@@ -364,6 +364,31 @@ const ru: Record<TranslationKey, string> = {
   "common.from": "от",
   "common.to": "до",
   "common.ton": "TON",
+
+  // Landing Features Bento
+  "landing.feature.spec.title": "AI-генератор спецификаций",
+  "landing.feature.spec.desc": "Опишите задачу обычным языком. AI создаст структурированную спецификацию с критериями приёмки, задаст уточняющие вопросы и сформирует проверяемый контракт.",
+  "landing.feature.pricing.title": "AI-оценка цены",
+  "landing.feature.pricing.desc": "AI оценивает справедливый диапазон цен по сложности спеки. Минимум, медиана, максимум с рекомендуемой ценой и обоснованием.",
+  "landing.feature.matching.title": "AI-подбор исполнителей",
+  "landing.feature.matching.desc": "AI находит лучших исполнителей на платформе. Ранжирование по репутации, навыкам, доверию и соответствию цены.",
+  "landing.feature.arbitration.title": "AI-арбитраж",
+  "landing.feature.arbitration.desc": "Споры решаются объективно: AI сверяет результат с каждым критерием спеки, оценивает соответствие и предлагает справедливое разделение. Прозрачно и проверяемо.",
+  "landing.feature.arbitration.compliance": "Соответствие",
+  "landing.feature.inline.title": "Inline-офферы",
+  "landing.feature.inline.desc": "Размещайте офферы прямо в любом чате Telegram через inline-режим. Любой может откликнуться — не нужно вступать в канал.",
+  "landing.feature.auction.title": "Аукцион и ставки",
+  "landing.feature.auction.desc": "Создавайте публичные офферы, собирайте ставки, оценивайте Trust Score и выбирайте лучшего. Полноценный P2P-маркетплейс внутри Telegram.",
+  "landing.feature.github.title": "Верификация навыков через GitHub",
+  "landing.feature.github.desc": "Привяжите GitHub, чтобы доказать навыки. Языки, репозитории и история вклада анализируются для создания проверяемого профиля. AI автоматически сопоставляет ваш стек с требованиями заказа.",
+  "landing.feature.github.trustScore": "Trust Score",
+  "landing.feature.github.established": "Опытный",
+  "landing.feature.github.orgMember": "Член организации",
+  "landing.feature.risk.title": "AI-оценка рисков",
+  "landing.feature.risk.desc": "Составная оценка доверия: Платформа (40%) + GitHub (30%) + Кошелёк (20%) + Верификация (10%). Красные/зелёные флаги выявляют фейковые аккаунты заранее.",
+  "landing.feature.analytics.title": "Аналитика групп",
+  "landing.feature.analytics.desc": "Отслеживайте, какие Telegram-группы генерируют больше сделок. Встроенный рейтинг, статистика и метрики конверсии.",
+  "landing.tech.poweredBy": "Работает на современном крипто-стеке",
 };
 
 export default ru;

@@ -22,21 +22,6 @@ export default function LandingPage() {
     fetchTopGroups(5).then(setTopGroups).catch(() => {});
   }, []);
 
-  // TODO: Add keys to en.ts for features bento grid:
-  // landing.feature.specGen.title, landing.feature.specGen.desc,
-  // landing.feature.pricing.title, landing.feature.pricing.desc,
-  // landing.feature.matching.title, landing.feature.matching.desc,
-  // landing.feature.arbitration.title, landing.feature.arbitration.desc,
-  // landing.feature.arbitration.compliance,
-  // landing.feature.inline.title, landing.feature.inline.desc,
-  // landing.feature.auction.title, landing.feature.auction.desc,
-  // landing.feature.github.title, landing.feature.github.desc,
-  // landing.feature.github.trustScore, landing.feature.github.established, landing.feature.github.orgMember,
-  // landing.feature.risk.title, landing.feature.risk.desc,
-  // landing.feature.groupAnalytics.title, landing.feature.groupAnalytics.desc,
-  // landing.tech.poweredBy
-  // landing.groups.deals, landing.groups.volume, landing.groups.avgCheck
-
   const workflowSteps = [
     { icon: "solar:chat-line-linear", title: t("landing.workflow.step1"), desc: t("landing.workflow.step1.desc") },
     { icon: "solar:document-add-linear", title: t("landing.workflow.step2"), desc: t("landing.workflow.step2.desc") },
@@ -252,17 +237,15 @@ export default function LandingPage() {
         </section>
 
         {/* Features Bento Grid */}
-        {/* TODO: keys needed in en.ts — see comment at top of component */}
         <section id="features" className="py-24 px-6">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* AI Spec Generator — wide */}
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] relative overflow-hidden group">
               <div className="relative z-10">
                 <iconify-icon icon="solar:document-add-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">AI Spec Generator</h3>
+                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.spec.title")}</h3>
                 <p className="text-slate-400 font-light max-w-md">
-                  Describe your task in natural language. AI generates a structured specification with
-                  acceptance criteria, asks clarifying questions, and creates a verifiable contract.
+                  {t("landing.feature.spec.desc")}
                 </p>
               </div>
               <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-blue-500/5 rounded-full blur-[60px] group-hover:bg-blue-500/10 transition-colors" />
@@ -272,11 +255,10 @@ export default function LandingPage() {
             <div className="glass-panel p-10 rounded-[2.5rem] flex flex-col justify-between">
               <div>
                 <iconify-icon icon="solar:tag-price-linear" width="40" height="40" class="text-emerald-400 mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">AI Pricing</h3>
+                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.pricing.title")}</h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
-                AI estimates fair price range based on spec complexity. Min, median, max with a
-                recommended price and reasoning.
+                {t("landing.feature.pricing.desc")}
               </p>
             </div>
 
@@ -284,11 +266,10 @@ export default function LandingPage() {
             <div className="glass-panel p-10 rounded-[2.5rem] flex flex-col justify-between">
               <div>
                 <iconify-icon icon="solar:users-group-rounded-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">AI Matching</h3>
+                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.matching.title")}</h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
-                AI finds the best executors from the platform. Ranked by reputation, skills, trust,
-                and price fit.
+                {t("landing.feature.matching.desc")}
               </p>
             </div>
 
@@ -296,17 +277,16 @@ export default function LandingPage() {
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-10">
               <div className="flex-1">
                 <iconify-icon icon="solar:scale-linear" width="40" height="40" class="text-purple-400 mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">AI Arbitration</h3>
+                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.arbitration.title")}</h3>
                 <p className="text-slate-400 font-light">
-                  Disputes are resolved objectively: AI checks delivery against each spec criterion,
-                  scores compliance, and proposes a fair split. Transparent and auditable.
+                  {t("landing.feature.arbitration.desc")}
                 </p>
               </div>
               <div className="w-full md:w-1/3 flex flex-col items-center gap-3">
                 <div className="w-20 h-20 rounded-full border-4 border-emerald-500/30 flex items-center justify-center">
                   <span className="text-2xl font-bold text-emerald-400">92%</span>
                 </div>
-                <span className="text-xs text-emerald-400 font-semibold">Compliance</span>
+                <span className="text-xs text-emerald-400 font-semibold">{t("landing.feature.arbitration.compliance")}</span>
               </div>
             </div>
 
@@ -314,10 +294,10 @@ export default function LandingPage() {
             <div className="glass-panel p-10 rounded-[2.5rem] flex flex-col justify-between group">
               <div>
                 <iconify-icon icon="solar:chat-square-arrow-linear" width="40" height="40" class="text-cyan-400 mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">Inline Offers</h3>
+                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.inline.title")}</h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
-                Post offers directly into any Telegram chat via inline mode. Anyone can bid — no need to join a channel.
+                {t("landing.feature.inline.desc")}
               </p>
             </div>
 
@@ -325,10 +305,9 @@ export default function LandingPage() {
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] relative overflow-hidden group">
               <div className="relative z-10">
                 <iconify-icon icon="solar:sort-by-time-linear" width="40" height="40" class="text-amber-400 mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">Auction & Bidding</h3>
+                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.auction.title")}</h3>
                 <p className="text-slate-400 font-light max-w-md">
-                  Create public offers, collect bids from multiple applicants, review Trust Scores, and select the best deal.
-                  Full P2P marketplace built into Telegram.
+                  {t("landing.feature.auction.desc")}
                 </p>
               </div>
               <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-amber-500/5 rounded-full blur-[60px] group-hover:bg-amber-500/10 transition-colors" />
@@ -338,20 +317,19 @@ export default function LandingPage() {
             <div className="md:col-span-3 glass-panel p-10 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-10">
               <div className="flex-1">
                 <iconify-icon icon="logos:github-icon" width="40" height="40" class="mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">GitHub Skill Verification</h3>
+                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.github.title")}</h3>
                 <p className="text-slate-400 font-light max-w-lg">
-                  Link your GitHub to prove your skills. Languages, repos, and contribution history are analyzed
-                  to build a verifiable developer profile. AI matches your stack to job requirements automatically.
+                  {t("landing.feature.github.desc")}
                 </p>
               </div>
               <div className="w-full md:w-1/3 flex flex-col items-center gap-4">
                 <div className="w-24 h-24 rounded-full border-4 border-green-500/30 flex items-center justify-center">
                   <span className="text-3xl font-bold text-green-400">87</span>
                 </div>
-                <span className="text-xs text-green-400 font-semibold uppercase tracking-wider">Trust Score</span>
+                <span className="text-xs text-green-400 font-semibold uppercase tracking-wider">{t("landing.feature.github.trustScore")}</span>
                 <div className="flex gap-2">
-                  <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 text-[10px]">Established</span>
-                  <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 text-[10px]">Org Member</span>
+                  <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 text-[10px]">{t("landing.feature.github.established")}</span>
+                  <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 text-[10px]">{t("landing.feature.github.orgMember")}</span>
                 </div>
               </div>
             </div>
@@ -360,10 +338,9 @@ export default function LandingPage() {
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] relative overflow-hidden group">
               <div className="relative z-10">
                 <iconify-icon icon="solar:shield-check-linear" width="40" height="40" class="text-green-400 mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">AI Risk Score</h3>
+                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.risk.title")}</h3>
                 <p className="text-slate-400 font-light max-w-md">
-                  Composite Trust Score: Platform (40%) + GitHub (30%) + Wallet (20%) + Verification (10%).
-                  Red/green flags detect fake accounts before you commit.
+                  {t("landing.feature.risk.desc")}
                 </p>
               </div>
               <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-green-500/5 rounded-full blur-[60px] group-hover:bg-green-500/10 transition-colors" />
@@ -373,10 +350,10 @@ export default function LandingPage() {
             <div className="glass-panel p-10 rounded-[2.5rem] flex flex-col justify-between">
               <div>
                 <iconify-icon icon="solar:users-group-rounded-linear" width="40" height="40" class="text-violet-400 mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">Group Analytics</h3>
+                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.analytics.title")}</h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
-                Track which Telegram groups generate the most deals. Leaderboard, stats, and conversion metrics built in.
+                {t("landing.feature.analytics.desc")}
               </p>
             </div>
           </div>
@@ -386,7 +363,7 @@ export default function LandingPage() {
         <section className="py-24 border-y border-white/5">
           <div className="max-w-7xl mx-auto px-6 overflow-hidden">
             <p className="text-center text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-12">
-              Powered by modern crypto stack
+              {t("landing.tech.poweredBy")}
             </p>
             <div className="flex flex-wrap justify-center gap-10 md:gap-20 opacity-50 grayscale hover:grayscale-0 transition-all">
               {[
