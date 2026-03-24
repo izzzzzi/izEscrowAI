@@ -141,7 +141,7 @@ export default function LandingPage() {
                 <div className="mockup-phone-camera"></div>
                 <div className="mockup-phone-display chat-bg">
                 {/* Chat header */}
-                <div className="chat-header flex items-center gap-3 px-4 py-3">
+                <div className="chat-header flex items-center gap-3 px-4 py-3 flex-shrink-0">
                   <div className="w-10 h-10 rounded-full ton-gradient flex items-center justify-center">
                     <iconify-icon icon="solar:shield-check-linear" width="20" height="20" class="text-white" />
                   </div>
@@ -154,7 +154,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Chat messages — auto-scrolls to bottom as new messages appear */}
-                <div ref={chatRef} className="px-3 py-4 space-y-3 overflow-y-auto no-scrollbar scroll-smooth">
+                <div ref={chatRef} className="px-3 py-4 space-y-3 flex-1 overflow-y-auto no-scrollbar scroll-smooth">
                   {/* Step 1: User sends /start */}
                   <div className="flex justify-end chat-step chat-step-1">
                     <div className="chat-bubble-user max-w-[80%] px-3 py-2 rounded-[18px] rounded-br-[6px] text-sm">
@@ -239,7 +239,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Chat input bar */}
-                <div className="chat-header flex items-center gap-2 px-3 py-2.5">
+                <div className="chat-header flex items-center gap-2 px-3 py-2.5 flex-shrink-0">
                   <iconify-icon icon="solar:smile-circle-linear" width="24" class="text-[#6D7883]" />
                   <div className="flex-1 bg-[#0E1621] rounded-full px-4 py-2 text-xs text-[#6D7883] border border-white/5">
                     {t("landing.chat.message")}

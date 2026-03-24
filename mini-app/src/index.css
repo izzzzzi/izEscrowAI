@@ -44,6 +44,9 @@
   overflow: hidden;
   background: #0E1621;
   width: 300px;
+  height: 520px;
+  display: flex;
+  flex-direction: column;
 }
 /* Home indicator */
 .mockup-phone-display::after {
