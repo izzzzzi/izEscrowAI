@@ -164,9 +164,9 @@ export default function AdminSources() {
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => setShowAdd(false)}
         >
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-modal-backdrop" />
           <div
-            className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#0f0f1a] shadow-2xl p-6 flex flex-col gap-4"
+            className="relative animate-modal-content w-full max-w-md rounded-2xl border border-white/10 bg-[#0f0f1a] shadow-2xl p-6 flex flex-col gap-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">

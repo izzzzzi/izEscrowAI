@@ -65,10 +65,10 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Generate Proposal">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-modal-backdrop" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-[#0f0f1a] shadow-2xl p-5 flex flex-col gap-4 max-h-[85vh]">
+      <div className="relative animate-modal-content w-full max-w-lg rounded-2xl border border-white/10 bg-[#0f0f1a] shadow-2xl p-5 flex flex-col gap-4 max-h-[85vh]">
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">

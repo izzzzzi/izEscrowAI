@@ -391,6 +391,22 @@ a {
   border-radius: 4px;
 }
 
+/* Modal entrance — backdrop + content slide up */
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes modal-content-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-modal-backdrop {
+  animation: modal-backdrop-in 0.2s ease-out both;
+}
+.animate-modal-content {
+  animation: modal-content-in 0.3s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
 /* Success pulse — for confirmations and completions */
 @keyframes success-pulse {
   0% { transform: scale(0.8); opacity: 0; }
@@ -415,6 +431,8 @@ a {
 .delay-400 { animation-delay: 400ms; }
 
 @media (prefers-reduced-motion: reduce) {
+  .animate-modal-backdrop,
+  .animate-modal-content,
   .animate-success,
   .animate-fade-up,
   .animate-float,

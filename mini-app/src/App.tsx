@@ -140,6 +140,7 @@ function MiniApp() {
       <PageErrorBoundary>
       <Suspense fallback={<div className="min-h-screen" />}>
       <Routes>
+        <Route path="/" element={<Navigate to="/deals" replace />} />
         <Route path="/wallet" element={<Navigate to="/profile" replace />} />
         <Route path="/pay/:dealId" element={<AnimatedPage><PaymentPage /></AnimatedPage>} />
         <Route path="/deals" element={<AnimatedPage><DealsPage /></AnimatedPage>} />

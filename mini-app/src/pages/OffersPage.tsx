@@ -123,9 +123,9 @@ export default function OffersPage() {
       {/* Create Offer Modal */}
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="presentation" onClick={() => setShowCreate(false)}>
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-modal-backdrop" />
           <div
-            className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#0f0f1a] shadow-2xl p-6 space-y-4"
+            className="relative animate-modal-content w-full max-w-md rounded-2xl border border-white/10 bg-[#0f0f1a] shadow-2xl p-6 space-y-4"
             role="dialog"
             aria-modal="true"
             aria-label="Create new offer"
