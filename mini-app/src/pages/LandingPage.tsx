@@ -214,10 +214,10 @@ export default function LandingPage() {
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { value: stats?.active_jobs ?? 0, label: t("landing.stats.jobs").split(" ")[0] || "Active Jobs", icon: "solar:document-text-linear", gradient: "from-blue-500/20 to-cyan-500/20", border: "border-blue-500/20", glow: "shadow-blue-500/5" },
-                { value: 19, label: "Sources", icon: "solar:radar-2-linear", gradient: "from-purple-500/20 to-pink-500/20", border: "border-purple-500/20", glow: "shadow-purple-500/5" },
+                { value: stats?.active_jobs ?? 0, label: t("landing.stats.jobs"), icon: "solar:document-text-linear", gradient: "from-blue-500/20 to-cyan-500/20", border: "border-blue-500/20", glow: "shadow-blue-500/5" },
+                { value: 19, label: t("landing.stats.sources"), icon: "solar:radar-2-linear", gradient: "from-purple-500/20 to-pink-500/20", border: "border-purple-500/20", glow: "shadow-purple-500/5" },
                 { value: stats?.total_users ?? 0, label: t("landing.stats.users"), icon: "solar:users-group-rounded-linear", gradient: "from-emerald-500/20 to-green-500/20", border: "border-emerald-500/20", glow: "shadow-emerald-500/5" },
-                { value: -1, label: "Mainnet", icon: "solar:verified-check-linear", gradient: "from-green-500/20 to-emerald-500/20", border: "border-green-500/20", glow: "shadow-green-500/5" },
+                { value: -1, label: t("landing.stats.mainnet"), icon: "solar:verified-check-linear", gradient: "from-green-500/20 to-emerald-500/20", border: "border-green-500/20", glow: "shadow-green-500/5" },
               ].map((stat) => (
                 <div
                   key={stat.label}
@@ -232,7 +232,7 @@ export default function LandingPage() {
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
                         <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-400" />
                       </span>
-                      <span className="text-xl font-bold text-green-400">Live</span>
+                      <span className="text-xl font-bold text-green-400">{t("landing.stats.live")}</span>
                     </div>
                   ) : (
                     <div className="text-3xl font-bold tracking-tight text-white">{stat.value}</div>

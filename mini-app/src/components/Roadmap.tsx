@@ -1,7 +1,9 @@
+import { useT } from "../i18n/context";
+
 interface RoadmapItem {
-  title: string;
+  titleKey: string;
   status: "done" | "in-progress" | "planned";
-  features: string[];
+  featureKeys: string[];
 }
 
 interface Quarter {
@@ -13,96 +15,29 @@ const roadmapData: Quarter[] = [
   {
     label: "Q1 2026",
     items: [
-      {
-        title: "Core Platform",
-        status: "done",
-        features: [
-          "P2P Escrow on TON",
-          "AI Deal Parsing",
-          "Inline Offers & Bidding",
-          "Reputation System",
-        ],
-      },
-      {
-        title: "AI Full Pipeline",
-        status: "done",
-        features: [
-          "AI Spec Generator",
-          "AI Pricing Engine",
-          "AI Matching & Trust Score",
-          "Spec-Based Arbitration",
-        ],
-      },
+      { titleKey: "roadmap.q1.core.title", status: "done", featureKeys: ["roadmap.q1.core.f1", "roadmap.q1.core.f2", "roadmap.q1.core.f3", "roadmap.q1.core.f4"] },
+      { titleKey: "roadmap.q1.ai.title", status: "done", featureKeys: ["roadmap.q1.ai.f1", "roadmap.q1.ai.f2", "roadmap.q1.ai.f3", "roadmap.q1.ai.f4"] },
     ],
   },
   {
     label: "Q2 2026",
     items: [
-      {
-        title: "GitHub Verification",
-        status: "in-progress",
-        features: [
-          "OAuth profile linking",
-          "Skill-based matching",
-          "Trust Score v2",
-          "Fake account detection",
-        ],
-      },
-      {
-        title: "Web Marketplace",
-        status: "in-progress",
-        features: [
-          "Job detail pages",
-          "Extended filters & search",
-          "Progressive gating",
-        ],
-      },
+      { titleKey: "roadmap.q2.github.title", status: "in-progress", featureKeys: ["roadmap.q2.github.f1", "roadmap.q2.github.f2", "roadmap.q2.github.f3", "roadmap.q2.github.f4"] },
+      { titleKey: "roadmap.q2.web.title", status: "in-progress", featureKeys: ["roadmap.q2.web.f1", "roadmap.q2.web.f2", "roadmap.q2.web.f3"] },
     ],
   },
   {
     label: "Q3 2026",
     items: [
-      {
-        title: "Portfolio Integration",
-        status: "planned",
-        features: [
-          "Behance/Dribbble linking",
-          "LinkedIn verification",
-          "Portfolio showcase",
-        ],
-      },
-      {
-        title: "Communication",
-        status: "planned",
-        features: [
-          "In-app chat",
-          "File sharing",
-          "Milestone tracking",
-        ],
-      },
+      { titleKey: "roadmap.q3.portfolio.title", status: "planned", featureKeys: ["roadmap.q3.portfolio.f1", "roadmap.q3.portfolio.f2", "roadmap.q3.portfolio.f3"] },
+      { titleKey: "roadmap.q3.comms.title", status: "planned", featureKeys: ["roadmap.q3.comms.f1", "roadmap.q3.comms.f2", "roadmap.q3.comms.f3"] },
     ],
   },
   {
     label: "Q4 2026",
     items: [
-      {
-        title: "Marketplace 2.0",
-        status: "planned",
-        features: [
-          "Category browsing",
-          "Advanced search & filters",
-          "PWA support",
-        ],
-      },
-      {
-        title: "Scale & Trust",
-        status: "planned",
-        features: [
-          "Review system",
-          "Multi-language UI",
-          "Arbitration DAO",
-        ],
-      },
+      { titleKey: "roadmap.q4.market.title", status: "planned", featureKeys: ["roadmap.q4.market.f1", "roadmap.q4.market.f2", "roadmap.q4.market.f3"] },
+      { titleKey: "roadmap.q4.scale.title", status: "planned", featureKeys: ["roadmap.q4.scale.f1", "roadmap.q4.scale.f2", "roadmap.q4.scale.f3"] },
     ],
   },
 ];
@@ -119,16 +54,19 @@ function getQuarterProgress(q: Quarter): number {
 }
 
 function StatusIcon({ status }: { status: string }) {
-  if (status === "done") {
-    return <span className="text-green-400 flex-shrink-0">&#10003;</span>;
-  }
-  if (status === "in-progress") {
-    return <span className="text-[#0098EA] flex-shrink-0">&rarr;</span>;
-  }
+  if (status === "done") return <span className="text-green-400 flex-shrink-0">&#10003;</span>;
+  if (status === "in-progress") return <span className="text-[#0098EA] flex-shrink-0">&rarr;</span>;
   return <span className="text-slate-600 flex-shrink-0">&middot;</span>;
 }
 
 export default function Roadmap() {
+  const t = useT();
+
+  const statusLabel = (status: string) =>
+    status === "done" ? t("roadmap.completed")
+    : status === "in-progress" ? t("roadmap.inProgress")
+    : t("roadmap.planned");
+
   return (
     <div className="w-full max-w-3xl mx-auto">
       {roadmapData.map((q, qi) => {
@@ -141,7 +79,6 @@ export default function Roadmap() {
           <div key={qi} className="flex gap-4 md:gap-6">
             {/* Timeline column */}
             <div className="flex flex-col items-center w-8 flex-shrink-0">
-              {/* Dot */}
               <div
                 className={`w-4 h-4 rounded-full border-2 flex-shrink-0 mt-1 ${
                   isPlanned
@@ -149,7 +86,6 @@ export default function Roadmap() {
                     : "border-[#0098EA] bg-[#0098EA]"
                 }`}
               />
-              {/* Line */}
               {qi < roadmapData.length - 1 && (
                 <div
                   className={`w-0.5 flex-1 min-h-[2rem] ${
@@ -161,10 +97,8 @@ export default function Roadmap() {
 
             {/* Content column */}
             <div className={`flex-1 ${qi < roadmapData.length - 1 ? "pb-8 md:pb-10" : "pb-0"}`}>
-              {/* Quarter header + progress */}
               <div className="flex items-center gap-3 mb-3">
                 <h3 className="text-lg font-bold text-white">{q.label}</h3>
-                {/* Progress bar */}
                 <div className="flex-1 max-w-[160px] h-1.5 rounded-full bg-white/5 overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-500"
@@ -183,7 +117,6 @@ export default function Roadmap() {
                 </span>
               </div>
 
-              {/* Feature cards — two columns on desktop */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {q.items.map((item, ii) => (
                   <div
@@ -197,7 +130,7 @@ export default function Roadmap() {
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2.5">
-                      <h4 className="font-semibold text-white text-sm">{item.title}</h4>
+                      <h4 className="font-semibold text-white text-sm">{t(item.titleKey as any)}</h4>
                       <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
                         item.status === "done"
                           ? "bg-green-500/15 text-green-400"
@@ -205,14 +138,14 @@ export default function Roadmap() {
                             ? "bg-[#0098EA]/15 text-[#0098EA]"
                             : "bg-white/5 text-slate-500"
                       }`}>
-                        {item.status === "done" ? "Completed" : item.status === "in-progress" ? "In Progress" : "Planned"}
+                        {statusLabel(item.status)}
                       </span>
                     </div>
                     <ul className="space-y-1.5">
-                      {item.features.map((f, fi) => (
-                        <li key={fi} className="text-xs text-slate-400 flex items-center gap-2">
+                      {item.featureKeys.map((fk) => (
+                        <li key={fk} className="text-xs text-slate-400 flex items-center gap-2">
                           <StatusIcon status={item.status} />
-                          {f}
+                          {t(fk as any)}
                         </li>
                       ))}
                     </ul>
