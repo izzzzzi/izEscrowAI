@@ -505,6 +505,10 @@ const ru: Record<TranslationKey, string> = {
   "admin.users.banMessage": "Вы уверены, что хотите заблокировать {user}? Доступ к платформе будет закрыт.",
   "admin.users.unbanMessage": "Вы уверены, что хотите разблокировать {user}?",
 
+  // TalentGrid
+  "talent.topLanguages": "Популярные языки",
+  "talent.verified": "верифицированных",
+
   // Common
   "common.loading": "Загрузка...",
   "common.error": "Что-то пошло не так",

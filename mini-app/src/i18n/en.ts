@@ -470,6 +470,10 @@ const en = {
   "admin.users.banMessage": "Are you sure you want to ban {user}? They will lose access to the platform.",
   "admin.users.unbanMessage": "Are you sure you want to unban {user}?",
 
+  // TalentGrid
+  "talent.topLanguages": "Top Languages",
+  "talent.verified": "verified devs",
+
   // Common
   "common.loading": "Loading...",
   "common.error": "Something went wrong",
