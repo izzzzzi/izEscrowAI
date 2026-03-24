@@ -2,16 +2,18 @@ import { useEffect, useState } from "react";
 import { fetchActivity, type ActivityItem } from "../lib/api";
 import { useT } from "../i18n/context";
 
-const statusIcon: Record<string, string> = {
-  completed: "\u2705",
-  funded: "\uD83D\uDCB0",
-  created: "\uD83D\uDCDD",
-  delivered: "\uD83D\uDCE6",
-  dispute: "\u26A0\uFE0F",
+const statusConfig: Record<string, { icon: string; color: string }> = {
+  completed: { icon: "solar:check-circle-bold", color: "text-green-400" },
+  funded: { icon: "solar:wallet-2-bold", color: "text-[#0098EA]" },
+  created: { icon: "solar:document-add-bold", color: "text-slate-400" },
+  delivered: { icon: "solar:box-bold", color: "text-amber-400" },
+  dispute: { icon: "solar:danger-triangle-bold", color: "text-red-400" },
 };
 
-function getIcon(status: string): string {
-  return statusIcon[status] ?? "\uD83D\uDCCB";
+const defaultStatus = { icon: "solar:clipboard-list-bold", color: "text-slate-500" };
+
+function getStatus(status: string) {
+  return statusConfig[status] ?? defaultStatus;
 }
 
 function relativeTime(iso: string): string {
@@ -90,9 +92,7 @@ export default function ActivityFeed() {
               key={idx}
               className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.02] transition-colors"
             >
-              <span className="text-base shrink-0" role="img">
-                {getIcon(item.status)}
-              </span>
+              <iconify-icon icon={getStatus(item.status).icon} width="18" class={`shrink-0 ${getStatus(item.status).color}`} />
               <span className="flex-1 min-w-0 text-sm text-slate-300 line-clamp-1">
                 {item.description}
               </span>

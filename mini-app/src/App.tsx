@@ -77,7 +77,7 @@ function WebApp() {
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const onMove = (e: MouseEvent) => {
       el.style.setProperty("--cursor-x", e.clientX + "px");
-      el.style.setProperty("--cursor-y", (e.clientY + window.scrollY) + "px");
+      el.style.setProperty("--cursor-y", e.clientY + "px");
     };
     window.addEventListener("mousemove", onMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMove);
