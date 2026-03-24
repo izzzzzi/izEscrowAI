@@ -607,14 +607,27 @@ export function createApiServer(port: number, bot?: Bot<Context>) {
     const data = await cached("talent", 60000, async () => {
       const langs = await aggregateLanguages();
       const ghCount = await countGithubVerified();
+      // Count users per top-level category from user_profiles
+      const { getDb } = await import("../db/index.js");
+      const db = getDb();
+      const { sql } = await import("drizzle-orm");
+      const catRows = await db.execute(sql`
+        SELECT elem AS name, count(*)::int AS count
+        FROM user_profiles, jsonb_array_elements_text(categories) AS elem
+        WHERE elem IN ('Design', 'Marketing', 'Content', 'Backend', 'Frontend', 'Mobile', 'DevOps', 'Fullstack')
+        GROUP BY elem ORDER BY count DESC
+      `);
+      const catMap: Record<string, number> = {};
+      for (const r of catRows.rows) catMap[(r as any).name] = (r as any).count;
+      const devCount = (catMap["Backend"] || 0) + (catMap["Frontend"] || 0) + (catMap["Mobile"] || 0) + (catMap["DevOps"] || 0) + (catMap["Fullstack"] || 0);
       return {
         languages: langs.slice(0, 20),
         total_devs: ghCount,
         categories: [
-          { name: "Development", status: "active", count: ghCount },
-          { name: "Design", status: "coming_soon" },
-          { name: "Marketing", status: "coming_soon" },
-          { name: "Content", status: "coming_soon" },
+          { name: "Development", status: "active", count: devCount || ghCount },
+          { name: "Design", status: "active", count: catMap["Design"] || 0 },
+          { name: "Marketing", status: "active", count: catMap["Marketing"] || 0 },
+          { name: "Content", status: "active", count: catMap["Content"] || 0 },
         ],
       };
     });
