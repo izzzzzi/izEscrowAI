@@ -120,9 +120,9 @@ export default function LandingPage() {
               <div className="animate-fade-up delay-300 flex flex-col sm:flex-row gap-4">
                 <a
                   href="https://t.me/izEscrowAIBot"
-                  className="ton-gradient px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/20 glow-pulse"
+                  className="ton-gradient px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium text-white no-underline transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/20 glow-pulse"
                 >
-                  <iconify-icon icon="solar:paper-plane-linear" width="20" height="20" />
+                  <iconify-icon icon="simple-icons:telegram" width="20" height="20" />
                   {t("landing.hero.openBot")}
                 </a>
                 <button
