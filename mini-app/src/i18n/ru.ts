@@ -279,6 +279,10 @@ const ru: Record<TranslationKey, string> = {
   "landing.hero.title1": "Фриланс-биржа",
   "landing.hero.title2": "разработчиков",
   "landing.hero.title3": "на TON.",
+  "landing.hero.rotate1": "разработчиков",
+  "landing.hero.rotate2": "дизайнеров",
+  "landing.hero.rotate3": "копирайтеров",
+  "landing.hero.rotate4": "маркетологов",
   "landing.hero.subtitle":
     "Находите разработчиков, проверяйте навыки через GitHub и блокируйте оплату в смарт-контракте. AI парсит сделки из обычного текста — без посредников, с полным доверием.",
   "landing.hero.openBot": "Открыть Telegram-бота",

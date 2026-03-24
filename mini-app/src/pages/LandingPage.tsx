@@ -13,6 +13,27 @@ export default function LandingPage() {
 
   const mainRef = useRef<HTMLElement>(null);
 
+  // Rotating hero words
+  const rotateWords = [
+    t("landing.hero.rotate1" as any),
+    t("landing.hero.rotate2" as any),
+    t("landing.hero.rotate3" as any),
+    t("landing.hero.rotate4" as any),
+  ];
+  const [rotateIdx, setRotateIdx] = useState(0);
+  const [rotateAnim, setRotateAnim] = useState<"in" | "out">("in");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRotateAnim("out");
+      setTimeout(() => {
+        setRotateIdx((i) => (i + 1) % rotateWords.length);
+        setRotateAnim("in");
+      }, 300);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [rotateWords.length]);
+
   useEffect(() => {
     fetchStats().then(setStats).catch(() => {});
     fetchPublicOffers().then((offers) => setRecentOffers(offers.slice(0, 6))).catch(() => {});
@@ -63,7 +84,16 @@ export default function LandingPage() {
               </div>
               <h1 className="animate-fade-up delay-100 text-5xl md:text-6xl font-semibold tracking-tight leading-[1.1] mb-6">
                 {t("landing.hero.title1")} <br />
-                <span className="text-[#0098EA]">{t("landing.hero.title2")}</span> {t("landing.hero.title3")}
+                <span
+                  className={`text-[#0098EA] inline-block transition-all duration-300 ${
+                    rotateAnim === "in"
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-4"
+                  }`}
+                >
+                  {rotateWords[rotateIdx]}
+                </span>{" "}
+                {t("landing.hero.title3")}
               </h1>
               <p className="animate-fade-up delay-200 text-lg text-slate-400 font-light leading-relaxed max-w-xl mb-10">
                 {t("landing.hero.subtitle")}
