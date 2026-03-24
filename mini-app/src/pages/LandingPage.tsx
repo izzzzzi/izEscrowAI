@@ -488,13 +488,13 @@ export default function LandingPage() {
                 <iconify-icon icon="solar:users-group-rounded-linear" width="20" />
                 {t("landing.cta.hire" as any)}
               </button>
-              <a
-                href="https://t.me/izEscrowAIBot"
-                className="bg-white/5 border border-white/10 px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/10 transition-all no-underline text-white"
+              <button
+                onClick={() => navigate("/market")}
+                className="bg-white/5 border border-white/10 px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/10 transition-all cursor-pointer text-white"
               >
                 <iconify-icon icon="solar:bag-4-linear" width="20" />
                 {t("landing.cta.work" as any)}
-              </a>
+              </button>
             </div>
           </div>
         </section>
