@@ -111,7 +111,7 @@ export default function LandingPage() {
                   >
                     {rotateWords[rotateIdx]}
                   </span>
-                </span>{" "}
+                </span><br />
                 <Term hintKey="term.ton">{t("landing.hero.title3")}</Term>
               </h1>
               <p className="animate-fade-up delay-200 text-lg text-slate-400 font-light leading-relaxed max-w-xl mb-10">
