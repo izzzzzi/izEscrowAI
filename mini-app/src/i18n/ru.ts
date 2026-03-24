@@ -320,7 +320,7 @@ const ru: Record<TranslationKey, string> = {
     "Разработчики с верификацией через GitHub.",
   "landing.offers.title": "Актуальные офферы",
   "landing.offers.subtitle":
-    "Смотрите и откликайтесь — аккаунт не нужен.",
+    "Смотрите без регистрации. Для отклика — вход через Telegram.",
   "landing.offers.viewAll": "Все офферы →",
   "landing.groups.title": "Топ групп",
   "landing.groups.subtitle": "Самые активные Telegram-сообщества.",

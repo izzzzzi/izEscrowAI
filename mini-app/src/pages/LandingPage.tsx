@@ -526,10 +526,13 @@ export default function LandingPage() {
             </div>
 
             <div className="flex items-center gap-4">
-              <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] text-blue-400 font-medium">
+              <a href="https://ton.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/15 transition-colors no-underline">
+                <iconify-icon icon="simple-icons:ton" width="14" height="14" class="text-[#0098EA]" />
+                <span className="text-[10px] text-blue-400 font-medium">{t("landing.footer.built")}</span>
+              </a>
+              <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] text-slate-500 font-medium">
                 {t("landing.footer.hackathon")}
               </span>
-              <p className="text-xs text-slate-600">{t("landing.footer.built")}</p>
             </div>
           </div>
         </footer>

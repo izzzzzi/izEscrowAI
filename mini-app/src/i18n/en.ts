@@ -289,7 +289,7 @@ const en = {
   "landing.talent.title": "Available Talent",
   "landing.talent.subtitle": "GitHub-verified developers ready to work.",
   "landing.offers.title": "Live Offers",
-  "landing.offers.subtitle": "Browse and apply — no account needed to start.",
+  "landing.offers.subtitle": "Browse freely. Sign in with Telegram to apply.",
   "landing.offers.viewAll": "View All →",
   "landing.groups.title": "Top Groups",
   "landing.groups.subtitle": "Most active Telegram communities.",
