@@ -222,12 +222,6 @@ button:active {
   box-shadow: 0 0 80px rgba(0, 152, 234, 0.08);
 }
 
-.deal-bubble {
-  background: rgba(0, 152, 234, 0.08);
-  border: 1px solid rgba(0, 152, 234, 0.15);
-  border-radius: 1rem 1rem 1rem 0.25rem;
-}
-
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-12px); }
