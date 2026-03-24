@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { fetchStats, fetchPublicOffers, fetchTalent, type PlatformStats, type PublicOffer, type TalentData } from "../lib/api";
 import TalentGrid from "../components/TalentGrid";
+import ActivityFeed from "../components/ActivityFeed";
 import Roadmap from "../components/Roadmap";
 import { useT } from "../i18n/context";
 
@@ -420,6 +421,17 @@ export default function LandingPage() {
             </div>
           </section>
         )}
+
+        {/* Live Activity */}
+        <section className="py-24 px-6 reveal">
+          <div className="max-w-7xl mx-auto text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.activity.title")}</h2>
+            <p className="text-slate-400 font-light">{t("landing.activity.subtitle")}</p>
+          </div>
+          <div className="max-w-2xl mx-auto">
+            <ActivityFeed />
+          </div>
+        </section>
 
         {/* Roadmap */}
         <section className="py-24 px-6">
