@@ -91,7 +91,7 @@ export default function LandingPage() {
         </div>
 
         {/* Hero Section */}
-        <section className="pt-40 pb-20 px-6">
+        <section className="min-h-screen flex items-center px-6">
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="text-left">
               <div className="animate-fade-up inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-medium tracking-widest uppercase text-[#0098EA] mb-6">
