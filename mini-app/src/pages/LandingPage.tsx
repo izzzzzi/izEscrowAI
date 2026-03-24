@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { fetchStats, fetchPublicOffers, fetchTalent, fetchTopGroups, type PlatformStats, type PublicOffer, type TalentData, type GroupStat } from "../lib/api";
-import TalentGrid from "../components/TalentGrid";
-import ActivityFeed from "../components/ActivityFeed";
+import { fetchStats, fetchPublicOffers, type PlatformStats, type PublicOffer } from "../lib/api";
 import Roadmap from "../components/Roadmap";
 import { useT } from "../i18n/context";
 
@@ -12,16 +10,12 @@ export default function LandingPage() {
   const t = useT();
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [recentOffers, setRecentOffers] = useState<PublicOffer[]>([]);
-  const [talent, setTalent] = useState<TalentData | null>(null);
-  const [topGroups, setTopGroups] = useState<GroupStat[]>([]);
 
   const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     fetchStats().then(setStats).catch(() => {});
     fetchPublicOffers().then((offers) => setRecentOffers(offers.slice(0, 6))).catch(() => {});
-    fetchTalent().then(setTalent).catch(() => {});
-    fetchTopGroups(5).then(setTopGroups).catch(() => {});
   }, []);
 
   // Scroll-reveal animation (CSS-class based, defaults to visible)
@@ -34,7 +28,7 @@ export default function LandingPage() {
     );
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [stats, talent, recentOffers, topGroups]);
+  }, [stats, recentOffers]);
 
   const workflowSteps = [
     { icon: "solar:chat-line-linear", title: t("landing.workflow.step1"), desc: t("landing.workflow.step1.desc") },
@@ -318,110 +312,18 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Inline Offers */}
+            {/* Non-Custodial Escrow */}
             <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between group">
               <div>
-                <iconify-icon icon="solar:chat-square-arrow-linear" width="40" height="40" class="text-cyan-400 mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.inline.title")}</h3>
+                <iconify-icon icon="solar:verified-check-linear" width="40" height="40" class="text-emerald-400 mb-6" />
+                <h3 className="text-xl font-medium tracking-tight mb-4">Non-Custodial Escrow</h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
-                {t("landing.feature.inline.desc")}
-              </p>
-            </div>
-
-            {/* Auction & Bidding — wide */}
-            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
-              <div className="relative z-10">
-                <iconify-icon icon="solar:sort-by-time-linear" width="40" height="40" class="text-amber-400 mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.auction.title")}</h3>
-                <p className="text-slate-400 font-light max-w-md">
-                  {t("landing.feature.auction.desc")}
-                </p>
-              </div>
-              <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-amber-500/5 rounded-full blur-[60px] group-hover:bg-amber-500/10 transition-colors" />
-            </div>
-
-            {/* GitHub Skill Verification — full width */}
-            <div className="md:col-span-3 glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col md:flex-row items-center gap-10">
-              <div className="flex-1">
-                <iconify-icon icon="logos:github-icon" width="40" height="40" class="mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.github.title")}</h3>
-                <p className="text-slate-400 font-light max-w-lg">
-                  {t("landing.feature.github.desc")}
-                </p>
-              </div>
-              <div className="w-full md:w-1/3 flex flex-col items-center gap-4">
-                <div className="w-24 h-24 rounded-full border-4 border-green-500/30 flex items-center justify-center">
-                  <span className="text-3xl font-bold text-green-400">87</span>
-                </div>
-                <span className="text-xs text-green-400 font-semibold uppercase tracking-wider">{t("landing.feature.github.trustScore")}</span>
-                <div className="flex gap-2">
-                  <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 text-[10px]">{t("landing.feature.github.established")}</span>
-                  <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 text-[10px]">{t("landing.feature.github.orgMember")}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* AI Risk Score */}
-            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
-              <div className="relative z-10">
-                <iconify-icon icon="solar:shield-check-linear" width="40" height="40" class="text-green-400 mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.risk.title")}</h3>
-                <p className="text-slate-400 font-light max-w-md">
-                  {t("landing.feature.risk.desc")}
-                </p>
-              </div>
-              <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-green-500/5 rounded-full blur-[60px] group-hover:bg-green-500/10 transition-colors" />
-            </div>
-
-            {/* Group Analytics */}
-            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
-              <div>
-                <iconify-icon icon="solar:users-group-rounded-linear" width="40" height="40" class="text-violet-400 mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.analytics.title")}</h3>
-              </div>
-              <p className="text-sm text-slate-500 leading-relaxed font-light">
-                {t("landing.feature.analytics.desc")}
+                Funds stay in a TON smart contract. No middlemen hold your money.
               </p>
             </div>
           </div>
         </section>
-
-        {/* Tech Stack */}
-        <section className="py-24 border-y border-white/5">
-          <div className="max-w-7xl mx-auto px-6 overflow-hidden">
-            <p className="text-center text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-12">
-              {t("landing.tech.poweredBy")}
-            </p>
-            <div className="flex flex-wrap justify-center gap-10 md:gap-20 opacity-50 grayscale hover:grayscale-0 transition-all">
-              {[
-                { icon: "logos:typescript-icon", label: "TypeScript" },
-                { icon: "logos:react", label: "React" },
-                { icon: "simple-icons:telegram", label: "TON Connect", cls: "text-[#0088cc]" },
-                { icon: "solar:database-linear", label: "PostgreSQL", cls: "text-white" },
-                { icon: "solar:chart-2-linear", label: "tonapi.io", cls: "text-white" },
-              ].map((techItem) => (
-                <div key={techItem.label} className={`flex items-center gap-2 ${techItem.cls ?? ""}`}>
-                  <iconify-icon icon={techItem.icon} width="24" />
-                  <span className="text-sm font-medium">{techItem.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Available Talent */}
-        {talent && (
-          <section className="py-24 px-6">
-            <div className="max-w-7xl mx-auto text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.talent.title")}</h2>
-              <p className="text-slate-400 font-light">{t("landing.talent.subtitle")}</p>
-            </div>
-            <div className="max-w-4xl mx-auto">
-              <TalentGrid languages={talent.languages} categories={talent.categories} />
-            </div>
-          </section>
-        )}
 
         {/* Recent Offers Feed */}
         {recentOffers.length > 0 && (
@@ -469,69 +371,6 @@ export default function LandingPage() {
             </div>
           </section>
         )}
-
-        {/* Group Leaderboard (11.4) */}
-        {topGroups.length > 0 && (
-          <section className="py-24 px-6">
-            <div className="max-w-7xl mx-auto">
-              <div className="flex items-center justify-between mb-12">
-                <div>
-                  <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-2">{t("landing.groups.title")}</h2>
-                  <p className="text-slate-400 font-light">{t("landing.groups.subtitle")}</p>
-                </div>
-                <button
-                  onClick={() => navigate("/groups")}
-                  className="text-[#0098EA] text-sm font-medium bg-transparent border-none cursor-pointer hover:underline"
-                >
-                  {t("landing.groups.leaderboard")}
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {topGroups.map((group, i) => (
-                  <button
-                    key={group.group_id}
-                    onClick={() => navigate(`/groups/${group.group_id}`)}
-                    className="glass-panel p-6 rounded-2xl cursor-pointer hover:-translate-y-1 transition-all text-left w-full"
-                  >
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="text-2xl font-bold text-slate-600">
-                        {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`}
-                      </span>
-                      <h3 className="text-sm font-medium truncate">
-                        {group.username ? `@${group.username}` : group.title || `Group`}
-                      </h3>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 text-xs text-slate-400">
-                      <div>
-                        <div className="text-white font-medium">{group.completed_deals}</div>
-                        <div>Deals</div>
-                      </div>
-                      <div>
-                        <div className="text-white font-medium">{group.total_volume?.toFixed(0) ?? 0}</div>
-                        <div>Volume</div>
-                      </div>
-                      <div>
-                        <div className="text-white font-medium">{group.avg_check?.toFixed(0) ?? "—"}</div>
-                        <div>Avg Check</div>
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Live Activity */}
-        <section className="py-24 px-6">
-          <div className="max-w-7xl mx-auto text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.activity.title")}</h2>
-            <p className="text-slate-400 font-light">{t("landing.activity.subtitle")}</p>
-          </div>
-          <div className="max-w-2xl mx-auto">
-            <ActivityFeed />
-          </div>
-        </section>
 
         {/* Roadmap */}
         <section className="py-24 px-6">
