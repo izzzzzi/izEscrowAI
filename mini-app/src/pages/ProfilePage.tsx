@@ -6,6 +6,7 @@ import { useT } from "../i18n/context";
 import AppHeader from "../components/AppHeader";
 import GitHubCard from "../components/GitHubCard";
 import MyJobCard from "../components/MyJobCard";
+import ReputationCard from "../components/ReputationCard";
 
 function ProfileSkeleton() {
   return (
@@ -15,10 +16,7 @@ function ProfileSkeleton() {
         <div className="h-8 w-16 bg-white/5 rounded" />
         <div className="h-4 w-32 bg-white/5 rounded" />
       </div>
-      <div className="grid grid-cols-3 gap-3">
-        {[1, 2, 3].map((i) => <div key={i} className="glass-card rounded-xl p-4 h-20" />)}
-      </div>
-      <div className="glass-card rounded-2xl p-5 h-24" />
+      <div className="glass-card rounded-2xl p-5 h-48" />
     </div>
   );
 }
@@ -55,12 +53,6 @@ export default function ProfilePage() {
     if (isOwnProfile) fetchMyJobs().then(setMyJobs).catch(() => {});
   }, [userId, isOwnProfile]);
 
-  const scoreColor = (s: number | null) =>
-    s === null ? "text-slate-500" : s >= 80 ? "text-green-400" : s >= 60 ? "text-blue-400" : s >= 40 ? "text-amber-400" : "text-red-400";
-
-  const barColor = (s: number | null) =>
-    s === null ? "bg-slate-600" : s >= 80 ? "bg-green-500" : s >= 60 ? "bg-blue-500" : s >= 40 ? "bg-amber-500" : "bg-red-500";
-
   return (
     <div className="mini-page">
       <AppHeader />
@@ -79,58 +71,18 @@ export default function ProfilePage() {
           </div>
         ) : profile ? (
           <div className="space-y-4">
-            {/* Trust Score */}
-            <div className="glass-card rounded-2xl p-6 text-center space-y-3">
-              <div className="w-16 h-16 rounded-full bg-[#0098EA]/10 flex items-center justify-center mx-auto">
-                <iconify-icon icon="solar:shield-check-linear" width="32" class="text-[#0098EA]" />
-              </div>
-              <div className="text-3xl font-bold tracking-tight">
-                {profile.trust_score ?? "—"}
-              </div>
-              <div className={`text-sm font-medium ${scoreColor(profile.trust_score)}`}>
-                {t("profile.trustScore")}
-              </div>
-              {profile.trust_score !== null && (
-                <div className="w-full bg-white/5 rounded-full h-2 overflow-hidden">
-                  <div className={`h-full rounded-full ${barColor(profile.trust_score)} transition-all`} style={{ width: `${profile.trust_score}%` }} />
-                </div>
-              )}
-            </div>
-
-            {/* Key Stats — only 3 */}
-            <div className="grid grid-cols-3 gap-3">
-              <StatCard label={t("profile.stat.deals")} value={profile.reputation.completed_deals} icon="solar:clipboard-check-linear" color="text-blue-400" />
-              <StatCard label={t("profile.stat.rating")} value={profile.reputation.rating > 0 ? profile.reputation.rating.toFixed(1) : "—"} icon="solar:star-linear" color="text-amber-400" />
-              <StatCard label={t("profile.stat.repeatClients")} value={profile.reputation.repeat_clients} icon="solar:users-group-rounded-linear" color="text-purple-400" />
-            </div>
-
-            {/* Wallet */}
-            {isOwnProfile && (
-              <div className="glass-card rounded-2xl p-5 space-y-3">
-                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">{t("profile.wallet.title")}</h3>
-                {wallet ? (
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <iconify-icon icon="solar:wallet-2-linear" width="18" class="text-green-400" />
-                      <code className="text-xs font-mono text-slate-300">{walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</code>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <button onClick={() => navigator.clipboard.writeText(walletAddress)} className="px-3 py-1.5 text-xs text-slate-400 hover:text-white transition-colors bg-white/5 rounded-lg border-none cursor-pointer">
-                        {t("profile.wallet.copy")}
-                      </button>
-                      <button onClick={() => tonConnectUI.disconnect()} className="px-3 py-1.5 text-xs text-red-400 hover:text-red-300 transition-colors bg-red-500/5 rounded-lg border-none cursor-pointer">
-                        {t("profile.wallet.disconnect")}
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <button onClick={() => tonConnectUI.openModal()} className="w-full py-3 rounded-xl text-sm font-medium bg-[#0098EA]/10 text-[#0098EA] border border-[#0098EA]/20 cursor-pointer hover:bg-[#0098EA]/20 transition-colors flex items-center justify-center gap-2">
-                    <iconify-icon icon="solar:wallet-2-linear" width="18" />
-                    {t("profile.wallet.connect")}
-                  </button>
-                )}
-              </div>
-            )}
+            {/* Reputation Card */}
+            <ReputationCard
+              trustScore={profile.trust_score}
+              breakdown={profile.trust_breakdown}
+              reputation={{ completed_deals: profile.reputation.completed_deals, rating: profile.reputation.rating }}
+              github={profile.github ? { username: profile.github.username, public_repos: profile.github.public_repos } : null}
+              walletConnected={!!wallet}
+              walletAddress={walletAddress}
+              isOwnProfile={isOwnProfile}
+              onConnectGithub={() => window.open(`${API_URL}/api/github/auth?userId=${profile.user_id}`, "_blank")}
+              onConnectWallet={() => tonConnectUI.openModal()}
+            />
 
             {/* GitHub */}
             {profile.github ? (
@@ -145,14 +97,6 @@ export default function ProfilePage() {
                   </button>
                 )}
               </div>
-            ) : isOwnProfile ? (
-              <button
-                onClick={() => window.open(`${API_URL}/api/github/auth?userId=${profile.user_id}`, "_blank")}
-                className="w-full py-3 text-sm font-medium glass-card rounded-2xl hover:bg-white/5 transition-colors flex items-center justify-center gap-2 cursor-pointer border-none text-white"
-              >
-                <iconify-icon icon="logos:github-icon" width="18" />
-                {t("profile.github.link")}
-              </button>
             ) : null}
 
             {/* My Jobs */}
@@ -169,16 +113,6 @@ export default function ProfilePage() {
           </div>
         ) : null}
       </main>
-    </div>
-  );
-}
-
-function StatCard({ label, value, icon, color = "text-slate-500" }: { label: string; value: string | number; icon: string; color?: string }) {
-  return (
-    <div className="glass-card rounded-xl p-3 flex flex-col items-center gap-1.5">
-      <iconify-icon icon={icon} width="18" class={color} />
-      <div className="text-base font-semibold tracking-tight">{value}</div>
-      <div className="text-[0.55rem] text-slate-500 uppercase tracking-wider font-medium text-center leading-tight">{label}</div>
     </div>
   );
 }

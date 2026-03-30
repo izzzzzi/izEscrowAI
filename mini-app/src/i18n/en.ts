@@ -632,6 +632,19 @@ const en = {
   "webProfile.yourOffers": "Your Offers",
   "webProfile.user": "User #{id}",
 
+  // ReputationCard
+  "reputation.title": "Reputation",
+  "reputation.platform": "Platform",
+  "reputation.github": "GitHub",
+  "reputation.wallet": "Wallet",
+  "reputation.verification": "Verification",
+  "reputation.deals": "deals",
+  "reputation.connectGithub": "Link GitHub",
+  "reputation.connectWallet": "Connect",
+  "reputation.connected": "Connected",
+  "reputation.telegram": "Telegram \u2713",
+  "reputation.repos": "repos",
+
   // Footer legal links
   "legal.footer.terms": "Terms",
   "legal.footer.privacy": "Privacy",

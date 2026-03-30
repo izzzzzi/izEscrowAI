@@ -667,6 +667,19 @@ const ru: Record<TranslationKey, string> = {
   "webProfile.yourOffers": "Ваши офферы",
   "webProfile.user": "Пользователь #{id}",
 
+  // ReputationCard
+  "reputation.title": "Репутация",
+  "reputation.platform": "Платформа",
+  "reputation.github": "GitHub",
+  "reputation.wallet": "Кошелёк",
+  "reputation.verification": "Верификация",
+  "reputation.deals": "сделок",
+  "reputation.connectGithub": "Привязать GitHub",
+  "reputation.connectWallet": "Подключить",
+  "reputation.connected": "Подключён",
+  "reputation.telegram": "Telegram \u2713",
+  "reputation.repos": "репозиториев",
+
   // Footer legal links
   "legal.footer.terms": "Условия",
   "legal.footer.privacy": "Конфиденциальность",

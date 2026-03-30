@@ -7,6 +7,7 @@ import { useT } from "../i18n/context";
 import LoginGate from "../components/LoginGate";
 import GitHubCard from "../components/GitHubCard";
 import MyJobCard from "../components/MyJobCard";
+import ReputationCard from "../components/ReputationCard";
 
 export default function WebProfilePage() {
   const { userId } = useParams<{ userId: string }>();
@@ -83,7 +84,6 @@ export default function WebProfilePage() {
     );
   }
 
-  const rep = profile.reputation;
   const displayName = isOwnProfile && user
     ? `${user.first_name || ""}${user.last_name ? " " + user.last_name : ""}`
     : t("webProfile.user").replace("{id}", String(profile.user_id));
@@ -108,73 +108,22 @@ export default function WebProfilePage() {
               )}
             </div>
           </div>
-
-          {/* Trust Score */}
-          <div className="flex items-center gap-6 mb-6">
-            <div className="flex items-center gap-3">
-              <div className={`w-14 h-14 rounded-full border-3 flex items-center justify-center ${
-                profile.trust_score === null
-                  ? "border-slate-600"
-                  : profile.trust_score >= 70
-                    ? "border-green-500/40"
-                    : profile.trust_score >= 40
-                      ? "border-amber-500/40"
-                      : "border-red-500/40"
-              }`}>
-                <span className={`text-lg font-bold ${
-                  profile.trust_score === null ? "text-slate-500" : "text-white"
-                }`}>
-                  {profile.trust_score ?? "?"}
-                </span>
-              </div>
-              <div>
-                <div className="text-sm font-medium">{t("profile.trustScore")}</div>
-                <div className="text-xs text-slate-400">
-                  {profile.trust_score === null ? t("profile.trust.notRated") : profile.trust_score >= 70 ? t("profile.trust.excellent") : profile.trust_score >= 40 ? t("profile.trust.good") : t("profile.trust.low")}
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: t("profile.stat.deals"), value: rep.completed_deals },
-              { label: t("profile.stat.rating"), value: rep.completed_deals > 0 ? `${(rep.rating || 0).toFixed(1)}/5` : "N/A" },
-              { label: t("profile.stat.cancelled"), value: rep.cancelled_deals },
-              { label: t("profile.stat.disputes"), value: rep.disputes_opened },
-            ].map((s) => (
-              <div key={s.label} className="bg-white/5 rounded-xl p-4 text-center">
-                <div className="text-lg font-semibold">{s.value}</div>
-                <div className="text-xs text-slate-400">{s.label}</div>
-              </div>
-            ))}
-          </div>
         </div>
 
-        {/* Trust Score Breakdown */}
-        {profile.trust_breakdown && (
-          <div className="glass-card rounded-2xl p-6 mb-6">
-            <h3 className="text-sm font-medium text-slate-400 mb-4">{t("profile.breakdown.title")}</h3>
-            <div className="grid grid-cols-4 gap-4">
-              {[
-                { label: t("profile.breakdown.platform"), value: profile.trust_breakdown.platform, weight: "40%", color: "bg-blue-500" },
-                { label: t("profile.breakdown.github"), value: profile.trust_breakdown.github, weight: "30%", color: "bg-green-500" },
-                { label: t("profile.breakdown.wallet"), value: profile.trust_breakdown.wallet, weight: "20%", color: "bg-purple-500" },
-                { label: t("profile.breakdown.verification"), value: profile.trust_breakdown.verification, weight: "10%", color: "bg-cyan-500" },
-              ].map((c) => (
-                <div key={c.label} className="text-center">
-                  <div className="text-lg font-semibold">{c.value}</div>
-                  <div className="text-xs text-slate-400">{c.label} ({c.weight})</div>
-                  <div className="h-1.5 bg-slate-800 rounded-full mt-2 overflow-hidden">
-                    <div className={`h-full rounded-full ${c.color}`} style={{ width: `${c.value}%` }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Reputation Card */}
+        <div className="mb-6">
+          <ReputationCard
+            trustScore={profile.trust_score}
+            breakdown={profile.trust_breakdown}
+            reputation={{ completed_deals: profile.reputation.completed_deals, rating: profile.reputation.rating }}
+            github={profile.github ? { username: profile.github.username, public_repos: profile.github.public_repos } : null}
+            walletConnected={!!(hasWallet && tonAddress)}
+            walletAddress={tonAddress || undefined}
+            isOwnProfile={isOwnProfile}
+            onConnectGithub={() => window.open(`${API_URL}/api/github/auth?userId=${profile.user_id}`, "_blank")}
+            onConnectWallet={() => tonConnectUI.openModal()}
+          />
+        </div>
 
         {/* GitHub Card */}
         {profile.github ? (
@@ -193,50 +142,7 @@ export default function WebProfilePage() {
               </button>
             )}
           </div>
-        ) : isOwnProfile ? (
-          <a
-            href={`${API_URL}/api/github/auth?userId=${profile.user_id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block glass-card rounded-2xl p-6 mb-6 text-center hover:bg-white/5 transition-colors"
-          >
-            <iconify-icon icon="logos:github-icon" width="32" class="mb-3" />
-            <div className="text-sm font-medium">{t("profile.github.link")}</div>
-            <div className="text-xs text-slate-400 mt-1">{t("webProfile.github.hint")}</div>
-          </a>
         ) : null}
-
-        {/* Wallet Card */}
-        {isOwnProfile && (hasWallet && tonAddress ? (
-          <div className="glass-card rounded-2xl p-6 mb-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center">
-                <iconify-icon icon="solar:wallet-2-bold" width="22" class="text-purple-400" />
-              </div>
-              <div>
-                <div className="text-sm font-medium">{t("webProfile.wallet.connected")}</div>
-                <div className="text-xs text-slate-400 font-mono">
-                  {tonAddress.slice(0, 6)}...{tonAddress.slice(-4)}
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={() => tonConnectUI.disconnect()}
-              className="text-xs text-red-400 bg-red-500/5 border border-red-500/10 rounded-lg px-4 py-2 cursor-pointer hover:bg-red-500/10 transition-colors"
-            >
-              {t("profile.wallet.disconnect")}
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => tonConnectUI.openModal()}
-            className="block w-full glass-card rounded-2xl p-6 mb-6 text-center hover:bg-white/5 transition-colors cursor-pointer bg-transparent border-none text-white"
-          >
-            <iconify-icon icon="solar:wallet-2-bold" width="32" class="text-purple-400 mb-3" />
-            <div className="text-sm font-medium">{t("webProfile.wallet.connect")}</div>
-            <div className="text-xs text-slate-400 mt-1">{t("webProfile.wallet.hint")}</div>
-          </button>
-        ))}
 
         {/* My Jobs from Groups */}
         {isOwnProfile && myJobs.length > 0 && (
