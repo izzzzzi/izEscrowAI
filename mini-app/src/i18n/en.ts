@@ -533,7 +533,7 @@ const en = {
   "landing.feature.escrow.title": "Non-Custodial Escrow",
   "landing.feature.escrow.desc": "Funds stay in a TON smart contract. No middlemen hold your money.",
   "landing.feature.parser.title": "Job Parser",
-  "landing.feature.parser.desc": "Monitors 19 Telegram groups and auto-detects job postings. Extracts budget, skills, and deadline — zero manual input.",
+  "landing.feature.parser.desc": "AI monitors 19 Telegram channels, extracts freelance jobs automatically — budget, skills, deadlines. New jobs appear in the marketplace in real time.",
   "landing.feature.proposals.title": "Smart Proposals",
   "landing.feature.proposals.desc": "One-click personalized proposals generated from your GitHub profile matched against job requirements.",
   "landing.tech.poweredBy": "Powered by modern crypto stack",

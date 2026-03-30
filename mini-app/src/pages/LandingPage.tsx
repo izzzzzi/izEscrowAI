@@ -295,7 +295,7 @@ export default function LandingPage() {
         {/* Features Bento Grid */}
         <section id="features" className="py-24 px-6 reveal">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* AI Spec Generator — wide */}
+            {/* Row 1: AI Spec Generator (2col) + AI Pricing (1col) */}
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
                 <iconify-icon icon="solar:document-add-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
@@ -307,7 +307,6 @@ export default function LandingPage() {
               <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-blue-500/5 rounded-full blur-[60px] group-hover:bg-blue-500/10 transition-colors" />
             </div>
 
-            {/* AI Pricing */}
             <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <iconify-icon icon="solar:tag-price-linear" width="40" height="40" class="text-emerald-400 mb-6" />
@@ -318,7 +317,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* AI Matching */}
+            {/* Row 2: AI Matching (1col) + AI Arbitration (2col) */}
             <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <iconify-icon icon="solar:users-group-rounded-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
@@ -329,7 +328,6 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Non-Custodial + AI Arbitration — wide */}
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
                 <iconify-icon icon="solar:scale-linear" width="40" height="40" class="text-purple-400 mb-6" />
@@ -341,7 +339,7 @@ export default function LandingPage() {
               <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-purple-500/5 rounded-full blur-[60px] group-hover:bg-purple-500/10 transition-colors" />
             </div>
 
-            {/* Non-Custodial Escrow */}
+            {/* Row 3: Escrow (1col) + GitHub Score (1col) + Job Parser (1col) */}
             <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between group">
               <div>
                 <iconify-icon icon="solar:verified-check-linear" width="40" height="40" class="text-emerald-400 mb-6" />
@@ -352,26 +350,45 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Job Parser — wide */}
+            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
+              <div>
+                <iconify-icon icon="solar:code-scan-linear" width="40" height="40" class="text-green-400 mb-6" />
+                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.github.title")}</h3>
+              </div>
+              <p className="text-sm text-slate-500 leading-relaxed font-light">
+                {t("landing.feature.github.desc")}
+              </p>
+            </div>
+
+            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
+              <div>
+                <iconify-icon icon="solar:radar-2-linear" width="40" height="40" class="text-amber-400 mb-6" />
+                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.parser.title")}</h3>
+              </div>
+              <p className="text-sm text-slate-500 leading-relaxed font-light">
+                {t("landing.feature.parser.desc")}
+              </p>
+            </div>
+
+            {/* Row 4: Inline Offers (2col) + Trust Score (1col) */}
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
-                <iconify-icon icon="solar:radar-2-linear" width="40" height="40" class="text-cyan-400 mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.parser.title")}</h3>
+                <iconify-icon icon="solar:chat-square-arrow-linear" width="40" height="40" class="text-cyan-400 mb-6" />
+                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.inline.title")}</h3>
                 <p className="text-slate-400 font-light max-w-md">
-                  {t("landing.feature.parser.desc")}
+                  {t("landing.feature.inline.desc")}
                 </p>
               </div>
               <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-cyan-500/5 rounded-full blur-[60px] group-hover:bg-cyan-500/10 transition-colors" />
             </div>
 
-            {/* Smart Proposals */}
-            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between group">
+            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
-                <iconify-icon icon="solar:pen-new-round-linear" width="40" height="40" class="text-pink-400 mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.proposals.title")}</h3>
+                <iconify-icon icon="solar:shield-user-linear" width="40" height="40" class="text-green-400 mb-6" />
+                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.risk.title")}</h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
-                {t("landing.feature.proposals.desc")}
+                {t("landing.feature.risk.desc")}
               </p>
             </div>
           </div>

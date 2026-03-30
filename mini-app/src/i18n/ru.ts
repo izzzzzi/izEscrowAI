@@ -568,7 +568,7 @@ const ru: Record<TranslationKey, string> = {
   "landing.feature.escrow.title": "Non-Custodial Эскроу",
   "landing.feature.escrow.desc": "Средства в смарт-контракте TON. Никакие посредники не держат ваши деньги.",
   "landing.feature.parser.title": "Парсер заказов",
-  "landing.feature.parser.desc": "Мониторит 19 Telegram-групп и автоматически находит заказы. Извлекает бюджет, навыки и дедлайн — без ручной работы.",
+  "landing.feature.parser.desc": "AI мониторит 19 Telegram-каналов, автоматически извлекает фриланс-заказы — бюджет, навыки, сроки. Новые заказы появляются на маркетплейсе в реальном времени.",
   "landing.feature.proposals.title": "Умные предложения",
   "landing.feature.proposals.desc": "Персональные предложения в один клик, сгенерированные из вашего GitHub-профиля под требования заказа.",
   "landing.tech.poweredBy": "Работает на современном крипто-стеке",
