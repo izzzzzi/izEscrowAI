@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useT } from "../i18n/context";
+import Icon from "./Icon";
 
 export default function TabNav() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function TabNav() {
                 active ? "tab-active" : "text-slate-500"
               }`}
             >
-              <iconify-icon icon={tab.icon} width="22" />
+              <Icon icon={tab.icon} size={22} />
               <span className="text-[0.6rem] font-medium tracking-wide">{tab.label}</span>
             </button>
           );

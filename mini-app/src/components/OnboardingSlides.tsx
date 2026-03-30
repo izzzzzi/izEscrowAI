@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useT } from "../i18n/context";
+import Icon from "./Icon";
 
 interface Props {
   onComplete: () => void;
@@ -59,7 +60,7 @@ export default function OnboardingSlides({ onComplete }: Props) {
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center text-center max-w-sm">
         <div className={`w-20 h-20 rounded-3xl bg-gradient-to-br ${slide.accent} flex items-center justify-center mb-8 animate-fade-up`}>
-          <iconify-icon icon={slide.icon} width="40" height="40" class="text-white" />
+          <Icon icon={slide.icon} size={40} className="text-white" />
         </div>
         <h2 className="text-2xl font-semibold tracking-tight mb-3 animate-fade-up delay-100">
           {slide.title}

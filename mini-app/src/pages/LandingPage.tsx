@@ -7,6 +7,7 @@ import ActivityFeed from "../components/ActivityFeed";
 import Roadmap from "../components/Roadmap";
 import { useT } from "../i18n/context";
 import Term from "../components/Term";
+import Icon from "../components/Icon";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -122,14 +123,14 @@ export default function LandingPage() {
                   href="https://t.me/izEscrowAIBot"
                   className="ton-gradient px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium text-white no-underline transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/20"
                 >
-                  <iconify-icon icon="simple-icons:telegram" width="20" height="20" />
+                  <Icon icon="simple-icons:telegram" size={20} />
                   {t("landing.hero.openBot")}
                 </a>
                 <button
                   onClick={() => navigate("/offers")}
                   className="glass-panel px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/5 transition-all cursor-pointer border-none text-white text-base"
                 >
-                  <iconify-icon icon="solar:tag-linear" width="20" height="20" />
+                  <Icon icon="solar:tag-linear" size={20} />
                   {t("landing.hero.browseOffers")}
                 </button>
               </div>
@@ -143,14 +144,14 @@ export default function LandingPage() {
                 {/* Chat header */}
                 <div className="chat-header flex items-center gap-3 px-4 py-3 flex-shrink-0">
                   <div className="w-10 h-10 rounded-full ton-gradient flex items-center justify-center">
-                    <iconify-icon icon="solar:shield-check-linear" width="20" height="20" class="text-white" />
+                    <Icon icon="solar:shield-check-linear" size={20} className="text-white" />
                   </div>
                   <div className="flex-1">
                     <div className="text-[15px] font-medium">{t("landing.chat.botName")}</div>
                     <div className="text-[12px] chat-online">{t("landing.chat.online")}</div>
                   </div>
-                  <iconify-icon icon="solar:phone-linear" width="20" class="text-[#6D7883]" />
-                  <iconify-icon icon="solar:menu-dots-bold" width="20" class="text-[#6D7883]" />
+                  <Icon icon="solar:phone-linear" size={20} className="text-[#6D7883]" />
+                  <Icon icon="solar:menu-dots-bold" size={20} className="text-[#6D7883]" />
                 </div>
 
                 {/* Chat messages — auto-scrolls to bottom as new messages appear */}
@@ -166,7 +167,7 @@ export default function LandingPage() {
                   {/* Step 2: Bot welcome message */}
                   <div className="flex items-end gap-2 chat-step chat-step-2">
                     <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
-                      <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
+                      <Icon icon="solar:shield-check-linear" size={14} className="text-white" />
                     </div>
                     <div className="chat-bubble-bot max-w-[85%] px-3 py-2 rounded-[18px] rounded-bl-[6px] text-[13px] leading-relaxed">
                       <div className="font-medium mb-1">{t("landing.chat.welcome")}</div>
@@ -195,10 +196,10 @@ export default function LandingPage() {
                   {/* Step 5: Bot parsing */}
                   <div className="flex items-end gap-2 chat-step chat-step-5">
                     <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
-                      <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
+                      <Icon icon="solar:shield-check-linear" size={14} className="text-white" />
                     </div>
                     <div className="chat-bubble-bot px-3 py-2 rounded-[18px] rounded-bl-[6px] text-xs text-slate-400 flex items-center gap-1.5">
-                      <iconify-icon icon="solar:cpu-linear" width="14" class="text-[#0098EA] animate-spin-slow" />
+                      <Icon icon="solar:cpu-linear" size={14} className="text-[#0098EA] animate-spin-slow" />
                       <span className="typing-dots">{t("landing.chat.parsing")}</span>
                     </div>
                   </div>
@@ -206,7 +207,7 @@ export default function LandingPage() {
                   {/* Step 6: Bot parsed deal confirmation */}
                   <div className="flex items-end gap-2 chat-step chat-step-6">
                     <div className="w-7 h-7 rounded-full ton-gradient flex items-center justify-center flex-shrink-0">
-                      <iconify-icon icon="solar:shield-check-linear" width="14" class="text-white" />
+                      <Icon icon="solar:shield-check-linear" size={14} className="text-white" />
                     </div>
                     <div className="chat-bubble-bot max-w-[85%] rounded-[18px] rounded-bl-[6px] overflow-hidden">
                       <div className="px-3 pt-2 pb-1 text-[13px] leading-relaxed">
@@ -236,11 +237,11 @@ export default function LandingPage() {
 
                 {/* Chat input bar */}
                 <div className="chat-header flex items-center gap-2 px-3 py-2.5 flex-shrink-0">
-                  <iconify-icon icon="solar:smile-circle-linear" width="24" class="text-[#6D7883]" />
+                  <Icon icon="solar:smile-circle-linear" size={24} className="text-[#6D7883]" />
                   <div className="flex-1 bg-[#0E1621] rounded-full px-4 py-2 text-xs text-[#6D7883] border border-white/5">
                     {t("landing.chat.message")}
                   </div>
-                  <iconify-icon icon="solar:microphone-linear" width="24" class="text-[#6D7883]" />
+                  <Icon icon="solar:microphone-linear" size={24} className="text-[#6D7883]" />
                 </div>
                 </div>{/* /mockup-phone-display */}
               </div>{/* /mockup-phone */}
@@ -262,7 +263,7 @@ export default function LandingPage() {
                   className={`relative overflow-hidden rounded-2xl border ${stat.border} bg-gradient-to-br ${stat.gradient} p-5 shadow-lg ${stat.glow} group hover:scale-[1.03] transition-all duration-300`}
                 >
                   <div className="absolute top-3 right-3 opacity-10 group-hover:opacity-25 transition-opacity duration-500">
-                    <iconify-icon icon={stat.icon} width="40" />
+                    <Icon icon={stat.icon} size={40} />
                   </div>
                   <div className="text-3xl font-bold tracking-tight text-white">{stat.value}</div>
                   <div className="text-[11px] text-slate-400 mt-1 font-medium tracking-wide">{stat.label}</div>
@@ -283,7 +284,7 @@ export default function LandingPage() {
             {workflowSteps.map((step) => (
               <div key={step.title} className="glass-panel p-8 rounded-3xl group">
                 <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:bg-blue-500/20 transition-colors">
-                  <iconify-icon icon={step.icon} width="24" height="24" class="text-[#0098EA]" />
+                  <Icon icon={step.icon} size={24} className="text-[#0098EA]" />
                 </div>
                 <h3 className="text-lg font-medium mb-3 tracking-tight">{step.title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed font-light">{step.desc}</p>
@@ -298,7 +299,7 @@ export default function LandingPage() {
             {/* Row 1: AI Spec Generator (2col) + AI Pricing (1col) */}
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
-                <iconify-icon icon="solar:document-add-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
+                <Icon icon="solar:document-add-linear" size={40} className="text-[#0098EA] mb-6" />
                 <h3 className="text-2xl font-medium tracking-tight mb-4"><Term hintKey="term.spec">{t("landing.feature.spec.title")}</Term></h3>
                 <p className="text-slate-400 font-light max-w-md">
                   {t("landing.feature.spec.desc")}
@@ -309,7 +310,7 @@ export default function LandingPage() {
 
             <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
-                <iconify-icon icon="solar:tag-price-linear" width="40" height="40" class="text-emerald-400 mb-6" />
+                <Icon icon="solar:tag-price-linear" size={40} className="text-emerald-400 mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.pricing.title")}</h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
@@ -320,7 +321,7 @@ export default function LandingPage() {
             {/* Row 2: AI Matching (1col) + AI Arbitration (2col) */}
             <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
-                <iconify-icon icon="solar:users-group-rounded-linear" width="40" height="40" class="text-[#0098EA] mb-6" />
+                <Icon icon="solar:users-group-rounded-linear" size={40} className="text-[#0098EA] mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4"><Term hintKey="term.trustScore">{t("landing.feature.matching.title")}</Term></h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
@@ -330,7 +331,7 @@ export default function LandingPage() {
 
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
-                <iconify-icon icon="solar:scale-linear" width="40" height="40" class="text-purple-400 mb-6" />
+                <Icon icon="solar:scale-linear" size={40} className="text-purple-400 mb-6" />
                 <h3 className="text-2xl font-medium tracking-tight mb-4"><Term hintKey="term.arbitration">{t("landing.feature.arbitration.title")}</Term></h3>
                 <p className="text-slate-400 font-light max-w-md">
                   {t("landing.feature.arbitration.desc")}
@@ -342,7 +343,7 @@ export default function LandingPage() {
             {/* Row 3: Escrow (1col) + GitHub Score (1col) + Job Parser (1col) */}
             <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between group">
               <div>
-                <iconify-icon icon="solar:verified-check-linear" width="40" height="40" class="text-emerald-400 mb-6" />
+                <Icon icon="solar:verified-check-linear" size={40} className="text-emerald-400 mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4"><Term hintKey="term.escrow">{t("landing.feature.escrow.title")}</Term></h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
@@ -352,7 +353,7 @@ export default function LandingPage() {
 
             <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
-                <iconify-icon icon="solar:code-scan-linear" width="40" height="40" class="text-green-400 mb-6" />
+                <Icon icon="solar:code-scan-linear" size={40} className="text-green-400 mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.github.title")}</h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
@@ -362,7 +363,7 @@ export default function LandingPage() {
 
             <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
-                <iconify-icon icon="solar:radar-2-linear" width="40" height="40" class="text-amber-400 mb-6" />
+                <Icon icon="solar:radar-2-linear" size={40} className="text-amber-400 mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.parser.title")}</h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
@@ -373,7 +374,7 @@ export default function LandingPage() {
             {/* Row 4: Inline Offers (2col) + Trust Score (1col) */}
             <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
-                <iconify-icon icon="solar:chat-square-arrow-linear" width="40" height="40" class="text-cyan-400 mb-6" />
+                <Icon icon="solar:chat-square-arrow-linear" size={40} className="text-cyan-400 mb-6" />
                 <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.inline.title")}</h3>
                 <p className="text-slate-400 font-light max-w-md">
                   {t("landing.feature.inline.desc")}
@@ -384,7 +385,7 @@ export default function LandingPage() {
 
             <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
-                <iconify-icon icon="solar:shield-user-linear" width="40" height="40" class="text-green-400 mb-6" />
+                <Icon icon="solar:shield-user-linear" size={40} className="text-green-400 mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.risk.title")}</h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
@@ -492,7 +493,7 @@ export default function LandingPage() {
                 { icon: "simple-icons:postgresql", label: "Drizzle + PG" },
               ].map((tech) => (
                 <div key={tech.label} className="flex items-center gap-2 text-slate-500 hover:text-slate-300 transition-colors">
-                  <iconify-icon icon={tech.icon} width="20" />
+                  <Icon icon={tech.icon} size={20} />
                   <span className="text-xs font-medium">{tech.label}</span>
                 </div>
               ))}
@@ -517,14 +518,14 @@ export default function LandingPage() {
                 href="https://t.me/izEscrowAIBot"
                 className="ton-gradient px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:shadow-2xl hover:shadow-blue-500/20 transition-all text-white no-underline"
               >
-                <iconify-icon icon="simple-icons:telegram" width="20" />
+                <Icon icon="simple-icons:telegram" size={20} />
                 {t("landing.hero.openBot")}
               </a>
               <button
                 onClick={() => navigate("/market")}
                 className="glass-panel px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/5 transition-all cursor-pointer text-white border-none text-base"
               >
-                <iconify-icon icon="solar:bag-4-linear" width="20" />
+                <Icon icon="solar:bag-4-linear" size={20} />
                 {t("landing.hero.browseOffers")}
               </button>
             </div>

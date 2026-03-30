@@ -1,5 +1,6 @@
 import type { GithubProfile } from "../lib/api";
 import { useT } from "../i18n/context";
+import Icon from "./Icon";
 
 interface GitHubCardProps {
   profile: GithubProfile;
@@ -69,7 +70,7 @@ export default function GitHubCard({ profile }: GitHubCardProps) {
                     </span>
                   )}
                   <span className="flex items-center gap-0.5">
-                    <iconify-icon icon="solar:star-bold" width="10" class="text-amber-400" />
+                    <Icon icon="solar:star-bold" size={10} className="text-amber-400" />
                     {repo.stars}
                   </span>
                 </span>

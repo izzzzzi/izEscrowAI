@@ -1,4 +1,5 @@
 import { useT } from "../i18n/context";
+import Icon from "./Icon";
 
 export default function WebFooter() {
   const t = useT();
@@ -8,7 +9,7 @@ export default function WebFooter() {
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 ton-gradient rounded-md flex items-center justify-center">
-            <iconify-icon icon="solar:shield-check-linear" width="14" height="14" class="text-white" />
+            <Icon icon="solar:shield-check-linear" size={14} className="text-white" />
           </div>
           <span className="text-sm font-medium tracking-tight">izEscrowAI</span>
         </div>
@@ -27,7 +28,7 @@ export default function WebFooter() {
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/15 transition-colors no-underline"
           >
-            <iconify-icon icon="simple-icons:ton" width="14" class="text-[#0098EA]" />
+            <Icon icon="simple-icons:ton" size={14} className="text-[#0098EA]" />
             <span className="text-[10px] text-blue-400 font-medium">{t("landing.footer.built" as any)}</span>
           </a>
           <a

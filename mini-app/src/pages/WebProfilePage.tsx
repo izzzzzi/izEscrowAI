@@ -8,6 +8,7 @@ import LoginGate from "../components/LoginGate";
 import GitHubCard from "../components/GitHubCard";
 import MyJobCard from "../components/MyJobCard";
 import ReputationCard from "../components/ReputationCard";
+import Icon from "../components/Icon";
 
 export default function WebProfilePage() {
   const { userId } = useParams<{ userId: string }>();
@@ -58,7 +59,7 @@ export default function WebProfilePage() {
     return (
       <div className="min-h-screen page-shell pt-28 pb-16 px-6 text-center">
         <div className="max-w-md mx-auto mt-20">
-          <iconify-icon icon="solar:user-linear" width="48" class="text-slate-600 mb-4" />
+          <Icon icon="solar:user-linear" size={48} className="text-slate-600 mb-4" />
           <h2 className="text-xl font-medium mb-4">{t("webProfile.title")}</h2>
           <LoginGate fallbackText={t("webProfile.loginPrompt")} />
         </div>
@@ -98,7 +99,7 @@ export default function WebProfilePage() {
               <img src={user.photo_url} alt="" className="w-16 h-16 rounded-full" />
             ) : (
               <div className="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center">
-                <iconify-icon icon="solar:user-linear" width="28" class="text-slate-400" />
+                <Icon icon="solar:user-linear" size={28} className="text-slate-400" />
               </div>
             )}
             <div>
@@ -106,13 +107,13 @@ export default function WebProfilePage() {
               <div className="flex items-center gap-3 mt-0.5">
                 {isOwnProfile && user?.username && (
                   <span className="text-sm text-slate-400 flex items-center gap-1">
-                    <iconify-icon icon="simple-icons:telegram" width="12" class="text-[#0098EA]" />
+                    <Icon icon="simple-icons:telegram" size={12} className="text-[#0098EA]" />
                     @{user.username}
                   </span>
                 )}
                 {profile?.github && (
                   <a href={`https://github.com/${profile.github.username}`} target="_blank" rel="noopener noreferrer" className="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1 no-underline">
-                    <iconify-icon icon="simple-icons:github" width="12" />
+                    <Icon icon="simple-icons:github" size={12} />
                     @{profile.github.username}
                   </a>
                 )}

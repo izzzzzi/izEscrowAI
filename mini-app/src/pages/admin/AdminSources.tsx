@@ -11,6 +11,7 @@ import {
   type AdminSource,
 } from "../../lib/api";
 import { useT } from "../../i18n/context";
+import Icon from "../../components/Icon";
 
 export default function AdminSources() {
   const t = useT();
@@ -113,7 +114,7 @@ export default function AdminSources() {
             onClick={() => setShowAdd(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs font-medium hover:bg-blue-500/30 transition-colors cursor-pointer"
           >
-            <iconify-icon icon="solar:add-circle-linear" width="16" />
+            <Icon icon="solar:add-circle-linear" size={16} />
             {t("admin.sources.addSource")}
           </button>
         </div>

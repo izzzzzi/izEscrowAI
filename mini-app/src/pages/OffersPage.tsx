@@ -7,6 +7,7 @@ import LoginGate from "../components/LoginGate";
 import { useIsMiniApp } from "../hooks/useIsMiniApp";
 import AppHeader from "../components/AppHeader";
 import { useT } from "../i18n/context";
+import Icon from "../components/Icon";
 
 export default function OffersPage() {
   const isMini = useIsMiniApp();
@@ -80,7 +81,7 @@ export default function OffersPage() {
           <div className="space-y-6 py-8">
             <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-4">
               <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                <iconify-icon icon="solar:tag-linear" width="18" class="text-[#0098EA]" />
+                <Icon icon="solar:tag-linear" size={18} className="text-[#0098EA]" />
                 {t("offers.empty.title")}
               </h3>
               <p className="text-xs text-slate-400 leading-relaxed">
@@ -135,7 +136,7 @@ export default function OffersPage() {
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold text-white">{t("offers.modal.title")}</h3>
               <button onClick={() => setShowCreate(false)} className="text-slate-400 bg-transparent border-none cursor-pointer">
-                <iconify-icon icon="solar:close-circle-linear" width="24" />
+                <Icon icon="solar:close-circle-linear" size={24} />
               </button>
             </div>
 

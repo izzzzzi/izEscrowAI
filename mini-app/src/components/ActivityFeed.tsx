@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchActivity, type ActivityItem } from "../lib/api";
 import { useT } from "../i18n/context";
+import Icon from "./Icon";
 
 const statusConfig: Record<string, { icon: string; color: string }> = {
   completed: { icon: "solar:check-circle-bold", color: "text-green-400" },
@@ -98,7 +99,7 @@ export default function ActivityFeed() {
               key={idx}
               className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.02] transition-colors"
             >
-              <iconify-icon icon={getStatus(item.status).icon} width="18" class={`shrink-0 ${getStatus(item.status).color}`} />
+              <Icon icon={getStatus(item.status).icon} size={18} className={`shrink-0 ${getStatus(item.status).color}`} />
               <span className="flex-1 min-w-0 text-sm text-slate-300 line-clamp-1">
                 {item.description}
               </span>

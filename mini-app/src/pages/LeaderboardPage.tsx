@@ -4,6 +4,7 @@ import { fetchLeaderboard, type GroupStat } from "../lib/api";
 import { useIsMiniApp } from "../hooks/useIsMiniApp";
 import AppHeader from "../components/AppHeader";
 import { useT } from "../i18n/context";
+import Icon from "../components/Icon";
 
 type SortKey = "completed_deals" | "total_volume" | "avg_check";
 
@@ -65,14 +66,14 @@ export default function LeaderboardPage() {
         ) : groups.length === 0 ? (
           <div className="space-y-6">
             <div className="text-center py-16">
-              <iconify-icon icon="solar:users-group-rounded-linear" width="56" class="text-slate-600" />
+              <Icon icon="solar:users-group-rounded-linear" size={56} className="text-slate-600" />
               <p className="text-lg text-slate-400 mt-4">{t("leaderboard.empty.title")}</p>
               <p className="text-sm text-slate-500 mt-2">{t("leaderboard.empty.subtitle")}</p>
             </div>
 
             <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-4">
               <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                <iconify-icon icon="solar:info-circle-linear" width="18" class="text-blue-400" />
+                <Icon icon="solar:info-circle-linear" size={18} className="text-blue-400" />
                 {t("leaderboard.howTo.title")}
               </h3>
               <ol className="space-y-3 text-sm text-slate-400">

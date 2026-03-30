@@ -7,6 +7,7 @@ import AppHeader from "../components/AppHeader";
 import JobCard from "../components/JobCard";
 import JobFiltersPanel from "../components/JobFilters";
 import { useT } from "../i18n/context";
+import Icon from "../components/Icon";
 
 export default function MarketPage() {
   const isMini = useIsMiniApp();
@@ -96,7 +97,7 @@ export default function MarketPage() {
               <div className="space-y-6 py-8">
                 <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-4">
                   <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                    <iconify-icon icon="solar:cpu-linear" width="18" class="text-[#0098EA]" />
+                    <Icon icon="solar:cpu-linear" size={18} className="text-[#0098EA]" />
                     {t("market.empty.title")}
                   </h3>
                   <p className="text-xs text-slate-400 leading-relaxed">
@@ -108,7 +109,7 @@ export default function MarketPage() {
                     <li className="flex gap-2"><span className="text-[#0098EA] font-semibold">3.</span>{t("market.empty.step3")}</li>
                   </ol>
                   <a href="https://t.me/izEscrowAIBot" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs text-[#0098EA] font-medium no-underline hover:underline">
-                    <iconify-icon icon="solar:chat-round-dots-linear" width="14" />
+                    <Icon icon="solar:chat-round-dots-linear" size={14} />
                     {t("market.empty.linkGithub")}
                   </a>
                 </div>

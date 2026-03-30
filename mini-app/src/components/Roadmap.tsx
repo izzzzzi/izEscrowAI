@@ -1,4 +1,5 @@
 import { useT } from "../i18n/context";
+import Icon from "./Icon";
 
 interface RoadmapItem {
   titleKey: string;
@@ -139,10 +140,10 @@ export default function Roadmap() {
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                         item.status === "done" ? "bg-green-500/10" : item.status === "in-progress" ? "bg-[#0098EA]/10" : "bg-white/5"
                       }`}>
-                        <iconify-icon
+                        <Icon
                           icon={item.icon}
-                          width="18"
-                          class={item.status === "done" ? "text-green-400" : item.status === "in-progress" ? "text-[#0098EA]" : "text-slate-500"}
+                          size={18}
+                          className={item.status === "done" ? "text-green-400" : item.status === "in-progress" ? "text-[#0098EA]" : "text-slate-500"}
                         />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -161,7 +162,7 @@ export default function Roadmap() {
                     <ul className="space-y-1">
                       {item.featureKeys.map((fk) => (
                         <li key={fk} className="text-xs text-slate-400 flex items-center gap-2">
-                          <iconify-icon icon={statusIconName(item.status)} width="14" class={`flex-shrink-0 ${statusColor(item.status)}`} />
+                          <Icon icon={statusIconName(item.status)} size={14} className={`flex-shrink-0 ${statusColor(item.status)}`} />
                           {t(fk as any)}
                         </li>
                       ))}

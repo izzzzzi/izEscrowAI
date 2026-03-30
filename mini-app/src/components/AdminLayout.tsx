@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import Icon from "./Icon";
 
 const navItems = [
   { path: "/admin", label: "Dashboard", icon: "solar:chart-square-linear", exact: true },
@@ -37,7 +38,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   }
                 `}
               >
-                <iconify-icon icon={item.icon} width="16" height="16" />
+                <Icon icon={item.icon} size={16} />
                 <span>{item.label}</span>
               </Link>
             );

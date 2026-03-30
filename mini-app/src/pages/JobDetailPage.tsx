@@ -8,6 +8,7 @@ import { useT } from "../i18n/context";
 import AppHeader from "../components/AppHeader";
 import PriceRange from "../components/PriceRange";
 import ProposalModal from "../components/ProposalModal";
+import Icon from "../components/Icon";
 
 function timeAgo(date: string): string {
   const ms = Date.now() - new Date(date).getTime();
@@ -82,14 +83,14 @@ function NotFoundState() {
   return (
     <div className="min-h-screen page-shell flex items-center justify-center">
       <div className="text-center space-y-4">
-        <iconify-icon icon="solar:file-remove-linear" width="64" class="text-slate-600" />
+        <Icon icon="solar:file-remove-linear" size={64} className="text-slate-600" />
         <h2 className="text-xl font-semibold text-white">{t("jobDetail.notFound.title")}</h2>
         <p className="text-sm text-slate-400">{t("jobDetail.notFound.subtitle")}</p>
         <button
           onClick={() => navigate("/market")}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors"
         >
-          <iconify-icon icon="solar:arrow-left-linear" width="16" />
+          <Icon icon="solar:arrow-left-linear" size={16} />
           {t("jobDetail.back")}
         </button>
       </div>
@@ -154,7 +155,7 @@ export default function JobDetailPage() {
           onClick={() => navigate(-1)}
           className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors -mb-2"
         >
-          <iconify-icon icon="solar:arrow-left-linear" width="16" />
+          <Icon icon="solar:arrow-left-linear" size={16} />
           {t("jobDetail.back")}
         </button>
 
@@ -206,7 +207,7 @@ export default function JobDetailPage() {
         {/* 2.6 — Match score (auth only, hidden for guests) */}
         {isAuthenticated && matchColor && matchPercent != null && (
           <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-medium ${matchColor}`}>
-            <iconify-icon icon="solar:star-bold" width="14" />
+            <Icon icon="solar:star-bold" size={14} />
             {matchPercent}% {t("jobDetail.skillMatch")}
           </div>
         )}
@@ -266,7 +267,7 @@ export default function JobDetailPage() {
         {priceEstimate && isAuthenticated ? (
           <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-4">
             <div className="flex items-center gap-2">
-              <iconify-icon icon="solar:magic-stick-3-bold" width="20" class="text-cyan-400" />
+              <Icon icon="solar:magic-stick-3-bold" size={20} className="text-cyan-400" />
               <h2 className="text-sm font-semibold text-white">{t("jobDetail.priceInsights")}</h2>
             </div>
 
@@ -297,7 +298,7 @@ export default function JobDetailPage() {
                 <ul className="space-y-1">
                   {priceEstimate.factors.map((factor, i) => (
                     <li key={i} className="flex items-start gap-2 text-xs text-slate-400">
-                      <iconify-icon icon="solar:check-circle-linear" width="14" class="text-cyan-500 mt-0.5 flex-shrink-0" />
+                      <Icon icon="solar:check-circle-linear" size={14} className="text-cyan-500 mt-0.5 flex-shrink-0" />
                       {factor}
                     </li>
                   ))}
@@ -308,7 +309,7 @@ export default function JobDetailPage() {
         ) : !isAuthenticated ? (
           <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-3 relative overflow-hidden">
             <div className="flex items-center gap-2">
-              <iconify-icon icon="solar:magic-stick-3-bold" width="20" class="text-cyan-400" />
+              <Icon icon="solar:magic-stick-3-bold" size={20} className="text-cyan-400" />
               <h2 className="text-sm font-semibold text-white">{t("jobDetail.priceInsights")}</h2>
             </div>
             <div className="space-y-3 blur-md select-none pointer-events-none opacity-40">
@@ -324,7 +325,7 @@ export default function JobDetailPage() {
         {/* 2.3 — Source section */}
         <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 space-y-3">
           <div className="flex items-center gap-2">
-            <iconify-icon icon="solar:user-circle-linear" width="20" class="text-slate-400" />
+            <Icon icon="solar:user-circle-linear" size={20} className="text-slate-400" />
             <h2 className="text-sm font-semibold text-white">{t("jobDetail.source")}</h2>
           </div>
 
@@ -335,7 +336,7 @@ export default function JobDetailPage() {
                 <span className="text-slate-500 text-xs w-16">{t("jobDetail.author")}</span>
                 {authorMasked ? (
                   <span className="flex items-center gap-1.5 text-slate-400">
-                    <iconify-icon icon="solar:lock-keyhole-linear" width="14" class="text-slate-500" />
+                    <Icon icon="solar:lock-keyhole-linear" size={14} className="text-slate-500" />
                     {author}
                   </span>
                 ) : (
@@ -374,7 +375,7 @@ export default function JobDetailPage() {
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-slate-500 text-xs w-16">{t("jobDetail.contact")}</span>
                 <span className="flex items-center gap-1.5 text-slate-400">
-                  <iconify-icon icon="solar:lock-keyhole-linear" width="14" class="text-slate-500" />
+                  <Icon icon="solar:lock-keyhole-linear" size={14} className="text-slate-500" />
                   {job.contact_url}
                 </span>
               </div>
@@ -386,7 +387,7 @@ export default function JobDetailPage() {
                 <span className="text-slate-500 text-xs w-16">{t("jobDetail.channel")}</span>
                 {isMasked(job.source_title) ? (
                   <span className="flex items-center gap-1.5 text-slate-400">
-                    <iconify-icon icon="solar:lock-keyhole-linear" width="14" class="text-slate-500" />
+                    <Icon icon="solar:lock-keyhole-linear" size={14} className="text-slate-500" />
                     {job.source_title}
                   </span>
                 ) : job.source_username ? (
@@ -413,7 +414,7 @@ export default function JobDetailPage() {
             onClick={() => setProposalOpen(true)}
             className="w-full py-3.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[#0098EA] to-[#00D1FF] hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
           >
-            <iconify-icon icon="solar:rocket-2-bold" width="18" />
+            <Icon icon="solar:rocket-2-bold" size={18} />
             {t("jobDetail.craftProposal")}
           </button>
         )}
@@ -432,7 +433,7 @@ export default function JobDetailPage() {
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[#0098EA] to-[#00D1FF] hover:opacity-90 transition-opacity"
             >
               {t("jobDetail.notAuth.button")}
-              <iconify-icon icon="solar:arrow-right-linear" width="16" />
+              <Icon icon="solar:arrow-right-linear" size={16} />
             </a>
           </div>
         )}

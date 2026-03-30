@@ -1,4 +1,5 @@
 import { type JobResponse } from "../lib/api";
+import Icon from "./Icon";
 
 interface RespondentCardProps {
   response: JobResponse;
@@ -31,7 +32,7 @@ export default function RespondentCard({ response, onCreateDeal }: RespondentCar
           <img src={executor.github.avatar_url} alt="" className="w-10 h-10 rounded-full" />
         ) : (
           <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center">
-            <iconify-icon icon="solar:user-linear" width="20" class="text-slate-400" />
+            <Icon icon="solar:user-linear" size={20} className="text-slate-400" />
           </div>
         )}
         <div className="flex-1 min-w-0">

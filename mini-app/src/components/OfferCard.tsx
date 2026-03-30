@@ -1,3 +1,5 @@
+import Icon from "./Icon";
+
 interface OfferCardProps {
   id: string;
   description: string;
@@ -40,7 +42,7 @@ export default function OfferCard({ id, description, minPrice, currency, status,
             </span>
           )}
           <span className="flex items-center gap-1">
-            <iconify-icon icon="solar:users-group-rounded-linear" width="14" />
+            <Icon icon="solar:users-group-rounded-linear" size={14} />
             {applicationCount} bids
           </span>
         </div>

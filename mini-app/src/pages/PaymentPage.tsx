@@ -3,6 +3,7 @@ import { useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 import { useState, useEffect } from "react";
 import { toNano, beginCell } from "@ton/core";
 import { fetchDeal, fetchDealRisk, type Deal, type DealRisk } from "../lib/api";
+import Icon from "../components/Icon";
 
 export default function PaymentPage() {
   const { dealId } = useParams<{ dealId: string }>();
@@ -74,7 +75,7 @@ export default function PaymentPage() {
       <div className="flex-1 flex flex-col items-center justify-center text-center max-w-xs mx-auto space-y-6">
         {/* Icon */}
         <div className="w-20 h-20 rounded-full bg-blue-500/10 flex items-center justify-center text-[#0098EA] animate-pulse">
-          <iconify-icon icon="solar:card-transfer-linear" width="40" />
+          <Icon icon="solar:card-transfer-linear" size={40} />
         </div>
 
         {/* Title */}
@@ -123,14 +124,14 @@ export default function PaymentPage() {
         {/* Action */}
         {status === "sent" ? (
           <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center">
-            <iconify-icon icon="solar:check-circle-linear" width="48" class="text-green-400" />
+            <Icon icon="solar:check-circle-linear" size={48} className="text-green-400" />
           </div>
         ) : !wallet ? (
           <button
             onClick={() => tonConnectUI.openModal()}
             className="w-full bg-[#0098EA] text-white py-4 rounded-xl font-semibold text-sm shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
           >
-            <iconify-icon icon="solar:wallet-2-linear" width="20" />
+            <Icon icon="solar:wallet-2-linear" size={20} />
             Connect Wallet to Pay
           </button>
         ) : (
@@ -160,7 +161,7 @@ function RiskBlock({ risk }: { risk: DealRisk }) {
   return (
     <div className="glass-card w-full rounded-2xl p-4 space-y-3 text-left">
       <div className="flex items-center gap-2">
-        <iconify-icon icon="solar:shield-check-linear" width="18" class="text-[#0098EA]" />
+        <Icon icon="solar:shield-check-linear" size={18} className="text-[#0098EA]" />
         <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
           AI Risk Assessment
         </span>

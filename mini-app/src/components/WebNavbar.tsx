@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useT, useLang, useSetLang, type Lang } from "../i18n/context";
 import TelegramLogin from "./TelegramLogin";
+import Icon from "./Icon";
 
 export default function WebNavbar() {
   const { isAuthenticated, user, logout, isAdmin } = useAuth();
@@ -45,7 +46,7 @@ export default function WebNavbar() {
       <nav className="max-w-7xl mx-auto flex items-center justify-between glass-panel px-6 py-3 rounded-full">
         <Link to="/" className="flex items-center gap-2 no-underline text-white">
           <div className="w-8 h-8 ton-gradient rounded-lg flex items-center justify-center">
-            <iconify-icon icon="solar:shield-check-linear" width="20" height="20" class="text-white" />
+            <Icon icon="solar:shield-check-linear" size={20} className="text-white" />
           </div>
           <span className="text-lg font-medium tracking-tight">izEscrowAI</span>
         </Link>
@@ -78,17 +79,16 @@ export default function WebNavbar() {
                   <img src={user.photo_url} alt="" className="w-8 h-8 rounded-full" />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center">
-                    <iconify-icon icon="solar:user-linear" width="16" height="16" />
+                    <Icon icon="solar:user-linear" size={16} />
                   </div>
                 )}
                 <span className="text-sm font-medium hidden sm:inline">
                   {user.first_name}
                 </span>
-                <iconify-icon
+                <Icon
                   icon="solar:alt-arrow-down-linear"
-                  width="14"
-                  height="14"
-                  class={`text-slate-400 transition-transform ${menuOpen ? "rotate-180" : ""}`}
+                  size={14}
+                  className={`text-slate-400 transition-transform ${menuOpen ? "rotate-180" : ""}`}
                 />
               </button>
 
@@ -99,7 +99,7 @@ export default function WebNavbar() {
                     onClick={() => navigate("/profile")}
                     className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors bg-transparent border-none cursor-pointer flex items-center gap-2"
                   >
-                    <iconify-icon icon="solar:user-linear" width="16" height="16" />
+                    <Icon icon="solar:user-linear" size={16} />
                     {t("nav.menu.profile")}
                   </button>
                   <button
@@ -107,7 +107,7 @@ export default function WebNavbar() {
                     onClick={() => navigate("/offers")}
                     className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors bg-transparent border-none cursor-pointer flex items-center gap-2"
                   >
-                    <iconify-icon icon="solar:tag-linear" width="16" height="16" />
+                    <Icon icon="solar:tag-linear" size={16} />
                     {t("nav.menu.myOffers")}
                   </button>
                   <div className="border-t border-white/5" />
@@ -116,7 +116,7 @@ export default function WebNavbar() {
                     onClick={() => { logout(); setMenuOpen(false); }}
                     className="w-full px-4 py-3 text-left text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors bg-transparent border-none cursor-pointer flex items-center gap-2"
                   >
-                    <iconify-icon icon="solar:logout-2-linear" width="16" height="16" />
+                    <Icon icon="solar:logout-2-linear" size={16} />
                     {t("nav.menu.logout")}
                   </button>
                 </div>

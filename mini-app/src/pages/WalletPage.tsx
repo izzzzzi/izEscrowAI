@@ -2,6 +2,7 @@ import { useTonConnectUI, useTonWallet, useTonAddress } from "@tonconnect/ui-rea
 import { useEffect } from "react";
 import { API_URL, getInitData } from "../lib/api";
 import AppHeader from "../components/AppHeader";
+import Icon from "../components/Icon";
 
 export default function WalletPage() {
   const [tonConnectUI] = useTonConnectUI();
@@ -57,7 +58,7 @@ export default function WalletPage() {
                 onClick={() => navigator.clipboard.writeText(address)}
                 className="flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-white transition-colors"
               >
-                <iconify-icon icon="solar:copy-linear" width="14" />
+                <Icon icon="solar:copy-linear" size={14} />
                 Copy
               </button>
             </div>
@@ -78,7 +79,7 @@ export default function WalletPage() {
               onClick={() => tonConnectUI.openModal()}
               className="w-full bg-[#0098EA] text-white py-4 rounded-xl font-semibold text-sm shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
-              <iconify-icon icon="solar:wallet-2-linear" width="20" />
+              <Icon icon="solar:wallet-2-linear" size={20} />
               Connect Wallet
             </button>
           )}

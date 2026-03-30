@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import Icon from "./Icon";
 
 export interface Column<T> {
   key: string;
@@ -72,10 +73,10 @@ export default function DataTable<T extends Record<string, any>>({
       {/* Search bar */}
       {onSearchChange && (
         <div className="relative">
-          <iconify-icon
+          <Icon
             icon="solar:magnifer-linear"
-            width="18"
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
+            size={18}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
           />
           <input
             type="text"
@@ -104,9 +105,9 @@ export default function DataTable<T extends Record<string, any>>({
                   <span className="inline-flex items-center gap-1.5">
                     {col.label}
                     {col.sortable && sortKey === col.key && (
-                      <iconify-icon
+                      <Icon
                         icon={sortDir === "asc" ? "solar:alt-arrow-up-linear" : "solar:alt-arrow-down-linear"}
-                        width="14"
+                        size={14}
                       />
                     )}
                   </span>
@@ -165,7 +166,7 @@ export default function DataTable<T extends Record<string, any>>({
             disabled={page <= 1}
             className="px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
-            <iconify-icon icon="solar:alt-arrow-left-linear" width="14" />
+            <Icon icon="solar:alt-arrow-left-linear" size={14} />
           </button>
           {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
             let pageNum: number;
@@ -199,7 +200,7 @@ export default function DataTable<T extends Record<string, any>>({
             disabled={page >= totalPages}
             className="px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
-            <iconify-icon icon="solar:alt-arrow-right-linear" width="14" />
+            <Icon icon="solar:alt-arrow-right-linear" size={14} />
           </button>
         </div>
       </div>

@@ -7,6 +7,7 @@ import LoginGate from "../components/LoginGate";
 import WalletGate from "../components/WalletGate";
 import { useIsMiniApp } from "../hooks/useIsMiniApp";
 import AppHeader from "../components/AppHeader";
+import Icon from "../components/Icon";
 
 export default function OfferDetailPage() {
   const isMini = useIsMiniApp();
@@ -80,7 +81,7 @@ export default function OfferDetailPage() {
           onClick={() => navigate("/offers")}
           className="text-sm text-slate-400 hover:text-white mb-6 bg-transparent border-none cursor-pointer flex items-center gap-1"
         >
-          <iconify-icon icon="solar:arrow-left-linear" width="16" /> {t("offerDetail.back")}
+          <Icon icon="solar:arrow-left-linear" size={16} /> {t("offerDetail.back")}
         </button>
 
         {/* Offer Card */}
@@ -102,12 +103,12 @@ export default function OfferDetailPage() {
           <div className="flex items-center gap-6 text-sm text-slate-400">
             {offer.min_price && (
               <span>
-                <iconify-icon icon="solar:dollar-minimalistic-linear" width="14" style={{ verticalAlign: "middle" }} />{" "}
+                <Icon icon="solar:dollar-minimalistic-linear" size={14} />{" "}
                 from {offer.min_price} {offer.currency}
               </span>
             )}
             <span>
-              <iconify-icon icon="solar:users-group-rounded-linear" width="14" style={{ verticalAlign: "middle" }} />{" "}
+              <Icon icon="solar:users-group-rounded-linear" size={14} />{" "}
               {offer.application_count} {t("deals.offer.bids")}
             </span>
           </div>
@@ -115,7 +116,7 @@ export default function OfferDetailPage() {
           {/* Creator info */}
           <div className="mt-6 pt-4 border-t border-white/5 flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center">
-              <iconify-icon icon="solar:user-linear" width="16" />
+              <Icon icon="solar:user-linear" size={16} />
             </div>
             <div>
               <div className="text-sm font-medium">Creator #{offer.creator_id}</div>

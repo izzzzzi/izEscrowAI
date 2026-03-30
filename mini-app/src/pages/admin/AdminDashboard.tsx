@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import AdminLayout from "../../components/AdminLayout";
 import { fetchAdminDashboard } from "../../lib/api";
 import { useT } from "../../i18n/context";
+import Icon from "../../components/Icon";
 
 interface DashboardStats {
   total_users: number;
@@ -97,7 +98,7 @@ export default function AdminDashboard() {
                   className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm p-5 flex flex-col gap-2 hover:bg-white/[0.07] transition-colors"
                 >
                   <div className="flex items-center gap-2 text-slate-400">
-                    <iconify-icon icon={card.icon} width="18" height="18" />
+                    <Icon icon={card.icon} size={18} />
                     <span className="text-xs font-medium">{t(card.labelKey)}</span>
                   </div>
                   <span className="text-2xl font-bold tracking-tight text-white">

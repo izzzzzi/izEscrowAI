@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchGroup, type GroupStat } from "../lib/api";
+import Icon from "../components/Icon";
 
 export default function GroupDashboardPage() {
   const { groupId } = useParams<{ groupId: string }>();
@@ -54,7 +55,7 @@ export default function GroupDashboardPage() {
     <div className="p-4 space-y-4">
       <div className="flex items-center gap-3">
         <button onClick={() => navigate("/groups")} className="text-slate-400 bg-transparent border-none cursor-pointer">
-          <iconify-icon icon="solar:arrow-left-linear" width="24" />
+          <Icon icon="solar:arrow-left-linear" size={24} />
         </button>
         <div>
           <h1 className="text-lg font-semibold text-white">{group.title || `Group ${group.group_id}`}</h1>
@@ -66,7 +67,7 @@ export default function GroupDashboardPage() {
         {stats.map((s) => (
           <div key={s.label} className="glass-card p-3 rounded-xl">
             <div className="flex items-center gap-2 text-slate-400 mb-1">
-              <iconify-icon icon={s.icon} width="16" />
+              <Icon icon={s.icon} size={16} />
               <span className="text-xs">{s.label}</span>
             </div>
             <p className="text-lg font-bold text-white">{s.value}</p>

@@ -5,6 +5,7 @@ import AppHeader from "../components/AppHeader";
 import PriceRange from "../components/PriceRange";
 import SpecChecklist from "../components/SpecChecklist";
 import { useT } from "../i18n/context";
+import Icon from "../components/Icon";
 
 interface Requirement {
   description: string;
@@ -177,7 +178,7 @@ export default function SpecWizardPage() {
                   }`}
                 >
                   {done ? (
-                    <iconify-icon icon="solar:check-read-linear" width="14" />
+                    <Icon icon="solar:check-read-linear" size={14} />
                   ) : (
                     s
                   )}
@@ -225,7 +226,7 @@ export default function SpecWizardPage() {
             {questions.length > 0 && (
               <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 space-y-2">
                 <p className="text-xs font-medium text-amber-400">
-                  <iconify-icon icon="solar:chat-round-dots-linear" width="14" style={{ verticalAlign: "middle" }} />{" "}
+                  <Icon icon="solar:chat-round-dots-linear" size={14} />{" "}
                   {t("spec.describe.aiQuestions")}
                 </p>
                 <ul className="space-y-1.5">
@@ -249,12 +250,12 @@ export default function SpecWizardPage() {
             >
               {loading ? (
                 <>
-                  <iconify-icon icon="solar:refresh-linear" width="16" class="animate-spin" />
+                  <Icon icon="solar:refresh-linear" size={16} className="animate-spin" />
                   {t("spec.describe.generating")}
                 </>
               ) : (
                 <>
-                  <iconify-icon icon="solar:magic-stick-3-linear" width="16" />
+                  <Icon icon="solar:magic-stick-3-linear" size={16} />
                   {t("spec.describe.generateBtn")}
                 </>
               )}
@@ -301,7 +302,7 @@ export default function SpecWizardPage() {
                   onClick={addRequirement}
                   className="text-xs text-[#0098EA] bg-transparent border-none cursor-pointer flex items-center gap-1"
                 >
-                  <iconify-icon icon="solar:add-circle-linear" width="14" />
+                  <Icon icon="solar:add-circle-linear" size={14} />
                   {t("spec.req.add")}
                 </button>
               </div>
@@ -321,7 +322,7 @@ export default function SpecWizardPage() {
                       onClick={() => removeRequirement(i)}
                       className="text-red-400/60 hover:text-red-400 bg-transparent border-none cursor-pointer mt-2"
                     >
-                      <iconify-icon icon="solar:trash-bin-minimalistic-linear" width="14" />
+                      <Icon icon="solar:trash-bin-minimalistic-linear" size={14} />
                     </button>
                   </div>
 
@@ -341,7 +342,7 @@ export default function SpecWizardPage() {
                           onClick={() => removeCriterion(i, j)}
                           className="text-slate-600 hover:text-red-400 bg-transparent border-none cursor-pointer"
                         >
-                          <iconify-icon icon="solar:close-circle-linear" width="12" />
+                          <Icon icon="solar:close-circle-linear" size={12} />
                         </button>
                       </div>
                     ))}
@@ -349,7 +350,7 @@ export default function SpecWizardPage() {
                       onClick={() => addCriterion(i)}
                       className="text-[10px] text-slate-500 hover:text-slate-300 bg-transparent border-none cursor-pointer flex items-center gap-1"
                     >
-                      <iconify-icon icon="solar:add-circle-linear" width="12" />
+                      <Icon icon="solar:add-circle-linear" size={12} />
                       {t("spec.req.addCriterion")}
                     </button>
                   </div>
@@ -523,12 +524,12 @@ export default function SpecWizardPage() {
               >
                 {submitting ? (
                   <>
-                    <iconify-icon icon="solar:refresh-linear" width="16" class="animate-spin" />
+                    <Icon icon="solar:refresh-linear" size={16} className="animate-spin" />
                     {t("spec.btn.creating")}
                   </>
                 ) : (
                   <>
-                    <iconify-icon icon="solar:check-read-linear" width="16" />
+                    <Icon icon="solar:check-read-linear" size={16} />
                     {t("spec.btn.createSpec")}
                   </>
                 )}

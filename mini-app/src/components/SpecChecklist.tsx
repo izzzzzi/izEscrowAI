@@ -1,3 +1,5 @@
+import Icon from "./Icon";
+
 interface Requirement {
   description: string;
   acceptance_criteria: string[];
@@ -13,27 +15,27 @@ function StatusIcon({ status }: { status?: "met" | "partial" | "not_met" }) {
 
   if (status === "met") {
     return (
-      <iconify-icon
+      <Icon
         icon="solar:check-circle-linear"
-        width="16"
-        class="text-green-400"
+        size={16}
+        className="text-green-400"
       />
     );
   }
   if (status === "partial") {
     return (
-      <iconify-icon
+      <Icon
         icon="solar:danger-triangle-linear"
-        width="16"
-        class="text-amber-400"
+        size={16}
+        className="text-amber-400"
       />
     );
   }
   return (
-    <iconify-icon
+    <Icon
       icon="solar:close-circle-linear"
-      width="16"
-      class="text-red-400"
+      size={16}
+      className="text-red-400"
     />
   );
 }

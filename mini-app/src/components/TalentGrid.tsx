@@ -1,4 +1,5 @@
 import { useT } from "../i18n/context";
+import Icon from "./Icon";
 
 interface TalentGridProps {
   languages: Array<{ name: string; count: number }>;
@@ -85,7 +86,7 @@ export default function TalentGrid({ languages, categories }: TalentGridProps) {
               key={cat.name}
               className={`glass-card rounded-xl p-4 hover-lift ${cat.coming_soon ? "opacity-40" : ""}`}
             >
-              <iconify-icon icon={icon} width="20" class="text-[#0098EA] mb-2" />
+              <Icon icon={icon} size={20} className="text-[#0098EA] mb-2" />
               <div className="text-sm font-medium mb-0.5">{cat.name}</div>
               <div className="text-lg font-bold tracking-tight">
                 {cat.count}

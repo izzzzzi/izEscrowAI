@@ -7,6 +7,7 @@ import AppHeader from "../components/AppHeader";
 import GitHubCard from "../components/GitHubCard";
 import MyJobCard from "../components/MyJobCard";
 import ReputationCard from "../components/ReputationCard";
+import Icon from "../components/Icon";
 
 function ProfileSkeleton() {
   return (
@@ -63,7 +64,7 @@ export default function ProfilePage() {
 
         {loading ? <ProfileSkeleton /> : error ? (
           <div className="glass-card rounded-2xl p-8 text-center space-y-3">
-            <iconify-icon icon="solar:danger-triangle-linear" width="32" class="text-red-400" />
+            <Icon icon="solar:danger-triangle-linear" size={32} className="text-red-400" />
             <p className="text-sm text-red-400">{error}</p>
             <button onClick={() => window.location.reload()} className="text-xs text-slate-400 hover:text-white transition-colors bg-transparent border-none cursor-pointer">
               {t("common.retry")}

@@ -3,6 +3,7 @@ import AdminLayout from "../../components/AdminLayout";
 import { fetchAdminSettings, updateAdminSettings } from "../../lib/api";
 import { useT } from "../../i18n/context";
 import type { TranslationKey } from "../../i18n/en";
+import Icon from "../../components/Icon";
 
 interface SettingsGroup {
   titleKey: TranslationKey;
@@ -176,7 +177,7 @@ export default function AdminSettings() {
               <div key={group.titleKey} className="space-y-4">
                 {/* Group header */}
                 <div className="flex items-center gap-2 text-slate-300">
-                  <iconify-icon icon={group.icon} width="20" height="20" />
+                  <Icon icon={group.icon} size={20} />
                   <h2 className="text-sm font-semibold uppercase tracking-wider">
                     {t(group.titleKey)}
                   </h2>

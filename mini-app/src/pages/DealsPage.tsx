@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchDeals, fetchOffers, fetchOffer, createOffer, type Deal, type Offer, type OfferWithApps } from "../lib/api";
 import AppHeader from "../components/AppHeader";
 import { useT } from "../i18n/context";
+import Icon from "../components/Icon";
 
 const statusStyles: Record<string, { labelKey: string; bg: string; text: string }> = {
   created: { labelKey: "deals.status.created", bg: "bg-slate-500/10", text: "text-slate-400" },
@@ -120,7 +121,7 @@ export default function DealsPage() {
                 <div className="glass-card rounded-2xl p-6 space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0098EA] to-[#22d3ee] flex items-center justify-center">
-                      <iconify-icon icon="solar:shield-check-linear" width="22" class="text-white" />
+                      <Icon icon="solar:shield-check-linear" size={22} className="text-white" />
                     </div>
                     <div>
                       <h3 className="text-sm font-semibold text-white">{t("deals.empty.title")}</h3>
@@ -159,7 +160,7 @@ export default function DealsPage() {
               onClick={() => setShowCreateOffer(true)}
               className="w-full py-3 rounded-xl border border-dashed border-slate-600 text-slate-400 text-sm font-medium bg-transparent cursor-pointer hover:border-[#0098EA] hover:text-[#0098EA] transition-all flex items-center justify-center gap-2"
             >
-              <iconify-icon icon="solar:add-circle-linear" width="18" />
+              <Icon icon="solar:add-circle-linear" size={18} />
               {t("deals.createOffer")}
             </button>
 
@@ -189,7 +190,7 @@ export default function DealsPage() {
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-semibold">{t("deals.modal.title")}</h3>
                     <button onClick={() => setShowCreateOffer(false)} className="text-slate-400 bg-transparent border-none cursor-pointer">
-                      <iconify-icon icon="solar:close-circle-linear" width="24" />
+                      <Icon icon="solar:close-circle-linear" size={24} />
                     </button>
                   </div>
                   <div className="space-y-3">
@@ -276,7 +277,7 @@ function DealCard({ deal }: { deal: Deal }) {
             </>
           )}
         </span>
-        <iconify-icon icon="solar:alt-arrow-right-linear" class="text-slate-600" width="18" />
+        <Icon icon="solar:alt-arrow-right-linear" size={18} className="text-slate-600" />
       </div>
     </div>
   );
@@ -316,7 +317,7 @@ function OfferCardItem({
             </span>
           )}
           <span className="flex items-center gap-1">
-            <iconify-icon icon="solar:users-group-rounded-linear" width="14" />
+            <Icon icon="solar:users-group-rounded-linear" size={14} />
             {offer.application_count ?? 0} {t("deals.offer.bids")}
           </span>
         </div>
@@ -387,7 +388,7 @@ function SkeletonCards() {
 function EmptyState({ icon, text, sub }: { icon: string; text: string; sub?: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
-      <iconify-icon icon={icon} class="text-slate-700 mb-4" width="64" />
+      <Icon icon={icon} size={64} className="text-slate-700 mb-4" />
       <p className="text-sm text-slate-500">{text}</p>
       {sub && <p className="text-xs text-slate-600 mt-1">{sub}</p>}
     </div>

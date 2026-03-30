@@ -5,6 +5,7 @@ import WebNavbar from "./components/WebNavbar";
 import WebFooter from "./components/WebFooter";
 import OnboardingSlides from "./components/OnboardingSlides";
 import AnimatedPage from "./components/AnimatedPage";
+import Icon from "./components/Icon";
 import { useAuth } from "./contexts/AuthContext";
 import { setTelegramAuthData } from "./lib/api";
 
@@ -17,7 +18,7 @@ class PageErrorBoundary extends Component<{ children: ReactNode }, { hasError: b
     if (this.state.hasError) {
       return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
-          <iconify-icon icon="solar:danger-triangle-linear" width="48" class="text-amber-400 mb-4" />
+          <Icon icon="solar:danger-triangle-linear" size={48} className="text-amber-400 mb-4" />
           <h2 className="text-lg font-semibold mb-2">Something went wrong</h2>
           <p className="text-sm text-slate-400 mb-6">This page crashed. Try reloading.</p>
           <button onClick={() => { this.setState({ hasError: false }); window.location.reload(); }} className="ton-gradient px-6 py-3 rounded-xl text-sm font-medium text-white border-none cursor-pointer">
@@ -141,7 +142,7 @@ function ScrollToTop() {
       className="fixed bottom-6 right-6 z-40 w-11 h-11 rounded-full bg-white/10 border border-white/10 backdrop-blur-lg flex items-center justify-center cursor-pointer hover:bg-white/20 transition-all text-white"
       aria-label="Scroll to top"
     >
-      <iconify-icon icon="solar:alt-arrow-up-linear" width="20" />
+      <Icon icon="solar:alt-arrow-up-linear" size={20} />
     </button>
   );
 }

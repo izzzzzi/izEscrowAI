@@ -7,6 +7,7 @@ import {
   type AdminDispute,
 } from "../../lib/api";
 import { useT } from "../../i18n/context";
+import Icon from "../../components/Icon";
 
 type ResolutionAction = {
   disputeId: string;
@@ -76,11 +77,7 @@ export default function AdminDisputes() {
           </div>
         ) : disputes.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <iconify-icon
-              icon="solar:shield-check-linear"
-              width="64"
-              class="text-slate-700 mb-4"
-            />
+            <Icon icon="solar:shield-check-linear" size={64} className="text-slate-700 mb-4" />
             <p className="text-sm text-slate-500">{t("admin.disputes.noActive")}</p>
           </div>
         ) : (
@@ -117,11 +114,11 @@ export default function AdminDisputes() {
                 {/* Parties */}
                 <div className="flex gap-4 text-xs text-slate-400">
                   <div className="flex items-center gap-1.5">
-                    <iconify-icon icon="solar:user-linear" width="14" />
+                    <Icon icon="solar:user-linear" size={14} />
                     <span>{t("admin.disputes.buyer")} <span className="text-slate-300">{dispute.buyer_id}</span></span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <iconify-icon icon="solar:user-check-linear" width="14" />
+                    <Icon icon="solar:user-check-linear" size={14} />
                     <span>{t("admin.disputes.seller")} <span className="text-slate-300">{dispute.seller_id}</span></span>
                   </div>
                 </div>

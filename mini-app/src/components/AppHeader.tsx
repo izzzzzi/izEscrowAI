@@ -1,4 +1,5 @@
 import { useT } from "../i18n/context";
+import Icon from "./Icon";
 
 export default function AppHeader() {
   const t = useT();
@@ -8,7 +9,7 @@ export default function AppHeader() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0098EA] to-[#22d3ee] flex items-center justify-center shadow-lg shadow-blue-500/20">
-            <iconify-icon icon="solar:shield-check-linear" class="text-white" width="20" />
+            <Icon icon="solar:shield-check-linear" size={20} className="text-white" />
           </div>
           <h1 className="text-lg font-semibold tracking-tight">{t("header.title")}</h1>
         </div>
