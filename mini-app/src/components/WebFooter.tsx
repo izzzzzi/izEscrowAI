@@ -14,22 +14,19 @@ export default function WebFooter() {
         </div>
 
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-xs font-medium text-slate-500 uppercase tracking-widest">
-          <a href="https://github.com/izzzzzi/izEscrowAI" className="hover:text-[#0098EA] transition-colors">GitHub</a>
-          <a href="https://t.me/izEscrowAIBot" className="hover:text-[#0098EA] transition-colors">Bot</a>
-          <a href="/" className="hover:text-[#0098EA] transition-colors">Web App</a>
-          <a href="/terms" className="hover:text-[#0098EA] transition-colors">{t("legal.footer.terms" as any)}</a>
-          <a href="/privacy" className="hover:text-[#0098EA] transition-colors">{t("legal.footer.privacy" as any)}</a>
+          <a href="https://github.com/izzzzzi/izEscrowAI" target="_blank" rel="noopener noreferrer" className="hover:text-[#0098EA] transition-colors no-underline text-slate-500">GitHub</a>
+          <a href="https://t.me/izEscrowAIBot" target="_blank" rel="noopener noreferrer" className="hover:text-[#0098EA] transition-colors no-underline text-slate-500">Bot</a>
         </div>
 
-        <div className="flex items-center gap-4">
-          <a href="https://ton.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/15 transition-colors no-underline">
-            <iconify-icon icon="simple-icons:ton" width="14" height="14" class="text-[#0098EA]" />
-            <span className="text-[10px] text-blue-400 font-medium">{t("landing.footer.built" as any)}</span>
-          </a>
-          <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] text-slate-500 font-medium">
-            {t("landing.footer.hackathon" as any)}
-          </span>
-        </div>
+        <a
+          href="https://identityhub.app/contests/ai-hackathon"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs text-blue-400 font-medium hover:bg-blue-500/20 transition-colors no-underline"
+        >
+          <iconify-icon icon="simple-icons:ton" width="14" />
+          {t("landing.footer.hackathon" as any)}
+        </a>
       </div>
     </footer>
   );
