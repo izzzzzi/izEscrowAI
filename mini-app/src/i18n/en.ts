@@ -645,6 +645,13 @@ const en = {
   "reputation.telegram": "Telegram \u2713",
   "reputation.repos": "repos",
 
+  // GitHubCard
+  "github.languages": "Languages",
+  "github.topRepos": "Top Repos",
+  "github.stars": "Stars",
+  "github.forks": "Forks",
+  "github.repos": "Repos",
+
   // Footer legal links
   "legal.footer.terms": "Terms",
   "legal.footer.privacy": "Privacy",

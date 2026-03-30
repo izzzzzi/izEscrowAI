@@ -680,6 +680,13 @@ const ru: Record<TranslationKey, string> = {
   "reputation.telegram": "Telegram \u2713",
   "reputation.repos": "репозиториев",
 
+  // GitHubCard
+  "github.languages": "Языки",
+  "github.topRepos": "Топ репозиториев",
+  "github.stars": "Звёзды",
+  "github.forks": "Форки",
+  "github.repos": "Репо",
+
   // Footer legal links
   "legal.footer.terms": "Условия",
   "legal.footer.privacy": "Конфиденциальность",

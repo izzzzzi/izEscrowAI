@@ -1,4 +1,6 @@
 import type { GithubProfile } from "../lib/api";
+import { useT } from "../i18n/context";
+
 interface GitHubCardProps {
   profile: GithubProfile;
   flags?: { green: string[]; red: string[] } | null;
@@ -17,6 +19,7 @@ function langColor(lang: string): string {
 }
 
 export default function GitHubCard({ profile }: GitHubCardProps) {
+  const t = useT();
   const { languages, top_repos, total_stars, total_forks, public_repos } = profile;
 
   const langEntries = languages
@@ -29,7 +32,7 @@ export default function GitHubCard({ profile }: GitHubCardProps) {
       {/* Languages */}
       {langEntries.length > 0 && (
         <div className="space-y-2">
-          <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">Languages</h3>
+          <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">{t("github.languages" as any)}</h3>
           <div className="flex h-2 rounded-full overflow-hidden bg-white/5">
             {langEntries.map(([lang, count]) => (
               <div
@@ -53,7 +56,7 @@ export default function GitHubCard({ profile }: GitHubCardProps) {
       {/* Top Repos */}
       {top_repos && top_repos.length > 0 && (
         <div className="space-y-2">
-          <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">Top Repos</h3>
+          <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">{t("github.topRepos" as any)}</h3>
           <div className="space-y-1.5">
             {top_repos.slice(0, 5).map((repo) => (
               <div key={repo.name} className="flex items-center justify-between text-xs">
@@ -81,15 +84,15 @@ export default function GitHubCard({ profile }: GitHubCardProps) {
         <div className="flex gap-4 text-center">
           <div>
             <div className="text-sm font-semibold text-white">{total_stars}</div>
-            <div className="text-[10px] text-slate-500">Stars</div>
+            <div className="text-[10px] text-slate-500">{t("github.stars" as any)}</div>
           </div>
           <div>
             <div className="text-sm font-semibold text-white">{total_forks}</div>
-            <div className="text-[10px] text-slate-500">Forks</div>
+            <div className="text-[10px] text-slate-500">{t("github.forks" as any)}</div>
           </div>
           <div>
             <div className="text-sm font-semibold text-white">{public_repos}</div>
-            <div className="text-[10px] text-slate-500">Repos</div>
+            <div className="text-[10px] text-slate-500">{t("github.repos" as any)}</div>
           </div>
         </div>
       </div>

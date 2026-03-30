@@ -103,9 +103,20 @@ export default function WebProfilePage() {
             )}
             <div>
               <h2 className="text-xl font-medium">{displayName}</h2>
-              {isOwnProfile && user?.username && (
-                <span className="text-sm text-slate-400">@{user.username}</span>
-              )}
+              <div className="flex items-center gap-3 mt-0.5">
+                {isOwnProfile && user?.username && (
+                  <span className="text-sm text-slate-400 flex items-center gap-1">
+                    <iconify-icon icon="simple-icons:telegram" width="12" class="text-[#0098EA]" />
+                    @{user.username}
+                  </span>
+                )}
+                {profile?.github && (
+                  <a href={`https://github.com/${profile.github.username}`} target="_blank" rel="noopener noreferrer" className="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1 no-underline">
+                    <iconify-icon icon="simple-icons:github" width="12" />
+                    @{profile.github.username}
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>

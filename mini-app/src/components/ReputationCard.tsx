@@ -90,9 +90,7 @@ export default function ReputationCard({
   const t = useT();
 
   const platformDetail = `${reputation.completed_deals} ${t("reputation.deals")}${reputation.rating > 0 ? ` \u00b7 ${reputation.rating.toFixed(1)} \u2605` : ""}`;
-  const githubDetail = github
-    ? `@${github.username} \u00b7 ${github.public_repos} ${t("reputation.repos")}`
-    : undefined;
+  const githubDetail = undefined; // username shown in profile header
   const walletDetail = walletConnected && walletAddress
     ? walletAddress.slice(0, 4) + "\u2026" + walletAddress.slice(-4)
     : undefined;
