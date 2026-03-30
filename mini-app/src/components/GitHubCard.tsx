@@ -12,24 +12,12 @@ const LANG_COLORS: Record<string, string> = {
   C: "#555555", "C#": "#178600", Dart: "#00B4AB",
 };
 
-const FLAG_LABELS: Record<string, { en: string; ru: string; icon: string; color: "green" | "red" }> = {
-  established: { en: "Established", ru: "Опытный", icon: "solar:verified-check-bold", color: "green" },
-  starred_repos: { en: "Popular repos", ru: "Популярные репо", icon: "solar:star-bold", color: "green" },
-  external_prs: { en: "Open source", ru: "Open source", icon: "solar:code-scan-linear", color: "green" },
-  org_member: { en: "Org member", ru: "В организации", icon: "solar:buildings-linear", color: "green" },
-  new_account: { en: "New account", ru: "Новый аккаунт", icon: "solar:danger-triangle-linear", color: "red" },
-  all_forks: { en: "All forks", ru: "Только форки", icon: "solar:danger-triangle-linear", color: "red" },
-  empty_activity: { en: "No activity", ru: "Нет активности", icon: "solar:danger-triangle-linear", color: "red" },
-  burst_activity: { en: "Sudden activity", ru: "Всплеск", icon: "solar:danger-triangle-linear", color: "red" },
-};
-
 function langColor(lang: string): string {
   return LANG_COLORS[lang] ?? "#6b7280";
 }
 
-export default function GitHubCard({ profile, flags }: GitHubCardProps) {
+export default function GitHubCard({ profile }: GitHubCardProps) {
   const { languages, top_repos, total_stars, total_forks, public_repos } = profile;
-  const mergedFlags = flags ?? profile.flags;
 
   const langEntries = languages
     ? Object.entries(languages).sort((a, b) => b[1] - a[1])
@@ -88,7 +76,7 @@ export default function GitHubCard({ profile, flags }: GitHubCardProps) {
         </div>
       )}
 
-      {/* Stats + Flags */}
+      {/* Stats */}
       <div className="flex items-center justify-between pt-2 border-t border-white/5">
         <div className="flex gap-4 text-center">
           <div>
@@ -104,29 +92,6 @@ export default function GitHubCard({ profile, flags }: GitHubCardProps) {
             <div className="text-[10px] text-slate-500">Repos</div>
           </div>
         </div>
-
-        {mergedFlags && (mergedFlags.green.length > 0 || mergedFlags.red.length > 0) && (
-          <div className="flex flex-wrap gap-1 justify-end">
-            {[...mergedFlags.green, ...mergedFlags.red].map((f) => {
-              const cfg = FLAG_LABELS[f];
-              if (!cfg) return null;
-              const isGreen = cfg.color === "green";
-              return (
-                <span
-                  key={f}
-                  className={`text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 ${
-                    isGreen
-                      ? "bg-green-500/10 text-green-400"
-                      : "bg-amber-500/10 text-amber-400"
-                  }`}
-                >
-                  <iconify-icon icon={cfg.icon} width="11" />
-                  {cfg.en}
-                </span>
-              );
-            })}
-          </div>
-        )}
       </div>
     </div>
   );

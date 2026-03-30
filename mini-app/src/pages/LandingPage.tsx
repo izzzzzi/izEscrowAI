@@ -120,7 +120,7 @@ export default function LandingPage() {
               <div className="animate-fade-up delay-300 flex flex-col sm:flex-row gap-4">
                 <a
                   href="https://t.me/izEscrowAIBot"
-                  className="ton-gradient px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium text-white no-underline transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/20 glow-pulse"
+                  className="ton-gradient px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium text-white no-underline transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/20"
                 >
                   <iconify-icon icon="simple-icons:telegram" width="20" height="20" />
                   {t("landing.hero.openBot")}
@@ -137,7 +137,7 @@ export default function LandingPage() {
 
             {/* Telegram Chat Mockup — iPhone frame */}
             <div className="relative animate-float" style={{ transform: "scale(0.65)", transformOrigin: "center center" }}>
-              <div className="mockup-phone mx-auto shimmer-border">
+              <div className="mockup-phone mx-auto">
                 <div className="mockup-phone-camera"></div>
                 <div className="mockup-phone-display chat-bg">
                 {/* Chat header */}
@@ -228,10 +228,6 @@ export default function LandingPage() {
                         </div>
                       </div>
                       <div className="px-3 pb-2">
-                        <div className="flex items-center gap-1 text-[10px] text-emerald-400">
-                          <iconify-icon icon="solar:shield-check-linear" width="11" />
-                          {t("landing.chat.trustScore")}
-                        </div>
                         <div className="text-[11px] chat-time text-right">12:02</div>
                       </div>
                     </div>
@@ -271,10 +267,7 @@ export default function LandingPage() {
                   </div>
                   {stat.value === -1 ? (
                     <div className="flex items-center gap-2">
-                      <span className="relative flex h-2.5 w-2.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-400" />
-                      </span>
+                      <span className="inline-flex rounded-full h-2.5 w-2.5 bg-green-400" />
                       <span className="text-xl font-bold text-green-400">{t("landing.stats.live")}</span>
                     </div>
                   ) : (
@@ -296,7 +289,7 @@ export default function LandingPage() {
 
           <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {workflowSteps.map((step) => (
-              <div key={step.title} className="glass-panel p-8 rounded-3xl group hover-lift">
+              <div key={step.title} className="glass-panel p-8 rounded-3xl group">
                 <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:bg-blue-500/20 transition-colors">
                   <iconify-icon icon={step.icon} width="24" height="24" class="text-[#0098EA]" />
                 </div>
@@ -345,20 +338,15 @@ export default function LandingPage() {
             </div>
 
             {/* Non-Custodial + AI Arbitration — wide */}
-            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col md:flex-row items-center gap-10">
-              <div className="flex-1">
+            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
+              <div className="relative z-10">
                 <iconify-icon icon="solar:scale-linear" width="40" height="40" class="text-purple-400 mb-6" />
                 <h3 className="text-2xl font-medium tracking-tight mb-4"><Term hintKey="term.arbitration">{t("landing.feature.arbitration.title")}</Term></h3>
-                <p className="text-slate-400 font-light">
+                <p className="text-slate-400 font-light max-w-md">
                   {t("landing.feature.arbitration.desc")}
                 </p>
               </div>
-              <div className="w-full md:w-1/3 flex flex-col items-center gap-3">
-                <div className="w-20 h-20 rounded-full border-4 border-emerald-500/30 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-emerald-400">92%</span>
-                </div>
-                <span className="text-xs text-emerald-400 font-semibold">{t("landing.feature.arbitration.compliance")}</span>
-              </div>
+              <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-purple-500/5 rounded-full blur-[60px] group-hover:bg-purple-500/10 transition-colors" />
             </div>
 
             {/* Non-Custodial Escrow */}
@@ -479,6 +467,30 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Tech Stack */}
+        <section className="py-16 border-y border-white/5">
+          <div className="max-w-7xl mx-auto px-6">
+            <p className="text-center text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-8">
+              Built with
+            </p>
+            <div className="flex flex-wrap justify-center gap-8 md:gap-14">
+              {[
+                { icon: "simple-icons:telegram", label: "grammY Bot" },
+                { icon: "simple-icons:ton", label: "Tolk Contracts" },
+                { icon: "simple-icons:openai", label: "OpenRouter AI" },
+                { icon: "simple-icons:typescript", label: "TypeScript" },
+                { icon: "simple-icons:react", label: "React" },
+                { icon: "simple-icons:postgresql", label: "Drizzle + PG" },
+              ].map((tech) => (
+                <div key={tech.label} className="flex items-center gap-2 text-slate-500 hover:text-slate-300 transition-colors">
+                  <iconify-icon icon={tech.icon} width="20" />
+                  <span className="text-xs font-medium">{tech.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="py-32 px-6 text-center reveal">
           <div className="max-w-7xl mx-auto glass-panel p-12 md:p-20 rounded-[3rem] border-white/10 glow-blue relative overflow-hidden">
@@ -492,19 +504,19 @@ export default function LandingPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => navigate("/offers")}
-                className="ton-gradient px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:shadow-2xl hover:shadow-blue-500/20 transition-all cursor-pointer text-white border-none"
+              <a
+                href="https://t.me/izEscrowAIBot"
+                className="ton-gradient px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:shadow-2xl hover:shadow-blue-500/20 transition-all text-white no-underline"
               >
-                <iconify-icon icon="solar:users-group-rounded-linear" width="20" />
-                {t("landing.cta.hire" as any)}
-              </button>
+                <iconify-icon icon="simple-icons:telegram" width="20" />
+                {t("landing.hero.openBot")}
+              </a>
               <button
                 onClick={() => navigate("/market")}
-                className="bg-white/5 border border-white/10 px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/10 transition-all cursor-pointer text-white"
+                className="glass-panel px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/5 transition-all cursor-pointer text-white border-none text-base"
               >
                 <iconify-icon icon="solar:bag-4-linear" width="20" />
-                {t("landing.cta.work" as any)}
+                {t("landing.hero.browseOffers")}
               </button>
             </div>
           </div>
