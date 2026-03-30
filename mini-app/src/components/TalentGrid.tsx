@@ -24,7 +24,7 @@ const LANG_COLORS: Record<string, string> = {
 const CAT_ICONS: Record<string, string> = {
   Development: "solar:code-linear",
   Design: "solar:palette-linear",
-  Marketing: "solar:megaphone-linear",
+  Marketing: "solar:chart-2-linear",
   Content: "solar:document-text-linear",
   Data: "solar:chart-2-linear",
   DevOps: "solar:server-linear",
