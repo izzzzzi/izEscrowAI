@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { type JobFilters, API_URL } from "../lib/api";
 import { useT } from "../i18n/context";
+import Icon from "./Icon";
 
 const FALLBACK_SKILLS = ["React", "TypeScript", "Python", "Node.js", "Go", "Rust", "Java", "PHP", "Solidity", "Figma"];
 
@@ -201,15 +202,7 @@ export default function JobFiltersPanel({ filters, onChange, totalJobs, shownJob
           onClick={() => setOpen((v) => !v)}
           className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
         >
-          <svg
-            className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
+          <Icon icon="solar:alt-arrow-down-linear" size={16} className={`transition-transform ${open ? "rotate-180" : ""}`} />
           {t("filters.toggle")}
           {activeCount > 0 && (
             <span className="ml-1 px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-[10px] font-semibold">
