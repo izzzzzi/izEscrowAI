@@ -275,9 +275,9 @@ export default function LandingPage() {
             <p className="text-slate-400 font-light">{t("landing.workflow.subtitle")}</p>
           </div>
 
-          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-6 gap-4">
+          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {workflowSteps.map((step, i) => (
-              <div key={step.title} className={`bg-white/[0.03] border border-white/[0.06] p-8 rounded-3xl group ${i === 0 || i === 3 ? "md:col-span-2" : ""}`}>
+              <div key={step.title} className="bg-white/[0.03] border border-white/[0.06] p-8 rounded-3xl group">
                 <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:bg-blue-500/20 transition-colors">
                   <Icon icon={step.icon} size={24} className="text-[#0098EA]" />
                 </div>
