@@ -85,8 +85,7 @@ export default function Roadmap() {
             <div className="flex flex-col items-center w-8 flex-shrink-0">
               {isActive ? (
                 <div className="relative flex-shrink-0 mt-0.5">
-                  <span className="animate-ping absolute inline-flex h-4 w-4 rounded-full bg-[#0098EA] opacity-40" />
-                  <span className="relative inline-flex rounded-full h-4 w-4 bg-[#0098EA] border-2 border-[#0098EA]" />
+                  <span className="inline-flex rounded-full h-4 w-4 bg-[#0098EA] ring-2 ring-[#0098EA]/40 ring-offset-2 ring-offset-[#0f0f1a]" />
                 </div>
               ) : (
                 <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 mt-0.5 ${
@@ -109,7 +108,7 @@ export default function Roadmap() {
                 </h3>
                 <div className="flex-1 max-w-[140px] h-1.5 rounded-full bg-white/5 overflow-hidden">
                   <div
-                    className="h-full rounded-full transition-all duration-700"
+                    className="h-full rounded-full transition-[width] duration-700"
                     style={{
                       width: `${progress}%`,
                       background: progress === 100 ? "#22c55e" : "linear-gradient(90deg, #0098EA, #00D1FF)",

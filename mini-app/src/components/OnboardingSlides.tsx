@@ -77,7 +77,7 @@ export default function OnboardingSlides({ onComplete }: Props) {
           {slides.map((_, i) => (
             <div
               key={i}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
+              className={`h-1.5 rounded-full transition-[width,background-color] duration-300 ${
                 i === current ? "w-6 bg-[#0098EA]" : "w-1.5 bg-slate-700"
               }`}
             />

@@ -138,7 +138,7 @@ export default function AdminJobs() {
             <button
               key={tab.key}
               onClick={() => handleTabChange(tab.key)}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all border-none cursor-pointer ${
+              className={`px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-colors border-none cursor-pointer ${
                 statusFilter === tab.key
                   ? "bg-blue-500/20 text-blue-400"
                   : "bg-transparent text-slate-500 hover:text-slate-300"

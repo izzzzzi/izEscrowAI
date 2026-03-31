@@ -168,7 +168,7 @@ export default function ProposalModal({ isOpen, onClose, jobId, jobTitle }: Prop
 
         {/* Toast */}
         {copied && (
-          <div className="absolute bottom-[-3rem] left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg bg-green-500/20 border border-green-500/30 text-green-400 text-xs font-medium animate-pulse">
+          <div className="absolute bottom-[-3rem] left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg bg-green-500/20 border border-green-500/30 text-green-400 text-xs font-medium animate-success">
             {t("proposal.copiedToast")}
           </div>
         )}

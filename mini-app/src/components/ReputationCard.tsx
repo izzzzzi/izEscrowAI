@@ -67,7 +67,7 @@ function CategoryRow({
       {score !== null && (
         <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
           <div
-            className={`h-full rounded-full ${color} transition-all`}
+            className={`h-full rounded-full ${color} transition-[width]`}
             style={{ width: `${score}%` }}
           />
         </div>
@@ -111,7 +111,7 @@ export default function ReputationCard({
       {trustScore !== null && (
         <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
           <div
-            className={`h-full rounded-full ${barBg(trustScore)} transition-all`}
+            className={`h-full rounded-full ${barBg(trustScore)} transition-[width]`}
             style={{ width: `${trustScore}%` }}
           />
         </div>

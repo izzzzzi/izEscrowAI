@@ -6,6 +6,7 @@ import RespondentCard from "../components/RespondentCard";
 import CreateDealModal from "../components/CreateDealModal";
 import { useIsMiniApp } from "../hooks/useIsMiniApp";
 import AppHeader from "../components/AppHeader";
+import Icon from "../components/Icon";
 
 export default function MyJobResponsesPage() {
   const isMini = useIsMiniApp();
@@ -94,9 +95,7 @@ export default function MyJobResponsesPage() {
           onClick={() => navigate(-1)}
           className="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
+          <Icon icon="solar:arrow-left-linear" size={16} />
           {t("myJobResponses.back")}
         </button>
 

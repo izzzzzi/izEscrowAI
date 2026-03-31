@@ -9,7 +9,7 @@ import {
   LuScale, LuCode, LuSettings, LuSiren, LuBadgeDollarSign,
   LuCirclePlus, LuCheckCheck, LuMinus, LuArrowLeftRight,
   LuEye, LuLink, LuMenu, LuUserCheck, LuCircleUser,
-  LuShieldAlert, LuBadgeCheck,
+  LuShieldAlert, LuBadgeCheck, LuX,
 } from "react-icons/lu";
 import { SiTelegram, SiTon, SiGithub } from "react-icons/si";
 
@@ -22,6 +22,7 @@ const iconMap: Record<string, IconType> = {
   "solar:trash-bin-minimalistic-linear": LuTrash2,
   "solar:copy-linear": LuCopy,
   "solar:close-circle-linear": LuCircleX,
+  "solar:close-linear": LuX,
   "solar:check-circle-linear": LuCircleCheck,
   "solar:check-circle-bold": LuCircleCheck,
   "solar:check-read-linear": LuCheckCheck,

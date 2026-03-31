@@ -70,14 +70,14 @@ export default function WalletPage() {
           {wallet ? (
             <button
               onClick={() => tonConnectUI.disconnect()}
-              className="w-full text-red-400 py-3 rounded-xl font-medium text-sm hover:bg-red-500/5 transition-all"
+              className="w-full text-red-400 py-3 rounded-xl font-medium text-sm hover:bg-red-500/5 transition-colors"
             >
               Disconnect Wallet
             </button>
           ) : (
             <button
               onClick={() => tonConnectUI.openModal()}
-              className="w-full bg-[#0098EA] text-white py-4 rounded-xl font-semibold text-sm shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              className="w-full bg-[#0098EA] text-white py-4 rounded-xl font-semibold text-sm shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-[transform,box-shadow] flex items-center justify-center gap-2"
             >
               <Icon icon="solar:wallet-2-linear" size={20} />
               Connect Wallet

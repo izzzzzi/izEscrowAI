@@ -21,7 +21,7 @@ class PageErrorBoundary extends Component<{ children: ReactNode }, { hasError: b
           <Icon icon="solar:danger-triangle-linear" size={48} className="text-amber-400 mb-4" />
           <h2 className="text-lg font-semibold mb-2">Something went wrong</h2>
           <p className="text-sm text-slate-400 mb-6">This page crashed. Try reloading.</p>
-          <button onClick={() => { this.setState({ hasError: false }); window.location.reload(); }} className="ton-gradient px-6 py-3 rounded-xl text-sm font-medium text-white border-none cursor-pointer">
+          <button onClick={() => { this.setState({ hasError: false }); window.location.reload(); }} className="ton-gradient px-6 py-3 rounded-xl text-sm font-medium text-white border-none cursor-pointer whitespace-nowrap">
             Reload
           </button>
         </div>
@@ -139,7 +139,7 @@ function ScrollToTop() {
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="fixed bottom-6 right-6 z-40 w-11 h-11 rounded-full bg-white/10 border border-white/10 backdrop-blur-lg flex items-center justify-center cursor-pointer hover:bg-white/20 transition-all text-white"
+      className="fixed bottom-6 right-6 z-40 w-11 h-11 rounded-full bg-white/10 border border-white/10 backdrop-blur-lg flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors text-white"
       aria-label="Scroll to top"
     >
       <Icon icon="solar:alt-arrow-up-linear" size={20} />

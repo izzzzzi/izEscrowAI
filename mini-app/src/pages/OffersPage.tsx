@@ -64,7 +64,7 @@ export default function OffersPage() {
           <LoginGate fallbackText={t("offers.loginGate")}>
             <button
               onClick={() => setShowCreate(true)}
-              className="ton-gradient px-6 py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white"
+              className="ton-gradient px-6 py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white whitespace-nowrap"
             >
               {t("offers.createBtn")}
             </button>

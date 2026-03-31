@@ -101,7 +101,7 @@ export default function DealsPage() {
             <button
               key={tb}
               onClick={() => setTab(tb)}
-              className={`flex-1 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all border-none cursor-pointer ${
+              className={`flex-1 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-colors border-none cursor-pointer ${
                 tab === tb
                   ? "bg-[#0098EA]/20 text-[#0098EA]"
                   : "bg-transparent text-slate-500 hover:text-slate-300"
@@ -158,7 +158,7 @@ export default function DealsPage() {
             {/* Create offer button */}
             <button
               onClick={() => setShowCreateOffer(true)}
-              className="w-full py-3 rounded-xl border border-dashed border-slate-600 text-slate-400 text-sm font-medium bg-transparent cursor-pointer hover:border-[#0098EA] hover:text-[#0098EA] transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl border border-dashed border-slate-600 text-slate-400 text-sm font-medium bg-transparent cursor-pointer hover:border-[#0098EA] hover:text-[#0098EA] transition-colors flex items-center justify-center gap-2"
             >
               <Icon icon="solar:add-circle-linear" size={18} />
               {t("deals.createOffer")}
@@ -223,7 +223,7 @@ export default function DealsPage() {
                         <button
                           key={r}
                           onClick={() => setNewOffer((p) => ({ ...p, role: r }))}
-                          className={`flex-1 py-2 rounded-lg text-xs font-semibold uppercase border-none cursor-pointer transition-all ${
+                          className={`flex-1 py-2 rounded-lg text-xs font-semibold uppercase border-none cursor-pointer transition-colors ${
                             newOffer.role === r ? "bg-[#0098EA]/20 text-[#0098EA]" : "bg-slate-800/50 text-slate-500"
                           }`}
                         >

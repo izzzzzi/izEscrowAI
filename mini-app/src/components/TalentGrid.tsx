@@ -65,7 +65,7 @@ export default function TalentGrid({ languages, categories }: TalentGridProps) {
               </span>
               <div className="flex-1 h-6 rounded-lg bg-white/5 overflow-hidden">
                 <div
-                  className={`h-full rounded-lg bg-gradient-to-r ${getGradient(lang.name, i)} transition-all duration-500 group-hover:opacity-90`}
+                  className={`h-full rounded-lg bg-gradient-to-r ${getGradient(lang.name, i)} transition-[width,opacity] duration-500 group-hover:opacity-90`}
                   style={{ width: `${(lang.count / maxCount) * 100}%` }}
                 />
               </div>

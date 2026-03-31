@@ -157,7 +157,7 @@ export default function OfferDetailPage() {
                   <button
                     onClick={handleApply}
                     disabled={!bidPrice || submitting}
-                    className="w-full ton-gradient py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white disabled:opacity-50"
+                    className="w-full ton-gradient py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white disabled:opacity-50 whitespace-nowrap"
                   >
                     {submitting ? t("offerDetail.bid.submitting") : t("offerDetail.bid.submit")}
                   </button>

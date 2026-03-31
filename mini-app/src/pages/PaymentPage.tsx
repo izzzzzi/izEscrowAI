@@ -129,7 +129,7 @@ export default function PaymentPage() {
         ) : !wallet ? (
           <button
             onClick={() => tonConnectUI.openModal()}
-            className="w-full bg-[#0098EA] text-white py-4 rounded-xl font-semibold text-sm shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
+            className="w-full bg-[#0098EA] text-white py-4 rounded-xl font-semibold text-sm shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 whitespace-nowrap"
           >
             <Icon icon="solar:wallet-2-linear" size={20} />
             Connect Wallet to Pay

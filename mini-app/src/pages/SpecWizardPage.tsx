@@ -246,7 +246,7 @@ export default function SpecWizardPage() {
             <button
               onClick={handleGenerate}
               disabled={!description.trim() || loading}
-              className="w-full ton-gradient py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full ton-gradient py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
             >
               {loading ? (
                 <>
@@ -368,7 +368,7 @@ export default function SpecWizardPage() {
               <button
                 onClick={() => setStep(3)}
                 disabled={!title.trim() || requirements.length === 0}
-                className="flex-1 ton-gradient py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white disabled:opacity-50"
+                className="flex-1 ton-gradient py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white disabled:opacity-50 whitespace-nowrap"
               >
                 {t("spec.btn.next")}
               </button>
@@ -456,7 +456,7 @@ export default function SpecWizardPage() {
               </button>
               <button
                 onClick={() => setStep(4)}
-                className="flex-1 ton-gradient py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white"
+                className="flex-1 ton-gradient py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white whitespace-nowrap"
               >
                 {t("spec.btn.review")}
               </button>
@@ -520,7 +520,7 @@ export default function SpecWizardPage() {
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="flex-1 ton-gradient py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 ton-gradient py-3 rounded-xl text-sm font-medium cursor-pointer border-none text-white disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
               >
                 {submitting ? (
                   <>

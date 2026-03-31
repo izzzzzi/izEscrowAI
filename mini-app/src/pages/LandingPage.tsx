@@ -85,11 +85,6 @@ export default function LandingPage() {
         <title>izEscrowAI — AI-Powered P2P Escrow on TON</title>
       </Helmet>
       <main ref={mainRef} className="relative">
-        {/* Background Orbs */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none -z-10">
-          <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-[#0098EA]/8 rounded-full blur-[120px]" />
-        </div>
-
         {/* Hero Section */}
         <section className="min-h-screen flex items-center px-6">
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -99,7 +94,7 @@ export default function LandingPage() {
                 <span className="inline-grid">
                   <span className="col-start-1 row-start-1 invisible">{rotateWords.reduce((a, b) => a.length > b.length ? a : b, "")}</span>
                   <span
-                    className={`col-start-1 row-start-1 text-[#0098EA] transition-all duration-300 ${
+                    className={`col-start-1 row-start-1 text-[#0098EA] transition-[opacity,transform] duration-300 ${
                       rotateAnim === "in"
                         ? "opacity-100 translate-y-0"
                         : "opacity-0 translate-y-4"
@@ -116,14 +111,14 @@ export default function LandingPage() {
               <div className="animate-fade-up delay-300 flex flex-col sm:flex-row gap-4">
                 <a
                   href="https://t.me/izEscrowAIBot"
-                  className="ton-gradient px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium text-white no-underline transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/20"
+                  className="ton-gradient px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium text-white no-underline transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/20 whitespace-nowrap"
                 >
                   <Icon icon="simple-icons:telegram" size={20} />
                   {t("landing.hero.openBot")}
                 </a>
                 <button
                   onClick={() => navigate("/offers")}
-                  className="glass-panel px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/5 transition-all cursor-pointer border-none text-white text-base"
+                  className="glass-panel px-8 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/5 transition-colors cursor-pointer border-none text-white text-base whitespace-nowrap"
                 >
                   <Icon icon="solar:tag-linear" size={20} />
                   {t("landing.hero.browseOffers")}
@@ -132,7 +127,7 @@ export default function LandingPage() {
             </div>
 
             {/* Telegram Chat Mockup — iPhone frame */}
-            <div className="relative animate-float" style={{ transform: "scale(0.65)", transformOrigin: "center center" }}>
+            <div className="relative" style={{ transform: "scale(0.65)", transformOrigin: "center center" }}>
               <div className="mockup-phone mx-auto">
                 <div className="mockup-phone-camera"></div>
                 <div className="mockup-phone-display chat-bg">
@@ -240,7 +235,7 @@ export default function LandingPage() {
                 </div>
                 </div>{/* /mockup-phone-display */}
               </div>{/* /mockup-phone */}
-            </div>{/* /animate-float */}
+            </div>{/* /mockup-wrapper */}
           </div>
         </section>
 
@@ -255,7 +250,7 @@ export default function LandingPage() {
               ].map((stat) => (
                 <div
                   key={stat.label}
-                  className={`relative overflow-hidden rounded-2xl border ${stat.border} bg-gradient-to-br ${stat.gradient} p-5 shadow-lg ${stat.glow} group hover:scale-[1.03] transition-all duration-300`}
+                  className={`relative overflow-hidden rounded-2xl border ${stat.border} bg-gradient-to-br ${stat.gradient} p-5 shadow-lg ${stat.glow} group hover:-translate-y-1 hover:shadow-xl transition-[transform,box-shadow] duration-300`}
                 >
                   <div className="absolute top-3 right-3 opacity-10 group-hover:opacity-25 transition-opacity duration-500">
                     <Icon icon={stat.icon} size={40} />
@@ -289,7 +284,7 @@ export default function LandingPage() {
         </section>
 
         {/* Features Bento Grid */}
-        <section id="features" className="py-24 px-6 reveal">
+        <section id="features" className="py-32 px-6 reveal">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Row 1: AI Spec Generator (2col) + AI Pricing (1col) */}
             <div className="md:col-span-2 bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
@@ -389,7 +384,7 @@ export default function LandingPage() {
 
         {/* Available Talent */}
         {talent && (
-          <section className="py-24 px-6 reveal section-tinted">
+          <section className="py-20 px-6 reveal section-tinted">
             <div className="max-w-7xl mx-auto text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.talent.title")}</h2>
               <p className="text-slate-400 font-light">{t("landing.talent.subtitle")}</p>
@@ -421,7 +416,7 @@ export default function LandingPage() {
                   <button
                     key={offer.id}
                     onClick={() => navigate(`/offers/${offer.id}`)}
-                    className="glass-panel p-6 rounded-2xl cursor-pointer hover:-translate-y-1 transition-all text-left w-full"
+                    className="glass-panel p-6 rounded-2xl cursor-pointer hover:-translate-y-1 transition-transform text-left w-full"
                   >
                     <div className="flex items-center gap-2 mb-3">
                       <span className="px-2 py-0.5 rounded bg-green-500/10 text-green-400 text-[10px] font-medium uppercase">
@@ -448,7 +443,7 @@ export default function LandingPage() {
         )}
 
         {/* Live Activity */}
-        <section className="py-24 px-6 reveal">
+        <section className="py-16 px-6 reveal border-y border-white/5">
           <div className="max-w-7xl mx-auto text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.activity.title")}</h2>
             <p className="text-slate-400 font-light">{t("landing.activity.subtitle")}</p>
@@ -496,8 +491,6 @@ export default function LandingPage() {
         {/* CTA Section */}
         <section className="py-32 px-6 text-center reveal">
           <div className="max-w-4xl mx-auto glass-panel p-12 md:p-20 rounded-[3rem] border-white/10 glow-blue relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#0098EA]/10 rounded-full blur-[80px]" />
-
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6">
               {t("landing.cta.title")}
             </h2>
@@ -508,14 +501,14 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="https://t.me/izEscrowAIBot"
-                className="ton-gradient px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:shadow-2xl hover:shadow-blue-500/20 transition-all text-white no-underline"
+                className="ton-gradient px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:shadow-2xl hover:shadow-blue-500/20 transition-shadow text-white no-underline whitespace-nowrap"
               >
                 <Icon icon="simple-icons:telegram" size={20} />
                 {t("landing.hero.openBot")}
               </a>
               <button
                 onClick={() => navigate("/market")}
-                className="glass-panel px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/5 transition-all cursor-pointer text-white border-none text-base"
+                className="glass-panel px-10 py-5 rounded-2xl flex items-center justify-center gap-3 font-medium hover:bg-white/5 transition-colors cursor-pointer text-white border-none text-base whitespace-nowrap"
               >
                 <Icon icon="solar:bag-4-linear" size={20} />
                 {t("landing.hero.browseOffers")}
