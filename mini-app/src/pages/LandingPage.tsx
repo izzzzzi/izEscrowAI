@@ -87,18 +87,13 @@ export default function LandingPage() {
       <main ref={mainRef} className="relative">
         {/* Background Orbs */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none -z-10">
-          <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-[#0098EA]/10 rounded-full blur-[120px]" />
-          <div className="absolute top-40 right-1/4 w-[300px] h-[300px] bg-purple-500/5 rounded-full blur-[100px]" />
+          <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-[#0098EA]/8 rounded-full blur-[120px]" />
         </div>
 
         {/* Hero Section */}
         <section className="min-h-screen flex items-center px-6">
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="text-left">
-              <div className="animate-fade-up inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-medium tracking-widest uppercase text-[#0098EA] mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#0098EA]" />
-                {t("landing.hero.badge")}
-              </div>
               <h1 className="animate-fade-up delay-100 text-5xl md:text-6xl font-semibold tracking-tight leading-[1.1] mb-6">
                 {t("landing.hero.title1")} <br />
                 <span className="inline-grid">
@@ -305,7 +300,6 @@ export default function LandingPage() {
                   {t("landing.feature.spec.desc")}
                 </p>
               </div>
-              <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-blue-500/5 rounded-full blur-[60px] group-hover:bg-blue-500/10 transition-colors" />
             </div>
 
             <div className="bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
@@ -337,7 +331,6 @@ export default function LandingPage() {
                   {t("landing.feature.arbitration.desc")}
                 </p>
               </div>
-              <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-purple-500/5 rounded-full blur-[60px] group-hover:bg-purple-500/10 transition-colors" />
             </div>
 
             {/* Row 3: Escrow (1col) + GitHub Score (1col) + Job Parser (1col) */}
@@ -380,7 +373,6 @@ export default function LandingPage() {
                   {t("landing.feature.inline.desc")}
                 </p>
               </div>
-              <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-cyan-500/5 rounded-full blur-[60px] group-hover:bg-cyan-500/10 transition-colors" />
             </div>
 
             <div className="bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
