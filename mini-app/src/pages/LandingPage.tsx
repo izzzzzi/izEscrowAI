@@ -87,7 +87,7 @@ export default function LandingPage() {
       <main ref={mainRef} className="relative">
         {/* Hero Section */}
         <section className="min-h-screen flex items-center px-6">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 items-center">
             <div className="text-left">
               <h1 className="animate-fade-up delay-100 text-5xl md:text-6xl font-semibold tracking-tight leading-[1.1] mb-6">
                 {t("landing.hero.title1")} <br />
