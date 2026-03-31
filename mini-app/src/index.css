@@ -306,6 +306,10 @@ button:active {
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.section-tinted {
+  background: rgba(0, 152, 234, 0.015);
+}
+
 .ton-gradient {
   background: linear-gradient(135deg, #0098EA, #0070B8);
 }

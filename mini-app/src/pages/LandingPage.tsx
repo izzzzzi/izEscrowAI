@@ -274,15 +274,15 @@ export default function LandingPage() {
         </section>
 
         {/* How It Works */}
-        <section id="how-it-works" className="py-24 px-6 relative reveal">
+        <section id="how-it-works" className="py-24 px-6 relative reveal section-tinted">
           <div className="max-w-7xl mx-auto text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.workflow.title")}</h2>
             <p className="text-slate-400 font-light">{t("landing.workflow.subtitle")}</p>
           </div>
 
-          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {workflowSteps.map((step) => (
-              <div key={step.title} className="glass-panel p-8 rounded-3xl group">
+          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-6 gap-4">
+            {workflowSteps.map((step, i) => (
+              <div key={step.title} className={`bg-white/[0.03] border border-white/[0.06] p-8 rounded-3xl group ${i === 0 || i === 3 ? "md:col-span-2" : ""}`}>
                 <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:bg-blue-500/20 transition-colors">
                   <Icon icon={step.icon} size={24} className="text-[#0098EA]" />
                 </div>
@@ -297,7 +297,7 @@ export default function LandingPage() {
         <section id="features" className="py-24 px-6 reveal">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Row 1: AI Spec Generator (2col) + AI Pricing (1col) */}
-            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
+            <div className="md:col-span-2 bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
                 <Icon icon="solar:document-add-linear" size={40} className="text-[#0098EA] mb-6" />
                 <h3 className="text-2xl font-medium tracking-tight mb-4"><Term hintKey="term.spec">{t("landing.feature.spec.title")}</Term></h3>
@@ -308,7 +308,7 @@ export default function LandingPage() {
               <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-blue-500/5 rounded-full blur-[60px] group-hover:bg-blue-500/10 transition-colors" />
             </div>
 
-            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
+            <div className="bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <Icon icon="solar:tag-price-linear" size={40} className="text-emerald-400 mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.pricing.title")}</h3>
@@ -319,7 +319,7 @@ export default function LandingPage() {
             </div>
 
             {/* Row 2: AI Matching (1col) + AI Arbitration (2col) */}
-            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
+            <div className="bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <Icon icon="solar:users-group-rounded-linear" size={40} className="text-[#0098EA] mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4"><Term hintKey="term.trustScore">{t("landing.feature.matching.title")}</Term></h3>
@@ -329,7 +329,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
+            <div className="md:col-span-2 bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
                 <Icon icon="solar:scale-linear" size={40} className="text-purple-400 mb-6" />
                 <h3 className="text-2xl font-medium tracking-tight mb-4"><Term hintKey="term.arbitration">{t("landing.feature.arbitration.title")}</Term></h3>
@@ -341,7 +341,7 @@ export default function LandingPage() {
             </div>
 
             {/* Row 3: Escrow (1col) + GitHub Score (1col) + Job Parser (1col) */}
-            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between group">
+            <div className="bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between group">
               <div>
                 <Icon icon="solar:verified-check-linear" size={40} className="text-emerald-400 mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4"><Term hintKey="term.escrow">{t("landing.feature.escrow.title")}</Term></h3>
@@ -351,7 +351,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
+            <div className="bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <Icon icon="solar:code-scan-linear" size={40} className="text-green-400 mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.github.title")}</h3>
@@ -361,7 +361,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
+            <div className="bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <Icon icon="solar:radar-2-linear" size={40} className="text-amber-400 mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.parser.title")}</h3>
@@ -372,7 +372,7 @@ export default function LandingPage() {
             </div>
 
             {/* Row 4: Inline Offers (2col) + Trust Score (1col) */}
-            <div className="md:col-span-2 glass-panel p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
+            <div className="md:col-span-2 bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
                 <Icon icon="solar:chat-square-arrow-linear" size={40} className="text-cyan-400 mb-6" />
                 <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.inline.title")}</h3>
@@ -383,7 +383,7 @@ export default function LandingPage() {
               <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-cyan-500/5 rounded-full blur-[60px] group-hover:bg-cyan-500/10 transition-colors" />
             </div>
 
-            <div className="glass-panel p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
+            <div className="bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <Icon icon="solar:shield-user-linear" size={40} className="text-green-400 mb-6" />
                 <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.risk.title")}</h3>
@@ -397,7 +397,7 @@ export default function LandingPage() {
 
         {/* Available Talent */}
         {talent && (
-          <section className="py-24 px-6 reveal">
+          <section className="py-24 px-6 reveal section-tinted">
             <div className="max-w-7xl mx-auto text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.talent.title")}</h2>
               <p className="text-slate-400 font-light">{t("landing.talent.subtitle")}</p>
@@ -461,18 +461,18 @@ export default function LandingPage() {
             <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.activity.title")}</h2>
             <p className="text-slate-400 font-light">{t("landing.activity.subtitle")}</p>
           </div>
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-3xl mx-auto">
             <ActivityFeed />
           </div>
         </section>
 
         {/* Roadmap */}
-        <section className="py-24 px-6">
+        <section className="py-24 px-6 section-tinted">
           <div className="max-w-7xl mx-auto text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">{t("landing.roadmap.title")}</h2>
             <p className="text-slate-400 font-light">{t("landing.roadmap.subtitle")}</p>
           </div>
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <Roadmap />
           </div>
         </section>
@@ -503,7 +503,7 @@ export default function LandingPage() {
 
         {/* CTA Section */}
         <section className="py-32 px-6 text-center reveal">
-          <div className="max-w-7xl mx-auto glass-panel p-12 md:p-20 rounded-[3rem] border-white/10 glow-blue relative overflow-hidden">
+          <div className="max-w-4xl mx-auto glass-panel p-12 md:p-20 rounded-[3rem] border-white/10 glow-blue relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#0098EA]/10 rounded-full blur-[80px]" />
 
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6">
