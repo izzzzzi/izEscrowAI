@@ -11,6 +11,7 @@ import {
   LuEye, LuLink, LuMenu, LuUserCheck, LuCircleUser,
   LuShieldAlert, LuBadgeCheck, LuX,
   LuPalette, LuChartBar, LuServer, LuSmartphone, LuLayoutGrid,
+  LuClipboardCheck, LuClipboardList, LuDatabase, LuBriefcase, LuSlidersHorizontal,
 } from "react-icons/lu";
 import { SiTelegram, SiTon, SiGithub } from "react-icons/si";
 
@@ -85,6 +86,14 @@ const iconMap: Record<string, IconType> = {
   "solar:server-linear": LuServer,
   "solar:smartphone-linear": LuSmartphone,
   "solar:widget-linear": LuLayoutGrid,
+  "solar:chart-square-linear": LuChartBar,
+  "solar:clipboard-check-linear": LuClipboardCheck,
+  "solar:clipboard-list-linear": LuClipboardList,
+  "solar:database-linear": LuDatabase,
+  "solar:shield-warning-linear": LuShieldAlert,
+  "solar:suitcase-linear": LuBriefcase,
+  "solar:tuning-square-2-linear": LuSlidersHorizontal,
+  "solar:wallet-money-linear": LuWallet,
   "solar:graph-up-linear": LuSiren,
   "solar:gallery-wide-linear": LuEye,
   "solar:shop-2-linear": LuShoppingBag,
