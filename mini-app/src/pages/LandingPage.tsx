@@ -79,7 +79,7 @@ export default function LandingPage() {
 
   return (
     <div
-      className="overflow-x-hidden page-shell"
+      className="overflow-x-hidden"
     >
       <Helmet>
         <title>izEscrowAI — AI-Powered P2P Escrow on TON</title>
@@ -127,7 +127,7 @@ export default function LandingPage() {
             </div>
 
             {/* Telegram Chat Mockup — iPhone frame */}
-            <div className="relative" style={{ transform: "scale(0.65)", transformOrigin: "center center" }}>
+            <div className="relative pointer-events-none" style={{ transform: "scale(0.65)", transformOrigin: "center center" }}>
               <div className="mockup-phone mx-auto">
                 <div className="mockup-phone-camera"></div>
                 <div className="mockup-phone-display chat-bg">

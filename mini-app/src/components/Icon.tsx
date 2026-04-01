@@ -10,6 +10,7 @@ import {
   LuCirclePlus, LuCheckCheck, LuMinus, LuArrowLeftRight,
   LuEye, LuLink, LuMenu, LuUserCheck, LuCircleUser,
   LuShieldAlert, LuBadgeCheck, LuX,
+  LuPalette, LuChartBar, LuServer, LuSmartphone, LuLayoutGrid,
 } from "react-icons/lu";
 import { SiTelegram, SiTon, SiGithub } from "react-icons/si";
 
@@ -65,8 +66,10 @@ const iconMap: Record<string, IconType> = {
   "solar:wallet-2-bold": LuWallet,
   "solar:chat-round-dots-linear": LuMessageCircle,
   "solar:chat-round-dots-bold": LuMessageCircle,
+  "solar:chat-line-linear": LuMessageCircle,
   "solar:chat-square-arrow-linear": LuMessageSquare,
   "solar:scale-linear": LuScale,
+  "solar:code-linear": LuCode,
   "solar:code-scan-linear": LuCode,
   "solar:settings-linear": LuSettings,
   "solar:add-circle-linear": LuCirclePlus,
@@ -77,6 +80,11 @@ const iconMap: Record<string, IconType> = {
   "solar:verified-check-bold": LuBadgeCheck,
   "solar:minus-circle-linear": LuMinus,
   "solar:link-round-linear": LuLink,
+  "solar:palette-linear": LuPalette,
+  "solar:chart-2-linear": LuChartBar,
+  "solar:server-linear": LuServer,
+  "solar:smartphone-linear": LuSmartphone,
+  "solar:widget-linear": LuLayoutGrid,
   "solar:graph-up-linear": LuSiren,
   "solar:gallery-wide-linear": LuEye,
   "solar:shop-2-linear": LuShoppingBag,
