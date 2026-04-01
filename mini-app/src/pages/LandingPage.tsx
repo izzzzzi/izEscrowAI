@@ -300,7 +300,7 @@ export default function LandingPage() {
             <div className="bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <Icon icon="solar:tag-price-linear" size={40} className="text-emerald-400 mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.pricing.title")}</h3>
+                <h3 className="text-xl font-medium tracking-tight mb-4"><Term hintKey="term.aiPricing">{t("landing.feature.pricing.title")}</Term></h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
                 {t("landing.feature.pricing.desc")}
@@ -342,7 +342,7 @@ export default function LandingPage() {
             <div className="bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <Icon icon="solar:code-scan-linear" size={40} className="text-green-400 mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.github.title")}</h3>
+                <h3 className="text-xl font-medium tracking-tight mb-4"><Term hintKey="term.githubVerification">{t("landing.feature.github.title")}</Term></h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
                 {t("landing.feature.github.desc")}
@@ -352,7 +352,7 @@ export default function LandingPage() {
             <div className="bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <Icon icon="solar:radar-2-linear" size={40} className="text-amber-400 mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.parser.title")}</h3>
+                <h3 className="text-xl font-medium tracking-tight mb-4"><Term hintKey="term.jobParser">{t("landing.feature.parser.title")}</Term></h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
                 {t("landing.feature.parser.desc")}
@@ -363,7 +363,7 @@ export default function LandingPage() {
             <div className="md:col-span-2 bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift relative overflow-hidden group">
               <div className="relative z-10">
                 <Icon icon="solar:chat-square-arrow-linear" size={40} className="text-cyan-400 mb-6" />
-                <h3 className="text-2xl font-medium tracking-tight mb-4">{t("landing.feature.inline.title")}</h3>
+                <h3 className="text-2xl font-medium tracking-tight mb-4"><Term hintKey="term.inlineMode">{t("landing.feature.inline.title")}</Term></h3>
                 <p className="text-slate-400 font-light max-w-md">
                   {t("landing.feature.inline.desc")}
                 </p>
@@ -373,7 +373,7 @@ export default function LandingPage() {
             <div className="bg-white/[0.03] border border-white/[0.06] p-10 rounded-[2.5rem] hover-lift flex flex-col justify-between">
               <div>
                 <Icon icon="solar:shield-user-linear" size={40} className="text-green-400 mb-6" />
-                <h3 className="text-xl font-medium tracking-tight mb-4">{t("landing.feature.risk.title")}</h3>
+                <h3 className="text-xl font-medium tracking-tight mb-4"><Term hintKey="term.trustScore">{t("landing.feature.risk.title")}</Term></h3>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">
                 {t("landing.feature.risk.desc")}
@@ -492,7 +492,7 @@ export default function LandingPage() {
         <section className="py-32 px-6 text-center reveal">
           <div className="max-w-4xl mx-auto glass-panel p-12 md:p-20 rounded-[3rem] border-white/10 glow-blue relative overflow-hidden">
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6">
-              {t("landing.cta.title")}
+              {t("landing.cta.title.pre" as any)}<Term hintKey="term.p2p">P2P</Term>{t("landing.cta.title.post" as any)}
             </h2>
             <p className="text-lg text-slate-400 font-light mb-10">
               {t("landing.cta.subtitle")}

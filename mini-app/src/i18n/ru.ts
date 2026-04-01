@@ -333,7 +333,8 @@ const ru: Record<TranslationKey, string> = {
   "landing.activity.empty": "Пока нет активности",
   "landing.roadmap.title": "Дорожная карта",
   "landing.roadmap.subtitle": "Что дальше.",
-  "landing.cta.title": "Готовы к безопасному P2P?",
+  "landing.cta.title.pre": "Готовы к безопасному ",
+  "landing.cta.title.post": "?",
   "landing.cta.subtitle":
     "Создайте первую эскроу-сделку на TON. Безопасно, быстро и с AI.",
   "landing.cta.hire": "Найти исполнителя",
@@ -524,6 +525,9 @@ const ru: Record<TranslationKey, string> = {
   "term.inlineMode": "Функция Telegram — размещайте офферы в любом чате, набрав @имябота",
   "term.p2p": "Peer-to-peer — сделки напрямую между двумя людьми, без посредников",
   "term.mainnet": "Рабочий блокчейн, где происходят реальные транзакции (не тестовая сеть)",
+  "term.aiPricing": "AI анализирует сложность спеки и оценивает справедливый диапазон цен с обоснованием",
+  "term.githubVerification": "Репозитории, языки и история контрибуций на GitHub анализируются для создания проверяемого профиля навыков",
+  "term.jobParser": "AI мониторит Telegram-каналы 24/7, автоматически извлекая фриланс-заказы с бюджетами, навыками и сроками",
 
   // TalentGrid
   "talent.topLanguages": "Популярные языки",

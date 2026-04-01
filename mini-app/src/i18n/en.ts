@@ -301,7 +301,8 @@ const en = {
   "landing.activity.empty": "No recent activity",
   "landing.roadmap.title": "Roadmap",
   "landing.roadmap.subtitle": "Where we're headed next.",
-  "landing.cta.title": "Ready for safer P2P?",
+  "landing.cta.title.pre": "Ready for safer ",
+  "landing.cta.title.post": "?",
   "landing.cta.subtitle": "Start your first escrow deal on TON today. Safe, fast, and intelligent.",
   "landing.cta.hire": "Find Talent",
   "landing.cta.work": "Find Work",
@@ -489,6 +490,9 @@ const en = {
   "term.inlineMode": "Telegram feature that lets you post offers directly in any chat by typing @botname",
   "term.p2p": "Peer-to-peer — deals happen directly between two people, no intermediary",
   "term.mainnet": "The live production blockchain where real transactions happen (not a test network)",
+  "term.aiPricing": "AI analyzes spec complexity to estimate fair min/median/max price range with reasoning",
+  "term.githubVerification": "Your GitHub repos, languages, and contributions are analyzed to build a verifiable skill profile",
+  "term.jobParser": "AI monitors Telegram channels 24/7, auto-extracting freelance jobs with budgets, skills, and deadlines",
 
   // TalentGrid
   "talent.topLanguages": "Top Languages",
